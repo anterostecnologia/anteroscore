@@ -137,11 +137,11 @@ public class AnterosBasicConfiguration 	implements BasicConfiguration {
 
 			throw new AnterosConfigurationException("Arquivo de configuração " + xmlFile + " não encontrado.");
 		}
-
+		
 		public AnterosBasicConfiguration configure(InputStream xmlConfiguration) throws AnterosConfigurationException {
 			try {
 				Serializer serializer = new Persister(new Format("<?xml version=\"1.0\" encoding= \"UTF-8\" ?>"));
-				final AnterosBasicConfiguration result = serializer.read(AnterosBasicConfiguration.class, xmlConfiguration);
+				final AnterosBasicConfiguration result = serializer.read(getClass(), xmlConfiguration);
 				this.setSessionFactory(result.getSessionFactoryConfiguration());
 				return this;
 			} catch (final Exception e) {
@@ -182,7 +182,7 @@ public class AnterosBasicConfiguration 	implements BasicConfiguration {
 		}
 		
 		public static InputStream getDefaultXmlInputStream() throws Exception {	
-			List<URL> resources = ResourceUtils.getResources("/anteros-config.xml", AnterosBasicConfiguration.class);
+			List<URL> resources = ResourceUtils.getResources("anteros-config.xml", AnterosBasicConfiguration.class);
 			if ((resources == null) || (resources.isEmpty())) {
 				resources = ResourceUtils.getResources("/assets/anteros-config.xml", AnterosBasicConfiguration.class);
 				if ((resources != null) && (!resources.isEmpty())) {

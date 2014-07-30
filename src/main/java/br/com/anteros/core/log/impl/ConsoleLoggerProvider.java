@@ -24,6 +24,7 @@ import br.com.anteros.core.configuration.AnterosCoreProperties;
 import br.com.anteros.core.log.LogLevel;
 import br.com.anteros.core.log.Logger;
 import br.com.anteros.core.log.LoggerProvider;
+import br.com.anteros.core.utils.ResourceUtils;
 
 /**
  * 
@@ -52,18 +53,18 @@ public class ConsoleLoggerProvider extends LoggerProvider {
 	 *            anteros-config.xml
 	 * @return LogLevel
 	 */
-	public static LogLevel findLevel(String propertyValue) {
+	public static synchronized LogLevel findLevel(String propertyValue) {
 		try {
 			Serializer serializer = new Persister(new Format("<?xml version=\"1.0\" encoding= \"UTF-8\" ?>"));
-			final AnterosBasicConfiguration result = serializer.read(AnterosBasicConfiguration.class,
-					AnterosBasicConfiguration.getDefaultXmlInputStream());
+			final AnterosBasicConfiguration result = new AnterosBasicConfiguration().configure();
 			String consoleLogLevel = result.getSessionFactoryConfiguration().getProperties()
 					.getProperty(propertyValue);
 			System.out.println("consoleLogLevel: " + consoleLogLevel);
 			return LogLevel.valueOf(consoleLogLevel);
 		} catch (Exception e) {
+			System.err.println("Level de configuração do ConsoleLogger não foi configurado: " + e.getMessage());
+			return LogLevel.ERROR;
 		}
-		return null;
 	}
 
 }

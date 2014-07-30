@@ -65,11 +65,10 @@ public abstract class LoggerProvider {
 	 * 
 	 * @return LoggerProvider
 	 */
-	private static LoggerProvider findProvider() {
+	private static synchronized LoggerProvider findProvider() {
 		try {
 			Serializer serializer = new Persister(new Format("<?xml version=\"1.0\" encoding= \"UTF-8\" ?>"));
-			final AnterosBasicConfiguration result = serializer.read(AnterosBasicConfiguration.class,
-					AnterosBasicConfiguration.getDefaultXmlInputStream());
+			final AnterosBasicConfiguration result = new AnterosBasicConfiguration().configure();
 			String providerClassName = result.getSessionFactoryConfiguration().getProperties()
 					.getProperty(AnterosCoreProperties.LOGGER_PROVIDER);
 			System.out.println("providerClassName: " + providerClassName);
