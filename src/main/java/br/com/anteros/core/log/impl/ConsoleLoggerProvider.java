@@ -15,16 +15,13 @@
  ******************************************************************************/
 package br.com.anteros.core.log.impl;
 
-import org.simpleframework.xml.Serializer;
-import org.simpleframework.xml.core.Persister;
-import org.simpleframework.xml.stream.Format;
+import java.util.Properties;
 
 import br.com.anteros.core.configuration.AnterosBasicConfiguration;
 import br.com.anteros.core.configuration.AnterosCoreProperties;
 import br.com.anteros.core.log.LogLevel;
 import br.com.anteros.core.log.Logger;
 import br.com.anteros.core.log.LoggerProvider;
-import br.com.anteros.core.utils.ResourceUtils;
 
 /**
  * 
@@ -35,13 +32,13 @@ import br.com.anteros.core.utils.ResourceUtils;
  */
 public class ConsoleLoggerProvider extends LoggerProvider {
 
-	private final LogLevel level = findLevel(AnterosCoreProperties.CONSOLE_LOG_LEVEL);
+	private final LogLevel level = findLevel(AnterosCoreProperties.ANTEROS_LOG_LEVEL);
 
 	@Override
 	public Logger getLogger(String name) {
 		return new ConsoleLogger(name, level);
 	}
-	
+
 	/**
 	 * 
 	 * Busca o arquivo XML anteros-config.xml e tenta ler a propriedade
@@ -55,11 +52,9 @@ public class ConsoleLoggerProvider extends LoggerProvider {
 	 */
 	public static synchronized LogLevel findLevel(String propertyValue) {
 		try {
-			Serializer serializer = new Persister(new Format("<?xml version=\"1.0\" encoding= \"UTF-8\" ?>"));
-			final AnterosBasicConfiguration result = new AnterosBasicConfiguration().configure();
-			String consoleLogLevel = result.getSessionFactoryConfiguration().getProperties()
-					.getProperty(propertyValue);
-			System.out.println("consoleLogLevel: " + consoleLogLevel);
+			Properties properties = new Properties();
+			properties.load(getLogPropertiesInputStream());
+			String consoleLogLevel = properties.getProperty(propertyValue);
 			return LogLevel.valueOf(consoleLogLevel);
 		} catch (Exception e) {
 			System.err.println("Level de configuração do ConsoleLogger não foi configurado: " + e.getMessage());

@@ -15,11 +15,11 @@
  ******************************************************************************/
 package br.com.anteros.core.log;
 
-import org.simpleframework.xml.Serializer;
-import org.simpleframework.xml.core.Persister;
-import org.simpleframework.xml.stream.Format;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.List;
+import java.util.Properties;
 
-import br.com.anteros.core.configuration.AnterosBasicConfiguration;
 import br.com.anteros.core.configuration.AnterosCoreProperties;
 import br.com.anteros.core.log.impl.ConsoleLoggerProvider;
 import br.com.anteros.core.utils.ResourceUtils;
@@ -65,20 +65,29 @@ public abstract class LoggerProvider {
 	 * 
 	 * @return LoggerProvider
 	 */
-	private static synchronized LoggerProvider findProvider() {
+	protected static synchronized LoggerProvider findProvider() {
 		try {
-			Serializer serializer = new Persister(new Format("<?xml version=\"1.0\" encoding= \"UTF-8\" ?>"));
-			final AnterosBasicConfiguration result = new AnterosBasicConfiguration().configure();
-			String providerClassName = result.getSessionFactoryConfiguration().getProperties()
-					.getProperty(AnterosCoreProperties.LOGGER_PROVIDER);
-			System.out.println("providerClassName: " + providerClassName);
-			if (providerClassName == null)
-				return new ConsoleLoggerProvider();
+			Properties properties = new Properties();
+			properties.load(getLogPropertiesInputStream());
+			String providerClassName = properties.getProperty(AnterosCoreProperties.LOGGER_PROVIDER);
 			return (LoggerProvider) Class.forName(providerClassName).newInstance();
 		} catch (Exception ex) {
 			System.err.println(ResourceUtils.getMessage(LoggerProvider.class, "not_configured", ex.getMessage()));
 			return new ConsoleLoggerProvider();
 		}
+	}
+
+	protected static InputStream getLogPropertiesInputStream() throws Exception {
+		List<URL> resources = ResourceUtils.getResources(AnterosCoreProperties.PROPERTIES_LOG, LoggerProvider.class);
+		if ((resources == null) || (resources.isEmpty())) {
+			resources = ResourceUtils.getResources("/assets" + AnterosCoreProperties.PROPERTIES_LOG,
+					LoggerProvider.class);
+			if (resources == null || resources.isEmpty()) {
+				return null;
+			}
+		}
+		final URL url = resources.get(0);
+		return url.openStream();
 	}
 
 }
