@@ -7,11 +7,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
-import org.joda.time.DateTime;
-import org.joda.time.Days;
-import org.joda.time.Hours;
-import org.joda.time.Minutes;
-
 /**
  * 
  * @author Edson Martins
@@ -375,6 +370,11 @@ public class DateUtil {
 		return getIntervalInMinutes(time, time2) / 60d;
 	}
 
+	/**
+	 * Faz o parse de String para Date usando o padrão HH:mm:ss
+	 * @param strTime
+	 * @return
+	 */
 	public static Date stringTimeToDate(String strTime) {
 		SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
 		try {
@@ -382,6 +382,38 @@ public class DateUtil {
 		} catch (ParseException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public static void resetTimeStamp(Calendar calendar) {
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+	}
+
+	public static void resetDate(Calendar calendar) {
+		calendar.set(Calendar.DAY_OF_MONTH, 1);
+		calendar.set(Calendar.MONTH, 1);
+		calendar.set(Calendar.YEAR, 1970);
+	}
+
+	/**
+	 * Copia hora, minuto, segundo e milésimo de segundo de um calendario para outro
+	 */
+	public static void copyTimeStamp(Calendar from, Calendar to) {
+		to.set(Calendar.HOUR_OF_DAY, from.get(Calendar.HOUR_OF_DAY));
+		to.set(Calendar.MINUTE, from.get(Calendar.MINUTE));
+		to.set(Calendar.SECOND, from.get(Calendar.SECOND));
+		to.set(Calendar.MILLISECOND, from.get(Calendar.MILLISECOND));
+	}
+
+	/**
+	 * Copia hora, minuto, segundo e milésimo de segundo de um calendario para outro
+	 */
+	public static void copyDate(Calendar from, Calendar to) {
+		to.set(Calendar.DAY_OF_MONTH, from.get(Calendar.DAY_OF_MONTH));
+		to.set(Calendar.MONTH, from.get(Calendar.MONTH));
+		to.set(Calendar.YEAR, from.get(Calendar.YEAR));
 	}
 
 }
