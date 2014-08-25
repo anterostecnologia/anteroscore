@@ -24,7 +24,7 @@ import br.com.anteros.core.log.Logger;
  * 
  * Implementação de Logger responsável somente por enviar a mensagem de Log ao console.
  * 
- * @author Douglas Junior (nassifrroma@gmail.com)
+ * @author Douglas Junior <nassifrroma@gmail.com>
  * 
  */
 public class ConsoleLogger extends Logger {
@@ -48,7 +48,7 @@ public class ConsoleLogger extends Logger {
 	protected void doLog(LogLevel level, Object message, Throwable t) {
 		if (isEnabled(level)) {
 			PrintStream pt = System.out;
-			if (level == LogLevel.ERROR)
+			if (level == LogLevel.ERROR || level == LogLevel.WARN)
 				pt = System.err;
 			if (t != null)
 				pt.println("[" + level + ":" + getName() + "] " + message + ". Throwable: " + t.toString());
