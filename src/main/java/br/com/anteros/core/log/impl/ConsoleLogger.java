@@ -54,6 +54,7 @@ public class ConsoleLogger extends Logger {
 				pt.println("[" + level + ":" + getName() + "] " + message + ". Throwable: " + t.toString());
 			else
 				pt.println("[" + level + ":" + getName() + "] " + message);
+			pt.flush();
 		}
 	}
 
