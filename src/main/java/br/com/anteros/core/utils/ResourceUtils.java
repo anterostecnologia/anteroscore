@@ -38,7 +38,7 @@ public class ResourceUtils {
 
 	private static Map<Locale, ResourceBundle> bundles;
 
-	private static final String bundleName = "br/com/anteros/persistence/resources/languages/messages";
+	private static final String bundleName = "anteros_messages";
 
 	public static ResourceBundle getResourceBundle(Locale locale) {
 		if (bundles == null)
@@ -215,5 +215,6 @@ public class ResourceUtils {
 		}
 		return ret;
 	}
-
+	
+	
 }
