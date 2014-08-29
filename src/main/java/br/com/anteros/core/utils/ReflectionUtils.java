@@ -970,7 +970,7 @@ public class ReflectionUtils {
 		return null;
 	}
 
-	public static void invokeMethodWithParameterString(Object object, String methodName, String value) throws Exception {
+	public static void invokeMethodWithParameterString(Object object, String methodName, String value) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException  {
 		Method method = ReflectionUtils.findMethodObject(object.getClass(), methodName);
 		if (method != null) {
 			if (method.getParameterTypes().length > 0) {

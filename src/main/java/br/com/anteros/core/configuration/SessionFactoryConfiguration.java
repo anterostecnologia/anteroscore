@@ -92,7 +92,7 @@ public class SessionFactoryConfiguration {
 	public List<Class<? extends Serializable>> getClasses() throws ClassNotFoundException {
 		List<Class<? extends Serializable>> result = new ArrayList<Class<? extends Serializable>>();
 		for (String cl : getAnnotatedClasses().getClazz()) {
-			result.add((Class<? extends Serializable>) Class.forName(cl));
+			result.add((Class<? extends Serializable>) Class.forName(cl, true, Thread.currentThread().getContextClassLoader()));
 		}
 		return result;
 	}
