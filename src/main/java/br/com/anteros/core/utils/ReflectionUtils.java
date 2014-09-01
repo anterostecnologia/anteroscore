@@ -29,9 +29,11 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -261,22 +263,6 @@ public class ReflectionUtils {
 
 	public static Object getFieldValue(Object object, Field field) throws SecurityException, IllegalArgumentException, IllegalAccessException,
 			InvocationTargetException {
-		/*field.setAccessible(true);
-		String name = field.getName();
-		name = name.substring(0, 1).toUpperCase() + name.substring(1);
-		Class<?> type = field.getType();
-		if (boolean.class.isAssignableFrom(type) || Boolean.class.isAssignableFrom(type)) {
-			name = "is" + name;
-		} else {
-			name = "get" + name;
-		}
-		Object value = null;
-		try {
-			Method method = field.getDeclaringClass().getMethod(name);
-			value = method.invoke(object);
-		} catch (NoSuchMethodException e) {*/
-			//value = field.get(object);
-		//}
 		return field.get(object);
 	}
 
@@ -1311,6 +1297,64 @@ public class ReflectionUtils {
         
         // check for inheritance and implements
         return leftClass.isAssignableFrom(rightClass);
-    }	
+    }
+	
+	public static Object getField(Field field, Object target) {
+		try {
+			return field.get(target);
+		}
+		catch (IllegalAccessException ex) {
+			handleReflectionException(ex);
+			throw new IllegalStateException(
+					"Unexpected reflection exception - " + ex.getClass().getName() + ": " + ex.getMessage());
+		}
+	}
+	
+	public static void handleReflectionException(Exception ex) {
+		if (ex instanceof NoSuchMethodException) {
+			throw new IllegalStateException("Method not found: " + ex.getMessage());
+		}
+		if (ex instanceof IllegalAccessException) {
+			throw new IllegalStateException("Could not access method: " + ex.getMessage());
+		}
+		if (ex instanceof InvocationTargetException) {
+			handleInvocationTargetException((InvocationTargetException) ex);
+		}
+		if (ex instanceof RuntimeException) {
+			throw (RuntimeException) ex;
+		}
+		throw new UndeclaredThrowableException(ex);
+	}
+	
+	public static void handleInvocationTargetException(InvocationTargetException ex) {
+		rethrowRuntimeException(ex.getTargetException());
+	}
+	
+	public static void rethrowRuntimeException(Throwable ex) {
+		if (ex instanceof RuntimeException) {
+			throw (RuntimeException) ex;
+		}
+		if (ex instanceof Error) {
+			throw (Error) ex;
+		}
+		throw new UndeclaredThrowableException(ex);
+	}
+
+	public static Method findMethod(Class<?> clazz, String name, Class<?>... paramTypes) {
+		Assert.notNull(clazz, "Class must not be null");
+		Assert.notNull(name, "Method name must not be null");
+		Class<?> searchType = clazz;
+		while (searchType != null) {
+			Method[] methods = (searchType.isInterface() ? searchType.getMethods() : getAllDeclaredMethods(searchType));
+			for (Method method : methods) {
+				if (name.equals(method.getName()) &&
+						(paramTypes == null || Arrays.equals(paramTypes, method.getParameterTypes()))) {
+					return method;
+				}
+			}
+			searchType = searchType.getSuperclass();
+		}
+		return null;
+	}
 	
 }
