@@ -22,6 +22,7 @@ import java.util.Properties;
 
 import br.com.anteros.core.configuration.AnterosCoreProperties;
 import br.com.anteros.core.log.impl.ConsoleLoggerProvider;
+import br.com.anteros.core.utils.AnterosCoreTranslate;
 import br.com.anteros.core.utils.ResourceUtils;
 
 /**
@@ -72,7 +73,7 @@ public abstract class LoggerProvider {
 			String providerClassName = properties.getProperty(AnterosCoreProperties.LOGGER_PROVIDER);
 			return (LoggerProvider) Class.forName(providerClassName).newInstance();
 		} catch (Exception ex) {
-			System.err.println(ResourceUtils.getMessage(LoggerProvider.class, "not_configured", ex.getMessage()));
+			System.err.println(AnterosCoreTranslate.getMessage(LoggerProvider.class, "not_configured", ex.getMessage()));
 			return new ConsoleLoggerProvider();
 		}
 	}

@@ -547,7 +547,8 @@ public abstract class StringUtils {
 		return tokenizeToStringArray(str, delimiters, true, true);
 	}
 
-	public static String[] tokenizeToStringArray(String str, String delimiters, boolean trimTokens, boolean ignoreEmptyTokens) {
+	public static String[] tokenizeToStringArray(String str, String delimiters, boolean trimTokens,
+			boolean ignoreEmptyTokens) {
 
 		if (str == null) {
 			return null;
@@ -708,7 +709,8 @@ public abstract class StringUtils {
 				}
 
 				for (; i < chars.length; i++) {
-					if ((chars[i] < '0' || chars[i] > '9') && (chars[i] < 'a' || chars[i] > 'f') && (chars[i] < 'A' || chars[i] > 'F')) {
+					if ((chars[i] < '0' || chars[i] > '9') && (chars[i] < 'a' || chars[i] > 'f')
+							&& (chars[i] < 'A' || chars[i] > 'F')) {
 						return false;
 					}
 				}
@@ -1139,8 +1141,8 @@ public abstract class StringUtils {
 	}
 
 	public static boolean isVowel(char c) {
-		return (c == 'A') || (c == 'a') || (c == 'e') || (c == 'E') || (c == 'i') || (c == 'I') || (c == 'o') || (c == 'O') || (c == 'u')
-				|| (c == 'U');
+		return (c == 'A') || (c == 'a') || (c == 'e') || (c == 'E') || (c == 'i') || (c == 'I') || (c == 'o')
+				|| (c == 'O') || (c == 'u') || (c == 'U');
 	}
 
 	public static String removeVowels(String s1) {
@@ -1316,8 +1318,22 @@ public abstract class StringUtils {
 		}
 		return result.toString();
 	}
-	
-	
-	
-	
+
+	public static boolean isBlank(CharSequence cs) {
+		int strLen;
+		if (cs == null || (strLen = cs.length()) == 0) {
+			return true;
+		}
+		for (int i = 0; i < strLen; i++) {
+			if ((Character.isWhitespace(cs.charAt(i)) == false)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public static boolean isNotBlank(CharSequence cs) {
+		return !StringUtils.isBlank(cs);
+	}
+
 }

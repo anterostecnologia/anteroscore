@@ -36,38 +36,7 @@ public class ResourceUtils {
 
 	private static Logger LOG = LoggerProvider.getInstance().getLogger(ResourceUtils.class.getName());
 
-	private static Map<Locale, ResourceBundle> bundles;
-
-	private static final String bundleName = "anteros_messages";
-
-	public static ResourceBundle getResourceBundle(Locale locale) {
-		if (bundles == null)
-			bundles = new HashMap<Locale, ResourceBundle>();
-
-		ResourceBundle bundle = bundles.get(locale);
-
-		if (bundle != null) {
-			return bundle;
-		}
-
-		ClassLoader loader = ResourceUtils.class.getClassLoader();
-		bundle = ResourceBundle.getBundle(bundleName, locale, loader);
-		bundles.put(locale, bundle);
-
-		return bundle;
-	}
-
-	public static ResourceBundle getResourceBundle() {
-		return getResourceBundle(Locale.getDefault());
-	}
-
-	public static String getMessage(Class<?> clazz, String tag, Object... arguments) {
-		return MessageFormat.format(getMessage(clazz, tag), arguments);
-	}
-
-	public static String getMessage(Class<?> clazz, String tag) {
-		return getResourceBundle().getString(clazz.getSimpleName() + "." + tag);
-	}
+	
 
 	public static InputStream getResourceAsStream(String resource) throws FileNotFoundException {
 		String stripped = resource.startsWith("/") ? resource.substring(1) : resource;
