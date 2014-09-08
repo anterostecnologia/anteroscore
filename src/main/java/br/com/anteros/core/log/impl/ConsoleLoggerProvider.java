@@ -17,7 +17,6 @@ package br.com.anteros.core.log.impl;
 
 import java.util.Properties;
 
-import br.com.anteros.core.configuration.AnterosBasicConfiguration;
 import br.com.anteros.core.configuration.AnterosCoreProperties;
 import br.com.anteros.core.log.LogLevel;
 import br.com.anteros.core.log.Logger;

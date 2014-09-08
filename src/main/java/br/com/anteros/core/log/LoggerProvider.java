@@ -22,7 +22,6 @@ import java.util.Properties;
 
 import br.com.anteros.core.configuration.AnterosCoreProperties;
 import br.com.anteros.core.log.impl.ConsoleLoggerProvider;
-import br.com.anteros.core.utils.AnterosCoreTranslate;
 import br.com.anteros.core.utils.ResourceUtils;
 
 /**
@@ -53,28 +52,64 @@ public abstract class LoggerProvider {
 	 */
 	public static synchronized LoggerProvider getInstance() {
 		if (PROVIDER == null) {
-			PROVIDER = findProvider();
+			PROVIDER = discoverProvider();
 		}
 		return PROVIDER;
 	}
 
 	/**
-	 * Busca o arquivo XML anteros-config.xml e tenta ler a propriedade
-	 * loggerProviderClassName para saber qual a classe LoggerProvider que deve
-	 * ser instanciada. Caso nenhuma classe seja encontrada será instanciado um
-	 * ConsoleLoggerProvider.
+	 * Busca o arquivo de configuração de log do Anteros no classpath e tenta
+	 * ler a propriedade loggerProviderClassName para saber qual a classe
+	 * LoggerProvider que deve ser instanciada. Caso nenhuma classe seja
+	 * encontrada será instanciado um ConsoleLoggerProvider.
 	 * 
 	 * @return LoggerProvider
 	 */
-	protected static synchronized LoggerProvider findProvider() {
+	protected static synchronized LoggerProvider discoverProvider() {
+		/*
+		 * Tenta criar o log provider lendo arquivo de configuração caso
+		 * encontre um no classpath.
+		 */
+		LoggerProvider provider = tryGetLoggerProviderByConfigIfPossible();
+
+		if (provider == null) {
+			/*
+			 * Verifica se existe o Slf4j no classpath, se tiver usa
+			 */
+			try {
+				provider = (LoggerProvider)Class.forName("org.slf4j.Logger").newInstance();
+			} catch (Exception e) {
+				/*
+				 * Verifica se existe o Log4j no classpath, se tiver usa
+				 */
+				try {
+					provider = (LoggerProvider)Class.forName("org.apache.log4j.Logger").newInstance();
+				} catch (Exception e1) {
+					/*
+					 * Verifica se existe o Log4j 2 no classpath, se tiver usa
+					 */
+					try {
+						provider = (LoggerProvider)Class.forName("org.apache.logging.log4j.Logger").newInstance();
+					} catch (Exception e2) {
+					}
+				}
+			}
+		}
+		
+		if (provider == null) {
+			provider = new ConsoleLoggerProvider();
+		}
+		return provider;
+	}
+
+	protected static LoggerProvider tryGetLoggerProviderByConfigIfPossible() {
 		try {
 			Properties properties = new Properties();
 			properties.load(getLogPropertiesInputStream());
 			String providerClassName = properties.getProperty(AnterosCoreProperties.LOGGER_PROVIDER);
 			return (LoggerProvider) Class.forName(providerClassName).newInstance();
 		} catch (Exception ex) {
-			System.err.println(AnterosCoreTranslate.getMessage(LoggerProvider.class, "not_configured", ex.getMessage()));
-			return new ConsoleLoggerProvider();
+			return null;
 		}
 	}
 

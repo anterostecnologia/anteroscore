@@ -1,6 +1,6 @@
 package br.com.anteros.core.math.regression;
 
-import java.util.*;
+import java.util.Arrays;
 
 /**
  * <p>Title: Functions </p>

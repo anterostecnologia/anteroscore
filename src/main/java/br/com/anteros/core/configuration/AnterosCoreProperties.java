@@ -18,9 +18,9 @@ package br.com.anteros.core.configuration;
 
 public class AnterosCoreProperties {
 
-	public static final String XML_CONFIGURATION = "/anteros-config.xml";
+	public static final String XML_CONFIGURATION = "anteros-config.xml";
 	
-	public static final String PROPERTIES_LOG = "/anteroslog.properties";
+	public static final String PROPERTIES_LOG = "anteroslog.properties";
 
 	public static final String LOGGER_PROVIDER = "loggerProviderClassName";
 

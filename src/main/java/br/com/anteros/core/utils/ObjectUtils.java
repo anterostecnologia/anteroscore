@@ -695,13 +695,12 @@ public abstract class ObjectUtils {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			byte[] buf = new byte[1024];
 			int n = 0;
-			while ((n=in.read(buf))>=0)
-			{
-			   baos.write(buf, 0, n);
+			while ((n = in.read(buf)) >= 0) {
+				baos.write(buf, 0, n);
 			}
 			in.close();
-			byte[] bytes = baos.toByteArray(); 
-			
+			byte[] bytes = baos.toByteArray();
+
 			if (type == byte[].class) {
 				return bytes;
 			} else if (type == Byte[].class) {
@@ -732,14 +731,20 @@ public abstract class ObjectUtils {
 			return null;
 		} finally {
 			try {
-				oos.close();
-				ois.close();
+				if (oos != null)
+					oos.close();
+			} catch (IOException e) {
+				e.printStackTrace(System.err);
+			}
+			try {
+				if (ois != null)
+					ois.close();
 			} catch (IOException e) {
 				e.printStackTrace(System.err);
 			}
 		}
 	}
-	
+
 	public static Byte[] toByteArray(byte[] value) {
 		Byte[] bytes = new Byte[((byte[]) value).length];
 		for (int i = 0; i < ((byte[]) value).length; i++)

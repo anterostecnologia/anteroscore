@@ -15,12 +15,6 @@
  ******************************************************************************/
 package br.com.anteros.core.utils;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.sql.DataSource;
 
 public class ConnectionUtils {
 

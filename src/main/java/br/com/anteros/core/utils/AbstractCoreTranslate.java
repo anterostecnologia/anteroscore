@@ -13,8 +13,8 @@ public abstract class AbstractCoreTranslate {
 	protected static String bundleName = "";
 
 	public static ResourceBundle getResourceBundle(Locale locale) {
-		if (bundleName=="")
-			new RuntimeException("Variable bundleName not initialized. Use concrete clazz to translate. ");
+		if (bundleName.equals(""))
+			throw new RuntimeException("Variable bundleName not initialized. Use concrete clazz to translate. ");
 		if (bundles == null)
 			bundles = new HashMap<Locale, ResourceBundle>();
 

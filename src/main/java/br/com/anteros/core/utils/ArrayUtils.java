@@ -60,10 +60,11 @@ public class ArrayUtils {
 			return array2;
 		}
 		List<Object> list = new LinkedList<Object>(Arrays.asList(array1));
-
-		for (int i = 0; i < array2.length; i++) {
-			if ((!list.contains(array2[i])) && (array2[i] != null)) {
-				list.add(array2[i]);
+		if (array2 != null) {
+			for (int i = 0; i < array2.length; i++) {
+				if ((!list.contains(array2[i])) && (array2[i] != null)) {
+					list.add(array2[i]);
+				}
 			}
 		}
 		if (conv == null)
@@ -431,10 +432,9 @@ public class ArrayUtils {
 		System.arraycopy(array, startIndexInclusive, subarray, 0, newSize);
 		return subarray;
 	}
-	
-	public static boolean isEmpty(Object[] array) {
-        return array == null || array.length == 0;
-    }
 
+	public static boolean isEmpty(Object[] array) {
+		return array == null || array.length == 0;
+	}
 
 }
