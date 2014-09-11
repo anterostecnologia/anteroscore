@@ -8,11 +8,15 @@ import java.util.ResourceBundle;
 
 public abstract class AbstractCoreTranslate {
 
-	protected static Map<Locale, ResourceBundle> bundles;
+	protected Map<Locale, ResourceBundle> bundles;
 
-	protected static String bundleName = "";
-
-	public static ResourceBundle getResourceBundle(Locale locale) {
+	protected String bundleName = "";
+	
+	public AbstractCoreTranslate(String messageBundleName) {
+		this.bundleName = messageBundleName;
+	}
+	
+	public  ResourceBundle getResourceBundle(Locale locale) {
 		if (bundleName.equals(""))
 			throw new RuntimeException("Variable bundleName not initialized. Use concrete clazz to translate. ");
 		if (bundles == null)
@@ -31,15 +35,15 @@ public abstract class AbstractCoreTranslate {
 		return bundle;
 	}
 
-	public static ResourceBundle getResourceBundle() {
+	public  ResourceBundle getResourceBundle() {
 		return getResourceBundle(Locale.getDefault());
 	}
 
-	public static String getMessage(Class<?> clazz, String tag, Object... arguments) {
+	public  String getMessage(Class<?> clazz, String tag, Object... arguments) {
 		return MessageFormat.format(getMessage(clazz, tag), arguments);
 	}
 
-	public static String getMessage(Class<?> clazz, String tag) {
+	public  String getMessage(Class<?> clazz, String tag) {
 		return getResourceBundle().getString(clazz.getSimpleName() + "." + tag);
 	}
 }
