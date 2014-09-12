@@ -22,6 +22,9 @@ import java.util.Properties;
 
 import br.com.anteros.core.configuration.AnterosCoreProperties;
 import br.com.anteros.core.log.impl.ConsoleLoggerProvider;
+import br.com.anteros.core.log.impl.Log4j2LoggerProvider;
+import br.com.anteros.core.log.impl.Log4jLoggerProvider;
+import br.com.anteros.core.log.impl.Slf4jLoggerProvider;
 import br.com.anteros.core.utils.ResourceUtils;
 
 /**
@@ -79,19 +82,22 @@ public abstract class LoggerProvider {
 			 * Verifica se existe o Slf4j no classpath, se tiver usa
 			 */
 			try {
-				provider = (LoggerProvider)Class.forName("org.slf4j.Logger").newInstance();
+				Class.forName("org.slf4j.Logger");
+				provider = new Slf4jLoggerProvider();
 			} catch (Exception e) {
 				/*
 				 * Verifica se existe o Log4j no classpath, se tiver usa
 				 */
 				try {
-					provider = (LoggerProvider)Class.forName("org.apache.log4j.Logger").newInstance();
+					Class.forName("org.apache.log4j.Logger");
+					provider = new Log4jLoggerProvider();
 				} catch (Exception e1) {
 					/*
 					 * Verifica se existe o Log4j 2 no classpath, se tiver usa
 					 */
 					try {
-						provider = (LoggerProvider)Class.forName("org.apache.logging.log4j.Logger").newInstance();
+						Class.forName("org.apache.logging.log4j.Logger");
+						provider = new Log4j2LoggerProvider();
 					} catch (Exception e2) {
 					}
 				}
