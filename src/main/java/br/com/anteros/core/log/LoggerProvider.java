@@ -43,6 +43,8 @@ public abstract class LoggerProvider {
 	 * @return Logger
 	 */
 	public abstract Logger getLogger(String name);
+	
+	public abstract Logger getLogger(Class clazz);
 
 	/**
 	 * Retorna uma instância Singleton do LoggerProvider configurado no arquivo

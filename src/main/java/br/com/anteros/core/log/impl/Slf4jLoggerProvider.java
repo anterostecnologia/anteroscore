@@ -32,4 +32,9 @@ public class Slf4jLoggerProvider extends LoggerProvider {
 		return new Slf4jLogger(name);
 	}
 
+	@Override
+	public Logger getLogger(Class clazz) {
+		return getLogger(clazz.getName());
+	}
+
 }

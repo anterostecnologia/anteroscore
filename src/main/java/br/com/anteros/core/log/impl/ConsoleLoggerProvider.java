@@ -37,6 +37,11 @@ public class ConsoleLoggerProvider extends LoggerProvider {
 	public Logger getLogger(String name) {
 		return new ConsoleLogger(name, level);
 	}
+	
+	@Override
+	public Logger getLogger(Class clazz) {
+		return getLogger(clazz.getName());
+	}
 
 	/**
 	 * 
@@ -60,5 +65,4 @@ public class ConsoleLoggerProvider extends LoggerProvider {
 			return LogLevel.ERROR;
 		}
 	}
-
 }
