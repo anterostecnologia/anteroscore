@@ -46,7 +46,7 @@ public abstract class LoggerProvider {
 	 * @return Logger
 	 */
 	public abstract Logger getLogger(String name);
-	
+
 	public abstract Logger getLogger(Class clazz);
 
 	/**
@@ -103,7 +103,7 @@ public abstract class LoggerProvider {
 				}
 			}
 		}
-		
+
 		if (provider == null) {
 			provider = new ConsoleLoggerProvider();
 		}
@@ -122,9 +122,11 @@ public abstract class LoggerProvider {
 	}
 
 	protected static InputStream getLogPropertiesInputStream() throws Exception {
-		List<URL> resources = ResourceUtils.getResources(AnterosCoreProperties.PROPERTIES_LOG, LoggerProvider.class);
+		List<URL> resources = null;
+		resources = ResourceUtils.getResources(AnterosCoreProperties.PROPERTIES_LOG, LoggerProvider.class);
+		
 		if ((resources == null) || (resources.isEmpty())) {
-			resources = ResourceUtils.getResources("/assets" + AnterosCoreProperties.PROPERTIES_LOG,
+			resources = ResourceUtils.getResources("/assets/" + AnterosCoreProperties.PROPERTIES_LOG,
 					LoggerProvider.class);
 			if (resources == null || resources.isEmpty()) {
 				return null;
