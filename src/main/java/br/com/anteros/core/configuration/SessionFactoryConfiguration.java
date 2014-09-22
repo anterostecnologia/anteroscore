@@ -38,10 +38,10 @@ public class SessionFactoryConfiguration {
 	@Element
 	protected PropertiesConfiguration properties;
 
-	@Element
+	@Element(required=false)
 	protected AnnotatedClassesConfiguration annotatedClasses;
 	
-	@Element
+	@Element(name="package-scan-entity")
 	protected PackageScanEntity packageToScanEntity;
 	
 	@Element(name="include-security-model")
