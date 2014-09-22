@@ -18,6 +18,7 @@ package br.com.anteros.core.configuration;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.simpleframework.xml.Element;
@@ -39,6 +40,12 @@ public class SessionFactoryConfiguration {
 
 	@Element
 	protected AnnotatedClassesConfiguration annotatedClasses;
+	
+	@Element
+	protected PackageScanEntity packageToScanEntity;
+	
+	@Element(name="include-security-model")
+	protected boolean includeSecurityModel=false;
 
 	public PlaceholderConfiguration getPlaceholder() {
 		if (placeholder == null)
@@ -78,6 +85,13 @@ public class SessionFactoryConfiguration {
 
 	public void setAnnotatedClasses(AnnotatedClassesConfiguration value) {
 		this.annotatedClasses = value;
+	}
+	
+	public void addToAnnotatedClasses(List<Class<?>> classes) {
+		for (Class<?> cl : classes) {
+			if (!getAnnotatedClasses().getClazz().contains(cl.getName()))
+				getAnnotatedClasses().getClazz().add(cl.getName());
+		}
 	}
 
 	public DataSourceConfiguration getDataSourceById(String id) {
@@ -127,6 +141,22 @@ public class SessionFactoryConfiguration {
 			}
 		}
 		return value;
+	}
+
+	public PackageScanEntity getPackageToScanEntity() {
+		return packageToScanEntity;
+	}
+
+	public void setPackageToScanEntity(PackageScanEntity packageToScanEntity) {
+		this.packageToScanEntity = packageToScanEntity;
+	}
+
+	public boolean isIncludeSecurityModel() {
+		return includeSecurityModel;
+	}
+
+	public void setIncludeSecurityModel(boolean includeSecurityModel) {
+		this.includeSecurityModel = includeSecurityModel;
 	}
 
 }
