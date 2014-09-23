@@ -18,7 +18,6 @@ package br.com.anteros.core.configuration;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.simpleframework.xml.Element;
@@ -41,10 +40,10 @@ public class SessionFactoryConfiguration {
 	@Element(required=false)
 	protected AnnotatedClassesConfiguration annotatedClasses;
 	
-	@Element(name="package-scan-entity")
+	@Element(name="package-scan-entity", required=false)
 	protected PackageScanEntity packageToScanEntity;
 	
-	@Element(name="include-security-model")
+	@Element(name="include-security-model", required=false)
 	protected boolean includeSecurityModel=false;
 
 	public PlaceholderConfiguration getPlaceholder() {
