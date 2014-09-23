@@ -39,6 +39,8 @@ import java.util.regex.Pattern;
 
 public abstract class StringUtils {
 
+	public static final String REPLACE_WORD_DELIMITERS = "+-*/(),. \n\r";
+
 	private static final String FOLDER_SEPARATOR = "/";
 
 	private static final String WINDOWS_FOLDER_SEPARATOR = "\\";
@@ -260,6 +262,45 @@ public abstract class StringUtils {
 		}
 		sbuf.append(inString.substring(pos));
 		return sbuf.toString();
+	}
+	
+
+	public static String replaceAllWords(String original, String find, String replacement) {
+		return replaceAllWords(original, find, replacement, REPLACE_WORD_DELIMITERS);
+	}
+	
+	public static String replaceAllWords(String original, String find, String replacement, String delimiters) {
+	    StringBuilder result = new StringBuilder(original.length());
+	    StringTokenizer st = new StringTokenizer(original, delimiters, true);
+	    while (st.hasMoreTokens()) {
+	        String w = st.nextToken();
+	        if (w.equals(find)) {
+	            result.append(replacement);
+	        } else {
+	            result.append(w);
+	        }
+	    }
+	    return result.toString();
+	}
+	
+	public static String replaceFirstWord(String original, String find, String replacement) {
+		return replaceFirstWord(original, find, replacement, REPLACE_WORD_DELIMITERS);
+	}
+	
+	public static String replaceFirstWord(String original, String find, String replacement, String delimiters) {
+	    StringBuilder result = new StringBuilder(original.length());
+	    StringTokenizer st = new StringTokenizer(original, delimiters, true);
+	    boolean replaced = false;
+	    while (st.hasMoreTokens()) {
+	        String w = st.nextToken();
+	        if (w.equals(find) && (!replaced)) {
+	            result.append(replacement);
+	            replaced=true;
+	        } else {
+	            result.append(w);
+	        }
+	    }
+	    return result.toString();
 	}
 
 	public static String delete(String inString, String pattern) {
