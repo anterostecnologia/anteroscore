@@ -182,7 +182,7 @@ public class ReflectionUtils {
 				List<Class<?>> classList = new ArrayList<Class<?>>();
 				Class<?>[] allInterfaces = getAllInterfaces(searchClazz);
 				classList.add(searchClazz);
-				for (Class<?> c: allInterfaces)
+				for (Class<?> c : allInterfaces)
 					classList.add(c);
 				classes = classList.toArray(new Class<?>[] {});
 			}
@@ -332,6 +332,21 @@ public class ReflectionUtils {
 		}
 
 		return accessors;
+	}
+
+	public static Field getFieldByMethodSetter(Method method) {
+		if (method.getName().startsWith("set")) {
+			Class<?> declaringClass = method.getDeclaringClass();
+			Field[] fields = getAllDeclaredFields(declaringClass);
+			String name = null;
+			for (Field field : fields) {
+				name = "set" + StringUtils.capitalize(field.getName());
+				if (name.equals(method.getName()))
+					return field;
+			}
+		}
+
+		return null;
 	}
 
 	public static synchronized void setCacheMethods(boolean cacheMethods) {
