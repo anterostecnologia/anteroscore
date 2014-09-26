@@ -217,7 +217,7 @@ public class ClassPathScanner {
 		return classList;
 	}
 
-	private static Class<?> loadClassByLoaders(String name,
+	protected static Class<?> loadClassByLoaders(String name,
 			ClassLoader... loaders) throws ClassNotFoundException {
 		ClassNotFoundException lastException = null;
 		Class<?> clazz = null;
@@ -235,7 +235,7 @@ public class ClassPathScanner {
 		return clazz;
 	}
 
-	private static void filterResources(Collection<?> resources,
+	protected static void filterResources(Collection<?> resources,
 			ClassPathResourceFilter... filters) {
 		Set<Object> removed = new HashSet<Object>();
 		for (Object resource : resources) {
@@ -247,7 +247,7 @@ public class ClassPathScanner {
 		}
 	}
 
-	private static boolean acceptable(Object resource,
+	protected static boolean acceptable(Object resource,
 			ClassPathResourceFilter... filters) {
 		if (resource == null)
 			return false;
@@ -287,12 +287,12 @@ public class ClassPathScanner {
 		return jarUrl;
 	}
 
-	private static List<RootedURL> scan(URL rootURL, boolean scan4Classes,
+	protected static List<RootedURL> scan(URL rootURL, boolean scan4Classes,
 			ClassPathResourceFilter... filters) {
 		return scan(rootURL, rootURL, scan4Classes, filters);
 	}
 
-	private static List<RootedURL> scan(URL rootURL, URL url,
+	protected static List<RootedURL> scan(URL rootURL, URL url,
 			boolean scan4Classes, ClassPathResourceFilter... filters) {
 		List<RootedURL> resources = new ArrayList<RootedURL>();
 		File file = null;
