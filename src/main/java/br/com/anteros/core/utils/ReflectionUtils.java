@@ -292,7 +292,7 @@ public class ReflectionUtils {
 
 	public static Map<String, Method> getGetters(final Class<?> clazz) {
 		final Map<String, Method> accessors = new HashMap<String, Method>();
-		final Method[] methods = clazz.getMethods();
+		final Method[] methods = getAllDeclaredMethods(clazz);
 
 		for (int i = 0; i < methods.length; i++) {
 			String name;
@@ -313,9 +313,32 @@ public class ReflectionUtils {
 		return accessors;
 	}
 
+	public static boolean hasGetterAccessor(final Class<?> clazz, Field field) {
+		final Method[] methods = getAllDeclaredMethods(clazz);
+
+		for (int i = 0; i < methods.length; i++) {
+			String name;
+			String methodName;
+			final Method method = methods[i];
+
+			methodName = method.getName();
+			if (!methodName.startsWith("get"))
+				continue;
+			if (method.getParameterTypes().length != 0)
+				continue;
+
+			name = methodName.substring("get".length()).toLowerCase();
+			if (name.length() == 0)
+				continue;
+			if (field.getName().equalsIgnoreCase(name))
+				return true;
+		}
+		return false;
+	}
+
 	public static Map<String, Method> getSetters(Class<?> clazz) {
 		final Map<String, Method> accessors = new HashMap<String, Method>();
-		final Method[] methods = clazz.getMethods();
+		final Method[] methods = getAllDeclaredMethods(clazz);
 		for (int i = 0; i < methods.length; i++) {
 			String name;
 			String methodName;
@@ -332,6 +355,29 @@ public class ReflectionUtils {
 		}
 
 		return accessors;
+	}
+
+	public static boolean hasSetterAccessor(final Class<?> clazz, Field field) {
+		final Method[] methods = getAllDeclaredMethods(clazz);
+
+		for (int i = 0; i < methods.length; i++) {
+			String name;
+			String methodName;
+			final Method method = methods[i];
+
+			methodName = method.getName();
+			if (!methodName.startsWith("set"))
+				continue;
+			if (method.getParameterTypes().length != 1)
+				continue;
+
+			name = methodName.substring("set".length()).toLowerCase();
+			if (name.length() == 0)
+				continue;
+			if (field.getName().equalsIgnoreCase(name))
+				return true;
+		}
+		return false;
 	}
 
 	public static Field getFieldByMethodSetter(Method method) {
