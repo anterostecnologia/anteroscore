@@ -103,6 +103,10 @@ public class IOUtils {
 	public static String toString(InputStream input, String encoding) throws IOException {
 		return toString(input, (encoding == null ? Charset.defaultCharset() : Charset.forName(encoding)));
 	}
+	
+	public static String toString(InputStream input) throws IOException {
+		return toString(input, Charset.defaultCharset());
+	}
 
 	public static String toString(InputStream input, Charset encoding) throws IOException {
 		StringBuilderWriter sw = new StringBuilderWriter();
