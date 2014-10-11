@@ -1,18 +1,18 @@
 /*******************************************************************************
  * Copyright 2012 Anteros Tecnologia
- * 
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ *******************************************************************************/
 package br.com.anteros.core.utils;
 
 import java.lang.reflect.Array;
@@ -38,6 +38,11 @@ public class ArrayUtils {
 	public static final int[] EMPTY_INT_ARRAY = new int[0];
 	public static final long[] EMPTY_LONG_ARRAY = new long[0];
 	public static final char[] EMPTY_CHAR_ARRAY = new char[0];
+	public static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
+	public static final Class<?>[] EMPTY_CLASS_ARRAY = new Class[0];
+	public static final String[] EMPTY_STRING_ARRAY = new String[0];
+
+	public static final int INDEX_NOT_FOUND = -1;
 
 	public static Object[] add(Object[] array1, Object obj2) {
 		Object[] array2 = { obj2 };
@@ -435,6 +440,305 @@ public class ArrayUtils {
 
 	public static boolean isEmpty(Object[] array) {
 		return array == null || array.length == 0;
+	}
+
+	public static boolean isEmpty(char[] array) {
+		return array == null || array.length == 0;
+	}
+
+	public static <T> T[] clone(T[] array) {
+		if (array == null) {
+			return null;
+		}
+		return array.clone();
+	}
+
+	public static String toString(Object[] array) {
+		return toString(array, "{}");
+	}
+
+	public static String toString(Object[] array, String stringIfNull) {
+		if (array == null) {
+			return stringIfNull;
+		}
+		return Arrays.toString(array);
+	}
+
+	public static boolean contains(Object[] array, Object objectToFind) {
+		return indexOf(array, objectToFind) != INDEX_NOT_FOUND;
+	}
+
+	public static int indexOf(Object[] array, Object objectToFind) {
+		return indexOf(array, objectToFind, 0);
+	}
+
+	public static int indexOf(long[] array, long valueToFind) {
+		return indexOf(array, valueToFind, 0);
+	}
+
+	public static int indexOf(long[] array, long valueToFind, int startIndex) {
+		if (array == null) {
+			return INDEX_NOT_FOUND;
+		}
+		if (startIndex < 0) {
+			startIndex = 0;
+		}
+		for (int i = startIndex; i < array.length; i++) {
+			if (valueToFind == array[i]) {
+				return i;
+			}
+		}
+		return INDEX_NOT_FOUND;
+	}
+
+	public static int indexOf(Object[] array, Object objectToFind, int startIndex) {
+		if (array == null) {
+			return INDEX_NOT_FOUND;
+		}
+		if (startIndex < 0) {
+			startIndex = 0;
+		}
+		if (objectToFind == null) {
+			for (int i = startIndex; i < array.length; i++) {
+				if (array[i] == null) {
+					return i;
+				}
+			}
+		} else if (array.getClass().getComponentType().isInstance(objectToFind)) {
+			for (int i = startIndex; i < array.length; i++) {
+				if (objectToFind.equals(array[i])) {
+					return i;
+				}
+			}
+		}
+		return INDEX_NOT_FOUND;
+	}
+
+	public static boolean isSameLength(Object[] array1, Object[] array2) {
+		if ((array1 == null && array2 != null && array2.length > 0)
+				|| (array2 == null && array1 != null && array1.length > 0)
+				|| (array1 != null && array2 != null && array1.length != array2.length)) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * <p>
+	 * Checks whether two arrays are the same length, treating {@code null}
+	 * arrays as length {@code 0}.
+	 * </p>
+	 *
+	 * @param array1
+	 *            the first array, may be {@code null}
+	 * @param array2
+	 *            the second array, may be {@code null}
+	 * @return {@code true} if length of arrays matches, treating {@code null}
+	 *         as an empty array
+	 */
+	public static boolean isSameLength(long[] array1, long[] array2) {
+		if ((array1 == null && array2 != null && array2.length > 0)
+				|| (array2 == null && array1 != null && array1.length > 0)
+				|| (array1 != null && array2 != null && array1.length != array2.length)) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * <p>
+	 * Checks whether two arrays are the same length, treating {@code null}
+	 * arrays as length {@code 0}.
+	 * </p>
+	 *
+	 * @param array1
+	 *            the first array, may be {@code null}
+	 * @param array2
+	 *            the second array, may be {@code null}
+	 * @return {@code true} if length of arrays matches, treating {@code null}
+	 *         as an empty array
+	 */
+	public static boolean isSameLength(int[] array1, int[] array2) {
+		if ((array1 == null && array2 != null && array2.length > 0)
+				|| (array2 == null && array1 != null && array1.length > 0)
+				|| (array1 != null && array2 != null && array1.length != array2.length)) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * <p>
+	 * Checks whether two arrays are the same length, treating {@code null}
+	 * arrays as length {@code 0}.
+	 * </p>
+	 *
+	 * @param array1
+	 *            the first array, may be {@code null}
+	 * @param array2
+	 *            the second array, may be {@code null}
+	 * @return {@code true} if length of arrays matches, treating {@code null}
+	 *         as an empty array
+	 */
+	public static boolean isSameLength(short[] array1, short[] array2) {
+		if ((array1 == null && array2 != null && array2.length > 0)
+				|| (array2 == null && array1 != null && array1.length > 0)
+				|| (array1 != null && array2 != null && array1.length != array2.length)) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * <p>
+	 * Checks whether two arrays are the same length, treating {@code null}
+	 * arrays as length {@code 0}.
+	 * </p>
+	 *
+	 * @param array1
+	 *            the first array, may be {@code null}
+	 * @param array2
+	 *            the second array, may be {@code null}
+	 * @return {@code true} if length of arrays matches, treating {@code null}
+	 *         as an empty array
+	 */
+	public static boolean isSameLength(char[] array1, char[] array2) {
+		if ((array1 == null && array2 != null && array2.length > 0)
+				|| (array2 == null && array1 != null && array1.length > 0)
+				|| (array1 != null && array2 != null && array1.length != array2.length)) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * <p>
+	 * Checks whether two arrays are the same length, treating {@code null}
+	 * arrays as length {@code 0}.
+	 * </p>
+	 *
+	 * @param array1
+	 *            the first array, may be {@code null}
+	 * @param array2
+	 *            the second array, may be {@code null}
+	 * @return {@code true} if length of arrays matches, treating {@code null}
+	 *         as an empty array
+	 */
+	public static boolean isSameLength(byte[] array1, byte[] array2) {
+		if ((array1 == null && array2 != null && array2.length > 0)
+				|| (array2 == null && array1 != null && array1.length > 0)
+				|| (array1 != null && array2 != null && array1.length != array2.length)) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * <p>
+	 * Checks whether two arrays are the same length, treating {@code null}
+	 * arrays as length {@code 0}.
+	 * </p>
+	 *
+	 * @param array1
+	 *            the first array, may be {@code null}
+	 * @param array2
+	 *            the second array, may be {@code null}
+	 * @return {@code true} if length of arrays matches, treating {@code null}
+	 *         as an empty array
+	 */
+	public static boolean isSameLength(double[] array1, double[] array2) {
+		if ((array1 == null && array2 != null && array2.length > 0)
+				|| (array2 == null && array1 != null && array1.length > 0)
+				|| (array1 != null && array2 != null && array1.length != array2.length)) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * <p>
+	 * Checks whether two arrays are the same length, treating {@code null}
+	 * arrays as length {@code 0}.
+	 * </p>
+	 *
+	 * @param array1
+	 *            the first array, may be {@code null}
+	 * @param array2
+	 *            the second array, may be {@code null}
+	 * @return {@code true} if length of arrays matches, treating {@code null}
+	 *         as an empty array
+	 */
+	public static boolean isSameLength(float[] array1, float[] array2) {
+		if ((array1 == null && array2 != null && array2.length > 0)
+				|| (array2 == null && array1 != null && array1.length > 0)
+				|| (array1 != null && array2 != null && array1.length != array2.length)) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * <p>
+	 * Checks whether two arrays are the same length, treating {@code null}
+	 * arrays as length {@code 0}.
+	 * </p>
+	 *
+	 * @param array1
+	 *            the first array, may be {@code null}
+	 * @param array2
+	 *            the second array, may be {@code null}
+	 * @return {@code true} if length of arrays matches, treating {@code null}
+	 *         as an empty array
+	 */
+	public static boolean isSameLength(boolean[] array1, boolean[] array2) {
+		if ((array1 == null && array2 != null && array2.length > 0)
+				|| (array2 == null && array1 != null && array1.length > 0)
+				|| (array1 != null && array2 != null && array1.length != array2.length)) {
+			return false;
+		}
+		return true;
+	}
+
+	public static <T> T[] remove(final T[] array, final int index) {
+		return (T[]) remove((Object) array, index);
+	}
+
+	public static <T> T[] removeElement(final T[] array, final Object element) {
+		final int index = indexOf(array, element);
+		if (index == INDEX_NOT_FOUND) {
+			return clone(array);
+		}
+		return remove(array, index);
+	}
+
+	public static boolean[] remove(final boolean[] array, final int index) {
+		return (boolean[]) remove((Object) array, index);
+	}
+
+	public static byte[] remove(final byte[] array, final int index) {
+		return (byte[]) remove((Object) array, index);
+	}
+
+	private static Object remove(final Object array, final int index) {
+		final int length = getLength(array);
+		if (index < 0 || index >= length) {
+			throw new IndexOutOfBoundsException("Index: " + index + ", Length: " + length);
+		}
+
+		final Object result = Array.newInstance(array.getClass().getComponentType(), length - 1);
+		System.arraycopy(array, 0, result, 0, index);
+		if (index < length - 1) {
+			System.arraycopy(array, index + 1, result, index, length - index - 1);
+		}
+
+		return result;
+	}
+
+	public static int getLength(final Object array) {
+		if (array == null) {
+			return 0;
+		}
+		return Array.getLength(array);
 	}
 
 }

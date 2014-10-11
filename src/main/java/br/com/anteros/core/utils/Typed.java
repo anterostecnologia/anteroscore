@@ -15,21 +15,20 @@
  *******************************************************************************/
 package br.com.anteros.core.utils;
 
+import java.lang.reflect.Type;
 
-public class AnterosCoreTranslate extends AbstractCoreTranslate {
-	
-	public AnterosCoreTranslate(String messageBundleName) {
-		super(messageBundleName);
-	}
+/**
+ * Generalization of "has a type."
+ * @see TypeLiteral
+ * @since 3.2
+ * @version $Id: Typed.java 1552659 2013-12-20 13:35:22Z britter $
+ */
+public interface Typed<T> {
 
-	private static AnterosCoreTranslate translate;
-	
-	public static AnterosCoreTranslate getInstance(){
-		if (translate==null){
-			translate = new AnterosCoreTranslate("anteroscore_messages");
-		}
-		return translate;
-	}
-	
-	
+    /**
+     * Get the {@link Type} represented by this entity.
+     * 
+     * @return Type
+     */
+    Type getType();
 }

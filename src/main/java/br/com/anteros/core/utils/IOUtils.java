@@ -1,21 +1,22 @@
 /*******************************************************************************
  * Copyright 2012 Anteros Tecnologia
- * 
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ *******************************************************************************/
 package br.com.anteros.core.utils;
 
 import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -25,6 +26,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.nio.channels.Selector;
 import java.nio.charset.Charset;
 
 public class IOUtils {
@@ -65,7 +69,7 @@ public class IOUtils {
 		copy(input, output);
 		return output.toByteArray();
 	}
-	
+
 	public static String readFileToString(File file, String encoding) throws IOException {
 		return readFileToString(file, (encoding == null ? Charset.defaultCharset() : Charset.forName(encoding)));
 	}
@@ -81,7 +85,6 @@ public class IOUtils {
 					in.close();
 				}
 			} catch (IOException ioe) {
-				// ignore
 			}
 		}
 	}
@@ -103,7 +106,7 @@ public class IOUtils {
 	public static String toString(InputStream input, String encoding) throws IOException {
 		return toString(input, (encoding == null ? Charset.defaultCharset() : Charset.forName(encoding)));
 	}
-	
+
 	public static String toString(InputStream input) throws IOException {
 		return toString(input, Charset.defaultCharset());
 	}
@@ -139,6 +142,54 @@ public class IOUtils {
 			count += n;
 		}
 		return count;
+	}
+
+	public static void closeQuietly(Reader input) {
+		closeQuietly((Closeable) input);
+	}
+
+	public static void closeQuietly(Writer output) {
+		closeQuietly((Closeable) output);
+	}
+
+	public static void closeQuietly(OutputStream output) {
+		closeQuietly((Closeable) output);
+	}
+
+	public static void closeQuietly(Closeable closeable) {
+		try {
+			if (closeable != null) {
+				closeable.close();
+			}
+		} catch (IOException ioe) {
+		}
+	}
+
+	public static void closeQuietly(Socket sock) {
+		if (sock != null) {
+			try {
+				sock.close();
+			} catch (IOException ioe) {
+			}
+		}
+	}
+
+	public static void closeQuietly(Selector selector) {
+		if (selector != null) {
+			try {
+				selector.close();
+			} catch (IOException ioe) {
+			}
+		}
+	}
+
+	public static void closeQuietly(ServerSocket sock) {
+		if (sock != null) {
+			try {
+				sock.close();
+			} catch (IOException ioe) {
+			}
+		}
 	}
 
 }

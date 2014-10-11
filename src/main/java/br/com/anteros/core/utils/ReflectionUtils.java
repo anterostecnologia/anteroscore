@@ -1,23 +1,24 @@
 /*******************************************************************************
  * Copyright 2012 Anteros Tecnologia
- * 
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ *******************************************************************************/
 package br.com.anteros.core.utils;
 
 import java.lang.annotation.Annotation;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -54,6 +55,7 @@ public class ReflectionUtils {
 			.synchronizedMap(new WeakHashMap<Class<?>, Class<?>[]>());
 	private static final Map<Class<?>, Method[]> cacheMethods = Collections
 			.synchronizedMap(new HashMap<Class<?>, Method[]>());
+	private static final int ACCESS_TEST = Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE;
 
 	public static boolean isProperty(Method m, Type boundType) {
 		return ReflectionUtils.isPropertyType(boundType) && !m.isSynthetic() && !m.isBridge()
@@ -1432,6 +1434,314 @@ public class ReflectionUtils {
 			searchType = searchType.getSuperclass();
 		}
 		return null;
+	}
+
+	/**
+	 * <p>
+	 * Returns a new instance of the specified class inferring the right
+	 * constructor from the types of the arguments.
+	 * </p>
+	 * 
+	 * <p>
+	 * This locates and calls a constructor. The constructor signature must
+	 * match the argument types by assignment compatibility.
+	 * </p>
+	 *
+	 * @param <T>
+	 *            the type to be constructed
+	 * @param cls
+	 *            the class to be constructed, not null
+	 * @param args
+	 *            the array of arguments, null treated as empty
+	 * @return new instance of <code>cls</code>, not null
+	 *
+	 * @throws NoSuchMethodException
+	 *             if a matching constructor cannot be found
+	 * @throws IllegalAccessException
+	 *             if invocation is not permitted by security
+	 * @throws InvocationTargetException
+	 *             if an error occurs on invocation
+	 * @throws InstantiationException
+	 *             if an error occurs on instantiation
+	 * @see #invokeConstructor(java.lang.Class, java.lang.Object[],
+	 *      java.lang.Class[])
+	 */
+	public static <T> T invokeConstructor(Class<T> cls, Object... args) throws NoSuchMethodException,
+			IllegalAccessException, InvocationTargetException, InstantiationException {
+		if (args == null) {
+			args = ArrayUtils.EMPTY_OBJECT_ARRAY;
+		}
+		Class<?> parameterTypes[] = new Class[args.length];
+		for (int i = 0; i < args.length; i++) {
+			parameterTypes[i] = args[i].getClass();
+		}
+		return invokeConstructor(cls, args, parameterTypes);
+	}
+
+	/**
+	 * <p>
+	 * Returns a new instance of the specified class choosing the right
+	 * constructor from the list of parameter types.
+	 * </p>
+	 * 
+	 * <p>
+	 * This locates and calls a constructor. The constructor signature must
+	 * match the parameter types by assignment compatibility.
+	 * </p>
+	 *
+	 * @param <T>
+	 *            the type to be constructed
+	 * @param cls
+	 *            the class to be constructed, not null
+	 * @param args
+	 *            the array of arguments, null treated as empty
+	 * @param parameterTypes
+	 *            the array of parameter types, null treated as empty
+	 * @return new instance of <code>cls</code>, not null
+	 *
+	 * @throws NoSuchMethodException
+	 *             if a matching constructor cannot be found
+	 * @throws IllegalAccessException
+	 *             if invocation is not permitted by security
+	 * @throws InvocationTargetException
+	 *             if an error occurs on invocation
+	 * @throws InstantiationException
+	 *             if an error occurs on instantiation
+	 * @see Constructor#newInstance
+	 */
+	public static <T> T invokeConstructor(Class<T> cls, Object[] args, Class<?>[] parameterTypes)
+			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+		if (parameterTypes == null) {
+			parameterTypes = ArrayUtils.EMPTY_CLASS_ARRAY;
+		}
+		if (args == null) {
+			args = ArrayUtils.EMPTY_OBJECT_ARRAY;
+		}
+		Constructor<T> ctor = getMatchingAccessibleConstructor(cls, parameterTypes);
+		if (ctor == null) {
+			throw new NoSuchMethodException("No such accessible constructor on object: " + cls.getName());
+		}
+		return ctor.newInstance(args);
+	}
+
+	/**
+	 * <p>
+	 * Returns a new instance of the specified class inferring the right
+	 * constructor from the types of the arguments.
+	 * </p>
+	 *
+	 * <p>
+	 * This locates and calls a constructor. The constructor signature must
+	 * match the argument types exactly.
+	 * </p>
+	 *
+	 * @param <T>
+	 *            the type to be constructed
+	 * @param cls
+	 *            the class to be constructed, not null
+	 * @param args
+	 *            the array of arguments, null treated as empty
+	 * @return new instance of <code>cls</code>, not null
+	 *
+	 * @throws NoSuchMethodException
+	 *             if a matching constructor cannot be found
+	 * @throws IllegalAccessException
+	 *             if invocation is not permitted by security
+	 * @throws InvocationTargetException
+	 *             if an error occurs on invocation
+	 * @throws InstantiationException
+	 *             if an error occurs on instantiation
+	 * @see #invokeExactConstructor(java.lang.Class, java.lang.Object[],
+	 *      java.lang.Class[])
+	 */
+	public static <T> T invokeExactConstructor(Class<T> cls, Object... args) throws NoSuchMethodException,
+			IllegalAccessException, InvocationTargetException, InstantiationException {
+		if (args == null) {
+			args = ArrayUtils.EMPTY_OBJECT_ARRAY;
+		}
+		int arguments = args.length;
+		Class<?> parameterTypes[] = new Class[arguments];
+		for (int i = 0; i < arguments; i++) {
+			parameterTypes[i] = args[i].getClass();
+		}
+		return invokeExactConstructor(cls, args, parameterTypes);
+	}
+
+	/**
+	 * <p>
+	 * Returns a new instance of the specified class choosing the right
+	 * constructor from the list of parameter types.
+	 * </p>
+	 *
+	 * <p>
+	 * This locates and calls a constructor. The constructor signature must
+	 * match the parameter types exactly.
+	 * </p>
+	 *
+	 * @param <T>
+	 *            the type to be constructed
+	 * @param cls
+	 *            the class to be constructed, not null
+	 * @param args
+	 *            the array of arguments, null treated as empty
+	 * @param parameterTypes
+	 *            the array of parameter types, null treated as empty
+	 * @return new instance of <code>cls</code>, not null
+	 *
+	 * @throws NoSuchMethodException
+	 *             if a matching constructor cannot be found
+	 * @throws IllegalAccessException
+	 *             if invocation is not permitted by security
+	 * @throws InvocationTargetException
+	 *             if an error occurs on invocation
+	 * @throws InstantiationException
+	 *             if an error occurs on instantiation
+	 * @see Constructor#newInstance
+	 */
+	public static <T> T invokeExactConstructor(Class<T> cls, Object[] args, Class<?>[] parameterTypes)
+			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+		if (args == null) {
+			args = ArrayUtils.EMPTY_OBJECT_ARRAY;
+		}
+		if (parameterTypes == null) {
+			parameterTypes = ArrayUtils.EMPTY_CLASS_ARRAY;
+		}
+		Constructor<T> ctor = getAccessibleConstructor(cls, parameterTypes);
+		if (ctor == null) {
+			throw new NoSuchMethodException("No such accessible constructor on object: " + cls.getName());
+		}
+		return ctor.newInstance(args);
+	}
+
+	// -----------------------------------------------------------------------
+	/**
+	 * <p>
+	 * Finds a constructor given a class and signature, checking accessibility.
+	 * </p>
+	 * 
+	 * <p>
+	 * This finds the constructor and ensures that it is accessible. The
+	 * constructor signature must match the parameter types exactly.
+	 * </p>
+	 *
+	 * @param <T>
+	 *            the constructor type
+	 * @param cls
+	 *            the class to find a constructor for, not null
+	 * @param parameterTypes
+	 *            the array of parameter types, null treated as empty
+	 * @return the constructor, null if no matching accessible constructor found
+	 * @see Class#getConstructor
+	 * @see #getAccessibleConstructor(java.lang.reflect.Constructor)
+	 */
+	public static <T> Constructor<T> getAccessibleConstructor(Class<T> cls, Class<?>... parameterTypes) {
+		try {
+			return getAccessibleConstructor(cls.getConstructor(parameterTypes));
+		} catch (NoSuchMethodException e) {
+			return null;
+		}
+	}
+
+	/**
+	 * <p>
+	 * Checks if the specified constructor is accessible.
+	 * </p>
+	 * 
+	 * <p>
+	 * This simply ensures that the constructor is accessible.
+	 * </p>
+	 *
+	 * @param <T>
+	 *            the constructor type
+	 * @param ctor
+	 *            the prototype constructor object, not null
+	 * @return the constructor, null if no matching accessible constructor found
+	 * @see java.lang.SecurityManager
+	 */
+	public static <T> Constructor<T> getAccessibleConstructor(Constructor<T> ctor) {
+		return isAccessible(ctor) && Modifier.isPublic(ctor.getDeclaringClass().getModifiers()) ? ctor : null;
+	}
+
+	public static boolean isAccessible(Member m) {
+		return m != null && Modifier.isPublic(m.getModifiers()) && !m.isSynthetic();
+	}
+
+	/**
+	 * <p>
+	 * Finds an accessible constructor with compatible parameters.
+	 * </p>
+	 * 
+	 * <p>
+	 * This checks all the constructor and finds one with compatible parameters
+	 * This requires that every parameter is assignable from the given parameter
+	 * types. This is a more flexible search than the normal exact matching
+	 * algorithm.
+	 * </p>
+	 *
+	 * <p>
+	 * First it checks if there is a constructor matching the exact signature.
+	 * If not then all the constructors of the class are checked to see if their
+	 * signatures are assignment compatible with the parameter types. The first
+	 * assignment compatible matching constructor is returned.
+	 * </p>
+	 *
+	 * @param <T>
+	 *            the constructor type
+	 * @param cls
+	 *            the class to find a constructor for, not null
+	 * @param parameterTypes
+	 *            find method with compatible parameters
+	 * @return the constructor, null if no matching accessible constructor found
+	 */
+	public static <T> Constructor<T> getMatchingAccessibleConstructor(Class<T> cls, Class<?>... parameterTypes) {
+		try {
+			Constructor<T> ctor = cls.getConstructor(parameterTypes);
+			setAccessibleWorkaround(ctor);
+			return ctor;
+		} catch (NoSuchMethodException e) {
+		}
+		Constructor<T> result = null;
+		Constructor<?>[] ctors = cls.getConstructors();
+
+		for (Constructor<?> ctor : ctors) {
+			if (ClassUtils.isAssignable(parameterTypes, ctor.getParameterTypes(), true)) {
+				ctor = getAccessibleConstructor(ctor);
+				if (ctor != null) {
+					setAccessibleWorkaround(ctor);
+					if (result == null
+							|| compareParameterTypes(ctor.getParameterTypes(), result.getParameterTypes(),
+									parameterTypes) < 0) {
+						@SuppressWarnings("unchecked")
+						Constructor<T> constructor = (Constructor<T>) ctor;
+						result = constructor;
+					}
+				}
+			}
+		}
+		return result;
+	}
+
+	static int compareParameterTypes(Class<?>[] left, Class<?>[] right, Class<?>[] actual) {
+		float leftCost = getTotalTransformationCost(actual, left);
+		float rightCost = getTotalTransformationCost(actual, right);
+		return leftCost < rightCost ? -1 : rightCost < leftCost ? 1 : 0;
+	}
+
+	public static void setAccessibleWorkaround(AccessibleObject o) {
+		if (o == null || o.isAccessible()) {
+			return;
+		}
+		Member m = (Member) o;
+		if (Modifier.isPublic(m.getModifiers()) && isPackageAccess(m.getDeclaringClass().getModifiers())) {
+			try {
+				o.setAccessible(true);
+			} catch (SecurityException e) {
+			}
+		}
+	}
+
+	public static boolean isPackageAccess(int modifiers) {
+		return (modifiers & ACCESS_TEST) == 0;
 	}
 
 }
