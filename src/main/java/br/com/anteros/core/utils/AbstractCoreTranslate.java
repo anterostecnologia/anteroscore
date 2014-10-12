@@ -27,11 +27,28 @@ public abstract class AbstractCoreTranslate {
 
 	protected String bundleName = "";
 	
+	private static AbstractCoreTranslate singleton; 
+    private static AbstractCoreTranslate getInstance() {
+        if ( singleton == null )
+            throw new RuntimeException("Nenhuma implementação de AbstractCoreTranslate foi configurada.");
+
+        return singleton;
+    }    
+
+    public static void setInstance(AbstractCoreTranslate instance) {
+    	AbstractCoreTranslate.singleton = instance;
+    }
+	
+	
 	public AbstractCoreTranslate(String messageBundleName) {
 		this.bundleName = messageBundleName;
 	}
 	
-	public  ResourceBundle getResourceBundle(Locale locale) {
+	public static ResourceBundle getResourceBundle(Locale locale) { 
+        return getInstance().getResourceBundleImpl(locale);
+    }
+	
+	protected  ResourceBundle getResourceBundleImpl(Locale locale) {
 		if (bundleName.equals(""))
 			throw new RuntimeException("Variable bundleName not initialized. Use concrete clazz to translate. ");
 		if (bundles == null)
@@ -49,16 +66,28 @@ public abstract class AbstractCoreTranslate {
 
 		return bundle;
 	}
+	
+	public static  ResourceBundle getResourceBundle() {
+		return getInstance().getResourceBundleImpl(Locale.getDefault());
+	}
 
-	public  ResourceBundle getResourceBundle() {
+	protected  ResourceBundle getResourceBundleImpl() {
 		return getResourceBundle(Locale.getDefault());
 	}
-
-	public  String getMessage(Class<?> clazz, String tag, Object... arguments) {
-		return MessageFormat.format(getMessage(clazz, tag), arguments);
+	
+	public static  String getMessage(Class<?> clazz, String tag, Object... arguments) {
+		return MessageFormat.format(getInstance().getMessageImpl(clazz, tag), arguments);
 	}
 
-	public  String getMessage(Class<?> clazz, String tag) {
-		return getResourceBundle().getString(clazz.getSimpleName() + "." + tag);
+	protected  String getMessageImpl(Class<?> clazz, String tag, Object... arguments) {
+		return MessageFormat.format(getMessageImpl(clazz, tag), arguments);
+	}
+
+	public static  String getMessage(Class<?> clazz, String tag) {
+		return getInstance().getResourceBundleImpl().getString(clazz.getSimpleName() + "." + tag);
+	}
+	
+	protected  String getMessageImpl(Class<?> clazz, String tag) {
+		return getResourceBundleImpl().getString(clazz.getSimpleName() + "." + tag);
 	}
 }

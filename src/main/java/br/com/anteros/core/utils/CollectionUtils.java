@@ -15,6 +15,7 @@
  *******************************************************************************/
 package br.com.anteros.core.utils;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -141,6 +142,20 @@ public final class CollectionUtils {
 
 	public static boolean isEmpty(Map<?, ?> map) {
 		return (map == null || map.isEmpty());
+	}
+	
+	public static <T> ArrayList<T> newArrayList() {
+		return new ArrayList<T>();
+	}
+	
+	public static <T> ArrayList<T> newArrayList(Iterable<T>... iterables) {
+		ArrayList<T> resultList = newArrayList();
+		for ( Iterable<T> oneIterable : iterables ) {
+			for ( T oneElement : oneIterable ) {
+				resultList.add( oneElement );
+			}
+		}
+		return resultList;
 	}
 
 
