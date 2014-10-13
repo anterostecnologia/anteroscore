@@ -38,7 +38,6 @@ public class DateUtil {
 	public static final int DATE = 1;
 	public static final int TIME = 2;
 	public static final int DATE_TIME = 3;
-	public static final String PATTERN_DATA_HORA_DMAH = "dd/MM/yyyy hh:mm:ss";
 
 	public static String getCurrentTimeHMS() {
 		TimeZone timeZone = TimeZone.getTimeZone("GMT-03:00");
