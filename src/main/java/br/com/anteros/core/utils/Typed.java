@@ -15,9 +15,20 @@
  *******************************************************************************/
 package br.com.anteros.core.utils;
 
+import java.lang.reflect.Type;
 
-public class ConnectionUtils {
+/**
+ * Generalization of "has a type."
+ * @see TypeLiteral
+ * @since 3.2
+ * @version $Id: Typed.java 1552659 2013-12-20 13:35:22Z britter $
+ */
+public interface Typed<T> {
 
-
-
+    /**
+     * Get the {@link Type} represented by this entity.
+     * 
+     * @return Type
+     */
+    Type getType();
 }

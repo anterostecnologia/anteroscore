@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright 2012 Anteros Tecnologia
+ *  
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *  
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
 package br.com.anteros.core.utils;
 
 import java.text.MessageFormat;
@@ -12,11 +27,28 @@ public abstract class AbstractCoreTranslate {
 
 	protected String bundleName = "";
 	
+	private static AbstractCoreTranslate singleton; 
+    private static AbstractCoreTranslate getInstance() {
+        if ( singleton == null )
+            throw new RuntimeException("Nenhuma implementação de AbstractCoreTranslate foi configurada.");
+
+        return singleton;
+    }    
+
+    public static void setInstance(AbstractCoreTranslate instance) {
+    	AbstractCoreTranslate.singleton = instance;
+    }
+	
+	
 	public AbstractCoreTranslate(String messageBundleName) {
 		this.bundleName = messageBundleName;
 	}
 	
-	public  ResourceBundle getResourceBundle(Locale locale) {
+	public static ResourceBundle getResourceBundle(Locale locale) { 
+        return getInstance().getResourceBundleImpl(locale);
+    }
+	
+	protected  ResourceBundle getResourceBundleImpl(Locale locale) {
 		if (bundleName.equals(""))
 			throw new RuntimeException("Variable bundleName not initialized. Use concrete clazz to translate. ");
 		if (bundles == null)
@@ -34,16 +66,28 @@ public abstract class AbstractCoreTranslate {
 
 		return bundle;
 	}
+	
+	public static  ResourceBundle getResourceBundle() {
+		return getInstance().getResourceBundleImpl(Locale.getDefault());
+	}
 
-	public  ResourceBundle getResourceBundle() {
+	protected  ResourceBundle getResourceBundleImpl() {
 		return getResourceBundle(Locale.getDefault());
 	}
-
-	public  String getMessage(Class<?> clazz, String tag, Object... arguments) {
-		return MessageFormat.format(getMessage(clazz, tag), arguments);
+	
+	public static  String getMessage(Class<?> clazz, String tag, Object... arguments) {
+		return MessageFormat.format(getInstance().getMessageImpl(clazz, tag), arguments);
 	}
 
-	public  String getMessage(Class<?> clazz, String tag) {
-		return getResourceBundle().getString(clazz.getSimpleName() + "." + tag);
+	protected  String getMessageImpl(Class<?> clazz, String tag, Object... arguments) {
+		return MessageFormat.format(getMessageImpl(clazz, tag), arguments);
+	}
+
+	public static  String getMessage(Class<?> clazz, String tag) {
+		return getInstance().getResourceBundleImpl().getString(clazz.getSimpleName() + "." + tag);
+	}
+	
+	protected  String getMessageImpl(Class<?> clazz, String tag) {
+		return getResourceBundleImpl().getString(clazz.getSimpleName() + "." + tag);
 	}
 }

@@ -1,18 +1,18 @@
 /*******************************************************************************
  * Copyright 2012 Anteros Tecnologia
- * 
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *  
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ *******************************************************************************/
 package br.com.anteros.core.utils;
 
 import java.io.BufferedReader;
@@ -263,44 +263,43 @@ public abstract class StringUtils {
 		sbuf.append(inString.substring(pos));
 		return sbuf.toString();
 	}
-	
 
 	public static String replaceAllWords(String original, String find, String replacement) {
 		return replaceAllWords(original, find, replacement, REPLACE_WORD_DELIMITERS);
 	}
-	
+
 	public static String replaceAllWords(String original, String find, String replacement, String delimiters) {
-	    StringBuilder result = new StringBuilder(original.length());
-	    StringTokenizer st = new StringTokenizer(original, delimiters, true);
-	    while (st.hasMoreTokens()) {
-	        String w = st.nextToken();
-	        if (w.equals(find)) {
-	            result.append(replacement);
-	        } else {
-	            result.append(w);
-	        }
-	    }
-	    return result.toString();
+		StringBuilder result = new StringBuilder(original.length());
+		StringTokenizer st = new StringTokenizer(original, delimiters, true);
+		while (st.hasMoreTokens()) {
+			String w = st.nextToken();
+			if (w.equals(find)) {
+				result.append(replacement);
+			} else {
+				result.append(w);
+			}
+		}
+		return result.toString();
 	}
-	
+
 	public static String replaceFirstWord(String original, String find, String replacement) {
 		return replaceFirstWord(original, find, replacement, REPLACE_WORD_DELIMITERS);
 	}
-	
+
 	public static String replaceFirstWord(String original, String find, String replacement, String delimiters) {
-	    StringBuilder result = new StringBuilder(original.length());
-	    StringTokenizer st = new StringTokenizer(original, delimiters, true);
-	    boolean replaced = false;
-	    while (st.hasMoreTokens()) {
-	        String w = st.nextToken();
-	        if (w.equals(find) && (!replaced)) {
-	            result.append(replacement);
-	            replaced=true;
-	        } else {
-	            result.append(w);
-	        }
-	    }
-	    return result.toString();
+		StringBuilder result = new StringBuilder(original.length());
+		StringTokenizer st = new StringTokenizer(original, delimiters, true);
+		boolean replaced = false;
+		while (st.hasMoreTokens()) {
+			String w = st.nextToken();
+			if (w.equals(find) && (!replaced)) {
+				result.append(replacement);
+				replaced = true;
+			} else {
+				result.append(w);
+			}
+		}
+		return result.toString();
 	}
 
 	public static String delete(String inString, String pattern) {
@@ -668,6 +667,10 @@ public abstract class StringUtils {
 
 	public static boolean isEmpty(Collection<?> coll) {
 		return (coll == null || coll.isEmpty());
+	}
+
+	public static boolean isEmpty(final CharSequence cs) {
+		return cs == null || cs.length() == 0;
 	}
 
 	public static String collectionToDelimitedString(Collection<String> coll, String delim) {
@@ -1375,6 +1378,80 @@ public abstract class StringUtils {
 
 	public static boolean isNotBlank(CharSequence cs) {
 		return !StringUtils.isBlank(cs);
+	}
+
+	public static String deleteWhitespace(String str) {
+		if (isEmpty(str)) {
+			return str;
+		}
+		int sz = str.length();
+		char[] chs = new char[sz];
+		int count = 0;
+		for (int i = 0; i < sz; i++) {
+			if (!Character.isWhitespace(str.charAt(i))) {
+				chs[count++] = str.charAt(i);
+			}
+		}
+		if (count == sz) {
+			return str;
+		}
+		return new String(chs, 0, count);
+	}
+
+	public static boolean containsNone(final CharSequence cs, final char... searchChars) {
+		if (cs == null || searchChars == null) {
+			return true;
+		}
+		final int csLen = cs.length();
+		final int csLast = csLen - 1;
+		final int searchLen = searchChars.length;
+		final int searchLast = searchLen - 1;
+		for (int i = 0; i < csLen; i++) {
+			final char ch = cs.charAt(i);
+			for (int j = 0; j < searchLen; j++) {
+				if (searchChars[j] == ch) {
+					if (Character.isHighSurrogate(ch)) {
+						if (j == searchLast) {
+							return false;
+						}
+						if (i < csLast && searchChars[j + 1] == cs.charAt(i + 1)) {
+							return false;
+						}
+					} else {
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+
+	public static boolean containsAny(final CharSequence cs, final char... searchChars) {
+		if (isEmpty(cs) || ArrayUtils.isEmpty(searchChars)) {
+			return false;
+		}
+		final int csLength = cs.length();
+		final int searchLength = searchChars.length;
+		final int csLast = csLength - 1;
+		final int searchLast = searchLength - 1;
+		for (int i = 0; i < csLength; i++) {
+			final char ch = cs.charAt(i);
+			for (int j = 0; j < searchLength; j++) {
+				if (searchChars[j] == ch) {
+					if (Character.isHighSurrogate(ch)) {
+						if (j == searchLast) {
+							return true;
+						}
+						if (i < csLast && searchChars[j + 1] == cs.charAt(i + 1)) {
+							return true;
+						}
+					} else {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 }
