@@ -45,12 +45,10 @@ public class DateUtil {
 		calendario.setTime(new Date());
 		String horas = String.valueOf(calendario.get(Calendar.HOUR_OF_DAY))
 				+ ':'
-				+ (calendario.get(Calendar.MINUTE) >= 10 ? String
-						.valueOf(calendario.get(Calendar.MINUTE)) : "0"
+				+ (calendario.get(Calendar.MINUTE) >= 10 ? String.valueOf(calendario.get(Calendar.MINUTE)) : "0"
 						+ String.valueOf(calendario.get(Calendar.MINUTE)))
 				+ ":"
-				+ (calendario.get(Calendar.SECOND) >= 10 ? String
-						.valueOf(calendario.get(Calendar.SECOND)) : "0"
+				+ (calendario.get(Calendar.SECOND) >= 10 ? String.valueOf(calendario.get(Calendar.SECOND)) : "0"
 						+ String.valueOf(calendario.get(Calendar.SECOND)));
 		return horas;
 	}
@@ -61,8 +59,7 @@ public class DateUtil {
 		calendario.setTime(new Date());
 		String horas = String.valueOf(calendario.get(Calendar.HOUR_OF_DAY))
 				+ ':'
-				+ (calendario.get(Calendar.MINUTE) >= 10 ? String
-						.valueOf(calendario.get(Calendar.MINUTE)) : "0"
+				+ (calendario.get(Calendar.MINUTE) >= 10 ? String.valueOf(calendario.get(Calendar.MINUTE)) : "0"
 						+ String.valueOf(calendario.get(Calendar.MINUTE)));
 		return horas;
 	}
@@ -71,9 +68,8 @@ public class DateUtil {
 		TimeZone timeZone = TimeZone.getTimeZone("GMT-03:00");
 		Calendar calendario = Calendar.getInstance(timeZone);
 		calendario.setTime(new Date());
-		String data = String.valueOf(calendario.get(Calendar.DAY_OF_MONTH))
-				+ '/' + String.valueOf(calendario.get(Calendar.MONTH) + 1)
-				+ '/' + String.valueOf(calendario.get(Calendar.YEAR));
+		String data = String.valueOf(calendario.get(Calendar.DAY_OF_MONTH)) + '/'
+				+ String.valueOf(calendario.get(Calendar.MONTH) + 1) + '/' + String.valueOf(calendario.get(Calendar.YEAR));
 		return data;
 	}
 
@@ -81,9 +77,8 @@ public class DateUtil {
 		TimeZone timeZone = TimeZone.getTimeZone("GMT-03:00");
 		Calendar calendario = Calendar.getInstance(timeZone);
 		calendario.setTime(new Date());
-		String data = String.valueOf(calendario.get(Calendar.YEAR)) + '/'
-				+ String.valueOf(calendario.get(Calendar.MONTH) + 1) + '/'
-				+ String.valueOf(calendario.get(Calendar.DAY_OF_MONTH));
+		String data = String.valueOf(calendario.get(Calendar.YEAR)) + '/' + String.valueOf(calendario.get(Calendar.MONTH) + 1)
+				+ '/' + String.valueOf(calendario.get(Calendar.DAY_OF_MONTH));
 		return data;
 	}
 
@@ -92,12 +87,10 @@ public class DateUtil {
 		calendario.setTime(new Date());
 		String horas = String.valueOf(calendario.get(Calendar.HOUR_OF_DAY))
 				+ ':'
-				+ (calendario.get(Calendar.MINUTE) >= 10 ? String
-						.valueOf(calendario.get(Calendar.MINUTE)) : "0"
+				+ (calendario.get(Calendar.MINUTE) >= 10 ? String.valueOf(calendario.get(Calendar.MINUTE)) : "0"
 						+ String.valueOf(calendario.get(Calendar.MINUTE)))
 				+ ":"
-				+ (calendario.get(Calendar.SECOND) >= 10 ? String
-						.valueOf(calendario.get(Calendar.SECOND)) : "0"
+				+ (calendario.get(Calendar.SECOND) >= 10 ? String.valueOf(calendario.get(Calendar.SECOND)) : "0"
 						+ String.valueOf(calendario.get(Calendar.SECOND)));
 		return horas;
 	}
@@ -107,8 +100,7 @@ public class DateUtil {
 		calendario.setTime(new Date());
 		String horas = String.valueOf(calendario.get(Calendar.HOUR_OF_DAY))
 				+ ':'
-				+ (calendario.get(Calendar.MINUTE) >= 10 ? String
-						.valueOf(calendario.get(Calendar.MINUTE)) : "0"
+				+ (calendario.get(Calendar.MINUTE) >= 10 ? String.valueOf(calendario.get(Calendar.MINUTE)) : "0"
 						+ String.valueOf(calendario.get(Calendar.MINUTE)));
 		return horas;
 	}
@@ -116,18 +108,16 @@ public class DateUtil {
 	public static String getCurrentDateDMA(TimeZone timeZone) {
 		Calendar calendario = Calendar.getInstance(timeZone);
 		calendario.setTime(new Date());
-		String data = String.valueOf(calendario.get(Calendar.DAY_OF_MONTH))
-				+ '/' + String.valueOf(calendario.get(Calendar.MONTH) + 1)
-				+ '/' + String.valueOf(calendario.get(Calendar.YEAR));
+		String data = String.valueOf(calendario.get(Calendar.DAY_OF_MONTH)) + '/'
+				+ String.valueOf(calendario.get(Calendar.MONTH) + 1) + '/' + String.valueOf(calendario.get(Calendar.YEAR));
 		return data;
 	}
 
 	public static String getCurrentDateAMD(TimeZone timeZone) {
 		Calendar calendario = Calendar.getInstance(timeZone);
 		calendario.setTime(new Date());
-		String data = String.valueOf(calendario.get(Calendar.YEAR)) + '/'
-				+ String.valueOf(calendario.get(Calendar.MONTH) + 1) + '/'
-				+ String.valueOf(calendario.get(Calendar.DAY_OF_MONTH));
+		String data = String.valueOf(calendario.get(Calendar.YEAR)) + '/' + String.valueOf(calendario.get(Calendar.MONTH) + 1)
+				+ '/' + String.valueOf(calendario.get(Calendar.DAY_OF_MONTH));
 		return data;
 	}
 
@@ -138,12 +128,10 @@ public class DateUtil {
 		calendario.setTime(date);
 		String horas = String.valueOf(calendario.get(Calendar.HOUR_OF_DAY))
 				+ ':'
-				+ (calendario.get(Calendar.MINUTE) >= 10 ? String
-						.valueOf(calendario.get(Calendar.MINUTE)) : "0"
+				+ (calendario.get(Calendar.MINUTE) >= 10 ? String.valueOf(calendario.get(Calendar.MINUTE)) : "0"
 						+ String.valueOf(calendario.get(Calendar.MINUTE)))
 				+ ":"
-				+ (calendario.get(Calendar.SECOND) >= 10 ? String
-						.valueOf(calendario.get(Calendar.SECOND)) : "0"
+				+ (calendario.get(Calendar.SECOND) >= 10 ? String.valueOf(calendario.get(Calendar.SECOND)) : "0"
 						+ String.valueOf(calendario.get(Calendar.SECOND)));
 		return horas;
 	}
@@ -155,8 +143,7 @@ public class DateUtil {
 		calendario.setTime(date);
 		String horas = String.valueOf(calendario.get(Calendar.HOUR_OF_DAY))
 				+ ':'
-				+ (calendario.get(Calendar.MINUTE) >= 10 ? String
-						.valueOf(calendario.get(Calendar.MINUTE)) : "0"
+				+ (calendario.get(Calendar.MINUTE) >= 10 ? String.valueOf(calendario.get(Calendar.MINUTE)) : "0"
 						+ String.valueOf(calendario.get(Calendar.MINUTE)));
 		return horas;
 	}
@@ -166,9 +153,8 @@ public class DateUtil {
 			return "";
 		Calendar calendario = Calendar.getInstance();
 		calendario.setTime(date);
-		String data = String.valueOf(calendario.get(Calendar.DAY_OF_MONTH))
-				+ '/' + String.valueOf(calendario.get(Calendar.MONTH) + 1)
-				+ '/' + String.valueOf(calendario.get(Calendar.YEAR));
+		String data = String.valueOf(calendario.get(Calendar.DAY_OF_MONTH)) + '/'
+				+ String.valueOf(calendario.get(Calendar.MONTH) + 1) + '/' + String.valueOf(calendario.get(Calendar.YEAR));
 		return data;
 	}
 
@@ -177,9 +163,8 @@ public class DateUtil {
 			return "";
 		Calendar calendario = Calendar.getInstance();
 		calendario.setTime(date);
-		String data = String.valueOf(calendario.get(Calendar.YEAR)) + '/'
-				+ String.valueOf(calendario.get(Calendar.MONTH) + 1) + '/'
-				+ String.valueOf(calendario.get(Calendar.DAY_OF_MONTH));
+		String data = String.valueOf(calendario.get(Calendar.YEAR)) + '/' + String.valueOf(calendario.get(Calendar.MONTH) + 1)
+				+ '/' + String.valueOf(calendario.get(Calendar.DAY_OF_MONTH));
 		return data;
 	}
 
@@ -190,10 +175,8 @@ public class DateUtil {
 		String stDate = dateString;
 		String stTime = null;
 		if (dateString.indexOf(" ") > 0) {
-			stDate = new String(
-					dateString.substring(0, dateString.indexOf(" ")));
-			stTime = new String(
-					dateString.substring(dateString.indexOf(" ") + 1));
+			stDate = new String(dateString.substring(0, dateString.indexOf(" ")));
+			stTime = new String(dateString.substring(dateString.indexOf(" ") + 1));
 		}
 
 		String[] sDt = split(stDate, '/');
@@ -204,8 +187,7 @@ public class DateUtil {
 
 		if ((type & DATE) != 0) {
 			calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(sDt[0]));
-			calendar.set(Calendar.MONTH, Integer.parseInt(sDt[1]) - 1
-					+ Calendar.JANUARY);
+			calendar.set(Calendar.MONTH, Integer.parseInt(sDt[1]) - 1 + Calendar.JANUARY);
 			calendar.set(Calendar.YEAR, Integer.parseInt(sDt[2]));
 
 			if (type != DATE_TIME || dateString.length() < 11) {
@@ -247,8 +229,7 @@ public class DateUtil {
 		if (pos < dateString.length()) {
 
 			if (dateString.charAt(pos) == '+' || dateString.charAt(pos) == '-') {
-				calendar.setTimeZone(TimeZone.getTimeZone("GMT"
-						+ new String(dateString.substring(pos))));
+				calendar.setTimeZone(TimeZone.getTimeZone("GMT" + new String(dateString.substring(pos))));
 			} else if (dateString.charAt(pos) == 'Z') {
 				calendar.setTimeZone(TimeZone.getTimeZone("GMT"));
 			} else {
@@ -266,10 +247,8 @@ public class DateUtil {
 			String stDate = dateString;
 			String stTime = null;
 			if (dateString.indexOf(" ") > 0) {
-				stDate = new String(dateString.substring(0,
-						dateString.indexOf(" ")));
-				stTime = new String(dateString.substring(dateString
-						.indexOf(" ") + 1));
+				stDate = new String(dateString.substring(0, dateString.indexOf(" ")));
+				stTime = new String(dateString.substring(dateString.indexOf(" ") + 1));
 			}
 
 			String[] sDt = split(stDate, '/');
@@ -278,8 +257,7 @@ public class DateUtil {
 				sTm = split(stTime, ':');
 			}
 			calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(sDt[0]));
-			calendar.set(Calendar.MONTH, Integer.parseInt(sDt[1]) - 1
-					+ Calendar.JANUARY);
+			calendar.set(Calendar.MONTH, Integer.parseInt(sDt[1]) - 1 + Calendar.JANUARY);
 			calendar.set(Calendar.YEAR, Integer.parseInt(sDt[2]));
 			if (sTm != null) {
 				calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(sTm[0]));
@@ -387,6 +365,7 @@ public class DateUtil {
 
 	/**
 	 * Faz o parse de String para Date usando o padrão HH:mm:ss
+	 * 
 	 * @param strTime
 	 * @return
 	 */
@@ -413,7 +392,8 @@ public class DateUtil {
 	}
 
 	/**
-	 * Copia hora, minuto, segundo e milésimo de segundo de um calendario para outro
+	 * Copia hora, minuto, segundo e milésimo de segundo de um calendario para
+	 * outro
 	 */
 	public static void copyTimeStamp(Calendar from, Calendar to) {
 		to.set(Calendar.HOUR_OF_DAY, from.get(Calendar.HOUR_OF_DAY));
@@ -423,7 +403,8 @@ public class DateUtil {
 	}
 
 	/**
-	 * Copia hora, minuto, segundo e milésimo de segundo de um calendario para outro
+	 * Copia hora, minuto, segundo e milésimo de segundo de um calendario para
+	 * outro
 	 */
 	public static void copyDate(Calendar from, Calendar to) {
 		to.set(Calendar.DAY_OF_MONTH, from.get(Calendar.DAY_OF_MONTH));
