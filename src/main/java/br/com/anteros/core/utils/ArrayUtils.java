@@ -16,7 +16,9 @@
 package br.com.anteros.core.utils;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -740,5 +742,32 @@ public class ArrayUtils {
 		}
 		return Array.getLength(array);
 	}
+	
+	public static <T> List<T> asList(T[] array) {
+		ArrayList<T> result = new ArrayList<T>();
+		if (array != null) {
+			for (T o : array) {
+				result.add(o);
+			}
+		}
+		return result;
+	}
+	
+	public static <T> List<T> asImmutableList(T[] array) {
+		return Collections.unmodifiableList(asList(array));
+	}
 
+	public static <T> List<T> asList(T[] array, Class<? extends List> clazz) throws Exception {
+		List<T> result = clazz.newInstance();
+		if (array != null) {
+			for (T o : array) {
+				result.add(o);
+			}
+		}
+		return result;
+	}
+	
+	public static <T> List<T> asImmutableList(T[] array, Class<? extends List> clazz) throws Exception {
+		return Collections.unmodifiableList(asList(array, clazz));
+	}
 }
