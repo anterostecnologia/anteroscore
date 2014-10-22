@@ -48,23 +48,31 @@ public class ReflectionUtils {
 	private static boolean CACHE_METHODS = true;
 	private static final Class<?>[] EMPTY_CLASS_PARAMETERS = new Class<?>[0];
 	private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
-	private static final Map<Object, Object> cache = Collections.synchronizedMap(new HashMap<Object, Object>());
+	private static final Map<Object, Object> cache = Collections
+			.synchronizedMap(new HashMap<Object, Object>());
 	private static final Map<Class<?>, Field[]> cacheFields = Collections
 			.synchronizedMap(new WeakHashMap<Class<?>, Field[]>());
 	private static final Map<Class<?>, Class<?>[]> cacheInterfaces = Collections
 			.synchronizedMap(new WeakHashMap<Class<?>, Class<?>[]>());
 	private static final Map<Class<?>, Method[]> cacheMethods = Collections
 			.synchronizedMap(new HashMap<Class<?>, Method[]>());
-	private static final int ACCESS_TEST = Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE;
+	private static final int ACCESS_TEST = Modifier.PUBLIC | Modifier.PROTECTED
+			| Modifier.PRIVATE;
 
 	public static boolean isProperty(Method m, Type boundType) {
-		return ReflectionUtils.isPropertyType(boundType) && !m.isSynthetic() && !m.isBridge()
-				&& (!Modifier.isStatic(m.getModifiers())) && m.getParameterTypes().length == 0
-				&& (m.getName().startsWith("get") || m.getName().startsWith("is"));
+		return ReflectionUtils.isPropertyType(boundType)
+				&& !m.isSynthetic()
+				&& !m.isBridge()
+				&& (!Modifier.isStatic(m.getModifiers()))
+				&& m.getParameterTypes().length == 0
+				&& (m.getName().startsWith("get") || m.getName().startsWith(
+						"is"));
 	}
 
 	public static boolean isProperty(Field f, Type boundType) {
-		return (!Modifier.isStatic(f.getModifiers())) && (!Modifier.isTransient(f.getModifiers())) && !f.isSynthetic()
+		return (!Modifier.isStatic(f.getModifiers()))
+				&& (!Modifier.isTransient(f.getModifiers()))
+				&& !f.isSynthetic()
 				&& ReflectionUtils.isPropertyType(boundType);
 	}
 
@@ -76,17 +84,21 @@ public class ReflectionUtils {
 		return void.class.equals(type);
 	}
 
-	public static Class<?> getConcreteImplementationFromCollection(Class<?> clazz) {
+	public static Class<?> getConcreteImplementationFromCollection(
+			Class<?> clazz) {
 		if (clazz == List.class)
 			return ArrayList.class;
 		else if (clazz == Map.class)
 			return HashMap.class;
-		throw new RuntimeException("Não foi lozalizada uma implementação concreata para " + clazz.getName());
+		throw new RuntimeException(
+				"Não foi lozalizada uma implementação concreata para "
+						+ clazz.getName());
 	}
 
 	public static boolean isPublicStaticFinal(Field field) {
 		int modifiers = field.getModifiers();
-		return (Modifier.isPublic(modifiers) && Modifier.isStatic(modifiers) && Modifier.isFinal(modifiers));
+		return (Modifier.isPublic(modifiers) && Modifier.isStatic(modifiers) && Modifier
+				.isFinal(modifiers));
 	}
 
 	public static boolean isEqualsMethod(Method method) {
@@ -98,16 +110,19 @@ public class ReflectionUtils {
 	}
 
 	public static boolean isHashCodeMethod(Method method) {
-		return (method != null && method.getName().equals("hashCode") && method.getParameterTypes().length == 0);
+		return (method != null && method.getName().equals("hashCode") && method
+				.getParameterTypes().length == 0);
 	}
 
 	public static boolean isToStringMethod(Method method) {
-		return (method != null && method.getName().equals("toString") && method.getParameterTypes().length == 0);
+		return (method != null && method.getName().equals("toString") && method
+				.getParameterTypes().length == 0);
 	}
 
 	public static boolean isObjectMethod(Method method) {
 		try {
-			Object.class.getDeclaredMethod(method.getName(), method.getParameterTypes());
+			Object.class.getDeclaredMethod(method.getName(),
+					method.getParameterTypes());
 			return true;
 		} catch (SecurityException ex) {
 			return false;
@@ -137,7 +152,8 @@ public class ReflectionUtils {
 		return false;
 	}
 
-	public static Object getObjectByFieldName(Object object, String name) throws Exception {
+	public static Object getObjectByFieldName(Object object, String name)
+			throws Exception {
 		Field field = ReflectionUtils.getFieldByName(object.getClass(), name);
 
 		if (field != null) {
@@ -146,11 +162,14 @@ public class ReflectionUtils {
 		return null;
 	}
 
-	public static void setObjectValueByFieldName(Object object, String name, Object value) throws Exception {
-		ReflectionUtils.setObjectValueByField(object, ReflectionUtils.getFieldByName(object.getClass(), name), value);
+	public static void setObjectValueByFieldName(Object object, String name,
+			Object value) throws Exception {
+		ReflectionUtils.setObjectValueByField(object,
+				ReflectionUtils.getFieldByName(object.getClass(), name), value);
 	}
 
-	public static void setObjectValueByField(Object object, Field field, Object value) throws Exception {
+	public static void setObjectValueByField(Object object, Field field,
+			Object value) throws Exception {
 		if (field != null) {
 			field.setAccessible(true);
 			field.set(object, value);
@@ -190,7 +209,8 @@ public class ReflectionUtils {
 			}
 			List<Method> accum = new LinkedList<Method>();
 			for (Class<?> newSearchClazz : classes) {
-				while ((newSearchClazz != null) && (newSearchClazz != Object.class)) {
+				while ((newSearchClazz != null)
+						&& (newSearchClazz != Object.class)) {
 					Method[] f = newSearchClazz.getDeclaredMethods();
 					for (int i = 0; i < f.length; i++) {
 						accum.add(f[i]);
@@ -223,22 +243,24 @@ public class ReflectionUtils {
 	}
 
 	public static void makeAccessible(Field field) {
-		if ((!Modifier.isPublic(field.getModifiers()) || !Modifier.isPublic(field.getDeclaringClass().getModifiers()) || Modifier
-				.isFinal(field.getModifiers())) && !field.isAccessible()) {
+		if ((!Modifier.isPublic(field.getModifiers())
+				|| !Modifier.isPublic(field.getDeclaringClass().getModifiers()) || Modifier
+					.isFinal(field.getModifiers())) && !field.isAccessible()) {
 			field.setAccessible(true);
 		}
 	}
 
 	public static void makeAccessible(Method method) {
-		if ((!Modifier.isPublic(method.getModifiers()) || !Modifier.isPublic(method.getDeclaringClass().getModifiers()))
+		if ((!Modifier.isPublic(method.getModifiers()) || !Modifier
+				.isPublic(method.getDeclaringClass().getModifiers()))
 				&& !method.isAccessible()) {
 			method.setAccessible(true);
 		}
 	}
 
 	public static void makeAccessible(Constructor<?> ctor) {
-		if ((!Modifier.isPublic(ctor.getModifiers()) || !Modifier.isPublic(ctor.getDeclaringClass().getModifiers()))
-				&& !ctor.isAccessible()) {
+		if ((!Modifier.isPublic(ctor.getModifiers()) || !Modifier.isPublic(ctor
+				.getDeclaringClass().getModifiers())) && !ctor.isAccessible()) {
 			ctor.setAccessible(true);
 		}
 	}
@@ -258,7 +280,8 @@ public class ReflectionUtils {
 	public static Field getFieldByMethodAcessor(Class<?> clazz, Method method) {
 		Field[] fields = getAllDeclaredFields(clazz);
 		for (Field field : fields) {
-			if (method.getName().equals("get" + StringUtils.capitalize(field.getName()))) {
+			if (method.getName().equals(
+					"get" + StringUtils.capitalize(field.getName()))) {
 				field.setAccessible(true);
 				return field;
 			}
@@ -267,10 +290,12 @@ public class ReflectionUtils {
 		return null;
 	}
 
-	public static Field getFieldByMethodAcessor(Class<?> clazz, String methodName) {
+	public static Field getFieldByMethodAcessor(Class<?> clazz,
+			String methodName) {
 		Field[] fields = getAllDeclaredFields(clazz);
 		for (Field field : fields) {
-			if (methodName.equals("get" + StringUtils.capitalize(field.getName()))) {
+			if (methodName.equals("get"
+					+ StringUtils.capitalize(field.getName()))) {
 				field.setAccessible(true);
 				return field;
 			}
@@ -279,13 +304,15 @@ public class ReflectionUtils {
 		return null;
 	}
 
-	public static Object getFieldValue(Object object, Field field) throws SecurityException, IllegalArgumentException,
+	public static Object getFieldValue(Object object, Field field)
+			throws SecurityException, IllegalArgumentException,
 			IllegalAccessException, InvocationTargetException {
 		return field.get(object);
 	}
 
-	public static Object getFieldValueByName(Object object, String name) throws SecurityException,
-			IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+	public static Object getFieldValueByName(Object object, String name)
+			throws SecurityException, IllegalArgumentException,
+			IllegalAccessException, InvocationTargetException {
 		Field field = ReflectionUtils.getFieldByName(object.getClass(), name);
 		if (field != null)
 			return ReflectionUtils.getFieldValue(object, field);
@@ -324,12 +351,18 @@ public class ReflectionUtils {
 			final Method method = methods[i];
 
 			methodName = method.getName();
-			if (!methodName.startsWith("get"))
+			if (!methodName.startsWith("get") && !methodName.startsWith("is"))
 				continue;
 			if (method.getParameterTypes().length != 0)
 				continue;
 
 			name = methodName.substring("get".length()).toLowerCase();
+			if (name.length() == 0)
+				continue;
+			if (field.getName().equalsIgnoreCase(name))
+				return true;
+
+			name = methodName.substring("is".length()).toLowerCase();
 			if (name.length() == 0)
 				continue;
 			if (field.getName().equalsIgnoreCase(name))
@@ -410,15 +443,17 @@ public class ReflectionUtils {
 		return size;
 	}
 
-	public static Object invokeMethod(Object object, String methodName, Object arg) throws NoSuchMethodException,
-			IllegalAccessException, InvocationTargetException {
+	public static Object invokeMethod(Object object, String methodName,
+			Object arg) throws NoSuchMethodException, IllegalAccessException,
+			InvocationTargetException {
 
 		Object[] args = { arg };
 		return invokeMethod(object, methodName, args);
 
 	}
 
-	public static Object invokeMethod(Object object, String methodName, Object[] args) throws NoSuchMethodException,
+	public static Object invokeMethod(Object object, String methodName,
+			Object[] args) throws NoSuchMethodException,
 			IllegalAccessException, InvocationTargetException {
 
 		if (args == null) {
@@ -433,8 +468,10 @@ public class ReflectionUtils {
 
 	}
 
-	public static Object invokeMethod(Object object, String methodName, Object[] args, Class<?>[] parameterTypes)
-			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+	public static Object invokeMethod(Object object, String methodName,
+			Object[] args, Class<?>[] parameterTypes)
+			throws NoSuchMethodException, IllegalAccessException,
+			InvocationTargetException {
 
 		if (parameterTypes == null) {
 			parameterTypes = EMPTY_CLASS_PARAMETERS;
@@ -443,24 +480,28 @@ public class ReflectionUtils {
 			args = EMPTY_OBJECT_ARRAY;
 		}
 
-		Method method = getMatchingAccessibleMethod(object.getClass(), methodName, parameterTypes);
+		Method method = getMatchingAccessibleMethod(object.getClass(),
+				methodName, parameterTypes);
 		if (method == null) {
-			throw new NoSuchMethodException("No such accessible method: " + methodName + "() on object: "
+			throw new NoSuchMethodException("No such accessible method: "
+					+ methodName + "() on object: "
 					+ object.getClass().getName());
 		}
 		return method.invoke(object, args);
 	}
 
-	public static Object invokeExactMethod(Object object, String methodName, Object arg) throws NoSuchMethodException,
-			IllegalAccessException, InvocationTargetException {
+	public static Object invokeExactMethod(Object object, String methodName,
+			Object arg) throws NoSuchMethodException, IllegalAccessException,
+			InvocationTargetException {
 
 		Object[] args = { arg };
 		return invokeExactMethod(object, methodName, args);
 
 	}
 
-	public static Object invokeExactMethod(Object object, String methodName, Object[] args)
-			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+	public static Object invokeExactMethod(Object object, String methodName,
+			Object[] args) throws NoSuchMethodException,
+			IllegalAccessException, InvocationTargetException {
 		if (args == null) {
 			args = EMPTY_OBJECT_ARRAY;
 		}
@@ -473,8 +514,10 @@ public class ReflectionUtils {
 
 	}
 
-	public static Object invokeExactMethod(Object object, String methodName, Object[] args, Class<?>[] parameterTypes)
-			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+	public static Object invokeExactMethod(Object object, String methodName,
+			Object[] args, Class<?>[] parameterTypes)
+			throws NoSuchMethodException, IllegalAccessException,
+			InvocationTargetException {
 
 		if (args == null) {
 			args = EMPTY_OBJECT_ARRAY;
@@ -484,17 +527,21 @@ public class ReflectionUtils {
 			parameterTypes = EMPTY_CLASS_PARAMETERS;
 		}
 
-		Method method = getAccessibleMethod(object.getClass(), methodName, parameterTypes);
+		Method method = getAccessibleMethod(object.getClass(), methodName,
+				parameterTypes);
 		if (method == null) {
-			throw new NoSuchMethodException("No such accessible method: " + methodName + "() on object: "
+			throw new NoSuchMethodException("No such accessible method: "
+					+ methodName + "() on object: "
 					+ object.getClass().getName());
 		}
 		return method.invoke(object, args);
 
 	}
 
-	public static Object invokeExactStaticMethod(Class<?> objectClass, String methodName, Object[] args,
-			Class<?>[] parameterTypes) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+	public static Object invokeExactStaticMethod(Class<?> objectClass,
+			String methodName, Object[] args, Class<?>[] parameterTypes)
+			throws NoSuchMethodException, IllegalAccessException,
+			InvocationTargetException {
 
 		if (args == null) {
 			args = EMPTY_OBJECT_ARRAY;
@@ -504,25 +551,28 @@ public class ReflectionUtils {
 			parameterTypes = EMPTY_CLASS_PARAMETERS;
 		}
 
-		Method method = getAccessibleMethod(objectClass, methodName, parameterTypes);
+		Method method = getAccessibleMethod(objectClass, methodName,
+				parameterTypes);
 		if (method == null) {
-			throw new NoSuchMethodException("No such accessible method: " + methodName + "() on class: "
-					+ objectClass.getName());
+			throw new NoSuchMethodException("No such accessible method: "
+					+ methodName + "() on class: " + objectClass.getName());
 		}
 		return method.invoke(null, args);
 
 	}
 
-	public static Object invokeStaticMethod(Class<?> objectClass, String methodName, Object arg)
-			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+	public static Object invokeStaticMethod(Class<?> objectClass,
+			String methodName, Object arg) throws NoSuchMethodException,
+			IllegalAccessException, InvocationTargetException {
 
 		Object[] args = { arg };
 		return invokeStaticMethod(objectClass, methodName, args);
 
 	}
 
-	public static Object invokeStaticMethod(Class<?> objectClass, String methodName, Object[] args)
-			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+	public static Object invokeStaticMethod(Class<?> objectClass,
+			String methodName, Object[] args) throws NoSuchMethodException,
+			IllegalAccessException, InvocationTargetException {
 
 		if (args == null) {
 			args = EMPTY_OBJECT_ARRAY;
@@ -536,8 +586,10 @@ public class ReflectionUtils {
 
 	}
 
-	public static Object invokeStaticMethod(Class<?> objectClass, String methodName, Object[] args,
-			Class<?>[] parameterTypes) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+	public static Object invokeStaticMethod(Class<?> objectClass,
+			String methodName, Object[] args, Class<?>[] parameterTypes)
+			throws NoSuchMethodException, IllegalAccessException,
+			InvocationTargetException {
 
 		if (parameterTypes == null) {
 			parameterTypes = EMPTY_CLASS_PARAMETERS;
@@ -546,24 +598,27 @@ public class ReflectionUtils {
 			args = EMPTY_OBJECT_ARRAY;
 		}
 
-		Method method = getMatchingAccessibleMethod(objectClass, methodName, parameterTypes);
+		Method method = getMatchingAccessibleMethod(objectClass, methodName,
+				parameterTypes);
 		if (method == null) {
-			throw new NoSuchMethodException("No such accessible method: " + methodName + "() on class: "
-					+ objectClass.getName());
+			throw new NoSuchMethodException("No such accessible method: "
+					+ methodName + "() on class: " + objectClass.getName());
 		}
 		return method.invoke(null, args);
 	}
 
-	public static Object invokeExactStaticMethod(Class<?> objectClass, String methodName, Object arg)
-			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+	public static Object invokeExactStaticMethod(Class<?> objectClass,
+			String methodName, Object arg) throws NoSuchMethodException,
+			IllegalAccessException, InvocationTargetException {
 
 		Object[] args = { arg };
 		return invokeExactStaticMethod(objectClass, methodName, args);
 
 	}
 
-	public static Object invokeExactStaticMethod(Class<?> objectClass, String methodName, Object[] args)
-			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+	public static Object invokeExactStaticMethod(Class<?> objectClass,
+			String methodName, Object[] args) throws NoSuchMethodException,
+			IllegalAccessException, InvocationTargetException {
 		if (args == null) {
 			args = EMPTY_OBJECT_ARRAY;
 		}
@@ -572,24 +627,29 @@ public class ReflectionUtils {
 		for (int i = 0; i < arguments; i++) {
 			parameterTypes[i] = args[i].getClass();
 		}
-		return invokeExactStaticMethod(objectClass, methodName, args, parameterTypes);
+		return invokeExactStaticMethod(objectClass, methodName, args,
+				parameterTypes);
 
 	}
 
-	public static Method getAccessibleMethod(Class<?> clazz, String methodName, Class<?> parameterType) {
+	public static Method getAccessibleMethod(Class<?> clazz, String methodName,
+			Class<?> parameterType) {
 		Class<?>[] parameterTypes = { parameterType };
 		return getAccessibleMethod(clazz, methodName, parameterTypes);
 	}
 
-	public static Method getAccessibleMethod(Class<?> clazz, String methodName, Class<?>... parameterTypes) {
+	public static Method getAccessibleMethod(Class<?> clazz, String methodName,
+			Class<?>... parameterTypes) {
 		try {
-			MethodDescriptor md = new MethodDescriptor(clazz, methodName, parameterTypes, true);
+			MethodDescriptor md = new MethodDescriptor(clazz, methodName,
+					parameterTypes, true);
 			Method method = getCachedMethod(md);
 			if (method != null) {
 				return method;
 			}
 
-			method = getAccessibleMethod(clazz, clazz.getMethod(methodName, parameterTypes));
+			method = getAccessibleMethod(clazz,
+					clazz.getMethod(methodName, parameterTypes));
 			cacheMethod(md, method);
 			return method;
 		} catch (NoSuchMethodException e) {
@@ -618,12 +678,15 @@ public class ReflectionUtils {
 		} else {
 			sameClass = clazz.equals(method.getDeclaringClass());
 			if (!method.getDeclaringClass().isAssignableFrom(clazz)) {
-				throw new IllegalArgumentException(clazz.getName() + " is not assignable from "
+				throw new IllegalArgumentException(clazz.getName()
+						+ " is not assignable from "
 						+ method.getDeclaringClass().getName());
 			}
 		}
 		if (Modifier.isPublic(clazz.getModifiers())) {
-			if (!sameClass && !Modifier.isPublic(method.getDeclaringClass().getModifiers())) {
+			if (!sameClass
+					&& !Modifier.isPublic(method.getDeclaringClass()
+							.getModifiers())) {
 				setMethodAccessible(method);
 			}
 			return (method);
@@ -631,16 +694,19 @@ public class ReflectionUtils {
 
 		String methodName = method.getName();
 		Class<?>[] parameterTypes = method.getParameterTypes();
-		method = getAccessibleMethodFromInterfaceNest(clazz, methodName, parameterTypes);
+		method = getAccessibleMethodFromInterfaceNest(clazz, methodName,
+				parameterTypes);
 		if (method == null) {
-			method = getAccessibleMethodFromSuperclass(clazz, methodName, parameterTypes);
+			method = getAccessibleMethodFromSuperclass(clazz, methodName,
+					parameterTypes);
 		}
 
 		return (method);
 
 	}
 
-	private static Method getAccessibleMethodFromSuperclass(Class<?> clazz, String methodName, Class<?>[] parameterTypes) {
+	private static Method getAccessibleMethodFromSuperclass(Class<?> clazz,
+			String methodName, Class<?>[] parameterTypes) {
 
 		Class<?> parentClazz = clazz.getSuperclass();
 		while (parentClazz != null) {
@@ -656,8 +722,8 @@ public class ReflectionUtils {
 		return null;
 	}
 
-	private static Method getAccessibleMethodFromInterfaceNest(Class<?> clazz, String methodName,
-			Class<?>[] parameterTypes) {
+	private static Method getAccessibleMethodFromInterfaceNest(Class<?> clazz,
+			String methodName, Class<?>[] parameterTypes) {
 
 		Method method = null;
 		for (; clazz != null; clazz = clazz.getSuperclass()) {
@@ -668,13 +734,15 @@ public class ReflectionUtils {
 					continue;
 				}
 				try {
-					method = interfaces[i].getDeclaredMethod(methodName, parameterTypes);
+					method = interfaces[i].getDeclaredMethod(methodName,
+							parameterTypes);
 				} catch (NoSuchMethodException e) {
 				}
 				if (method != null) {
 					return method;
 				}
-				method = getAccessibleMethodFromInterfaceNest(interfaces[i], methodName, parameterTypes);
+				method = getAccessibleMethodFromInterfaceNest(interfaces[i],
+						methodName, parameterTypes);
 				if (method != null) {
 					return method;
 				}
@@ -683,9 +751,11 @@ public class ReflectionUtils {
 		return (null);
 	}
 
-	public static Method getMatchingAccessibleMethod(Class<?> clazz, String methodName, Class<?>[] parameterTypes) {
+	public static Method getMatchingAccessibleMethod(Class<?> clazz,
+			String methodName, Class<?>[] parameterTypes) {
 
-		MethodDescriptor md = new MethodDescriptor(clazz, methodName, parameterTypes, false);
+		MethodDescriptor md = new MethodDescriptor(clazz, methodName,
+				parameterTypes, false);
 
 		try {
 			Method method = getCachedMethod(md);
@@ -712,7 +782,8 @@ public class ReflectionUtils {
 				if (methodParamSize == paramSize) {
 					boolean match = true;
 					for (int n = 0; n < methodParamSize; n++) {
-						if (!isAssignmentCompatible(methodsParams[n], parameterTypes[n])) {
+						if (!isAssignmentCompatible(methodsParams[n],
+								parameterTypes[n])) {
 							match = false;
 							break;
 						}
@@ -722,7 +793,8 @@ public class ReflectionUtils {
 						Method method = getAccessibleMethod(clazz, methods[i]);
 						if (method != null) {
 							setMethodAccessible(method);
-							myCost = getTotalTransformationCost(parameterTypes, method.getParameterTypes());
+							myCost = getTotalTransformationCost(parameterTypes,
+									method.getParameterTypes());
 							if (myCost < bestMatchCost) {
 								bestMatch = method;
 								bestMatchCost = myCost;
@@ -748,10 +820,13 @@ public class ReflectionUtils {
 		} catch (SecurityException se) {
 			if (!loggedAccessibleWarning) {
 				try {
-					String specVersion = System.getProperty("java.specification.version");
+					String specVersion = System
+							.getProperty("java.specification.version");
 					if (specVersion.charAt(0) == '1'
-							&& (specVersion.charAt(2) == '0' || specVersion.charAt(2) == '1'
-									|| specVersion.charAt(2) == '2' || specVersion.charAt(2) == '3')) {
+							&& (specVersion.charAt(2) == '0'
+									|| specVersion.charAt(2) == '1'
+									|| specVersion.charAt(2) == '2' || specVersion
+									.charAt(2) == '3')) {
 					}
 				} catch (SecurityException e) {
 				}
@@ -760,7 +835,8 @@ public class ReflectionUtils {
 		}
 	}
 
-	private static float getTotalTransformationCost(Class<?>[] srcArgs, Class<?>[] destArgs) {
+	private static float getTotalTransformationCost(Class<?>[] srcArgs,
+			Class<?>[] destArgs) {
 
 		float totalCost = 0.0f;
 		for (int i = 0; i < srcArgs.length; i++) {
@@ -773,10 +849,12 @@ public class ReflectionUtils {
 		return totalCost;
 	}
 
-	private static float getObjectTransformationCost(Class<?> srcClass, Class<?> destClass) {
+	private static float getObjectTransformationCost(Class<?> srcClass,
+			Class<?> destClass) {
 		float cost = 0.0f;
 		while (destClass != null && !destClass.equals(srcClass)) {
-			if (destClass.isInterface() && isAssignmentCompatible(destClass, srcClass)) {
+			if (destClass.isInterface()
+					&& isAssignmentCompatible(destClass, srcClass)) {
 				cost += 0.25f;
 				break;
 			}
@@ -791,7 +869,8 @@ public class ReflectionUtils {
 		return cost;
 	}
 
-	public static final boolean isAssignmentCompatible(Class<?> parameterType, Class<?> parameterization) {
+	public static final boolean isAssignmentCompatible(Class<?> parameterType,
+			Class<?> parameterization) {
 		if (parameterType.isAssignableFrom(parameterization)) {
 			return true;
 		}
@@ -852,7 +931,8 @@ public class ReflectionUtils {
 
 	public static Class<?> toNonPrimitiveClass(Class<?> clazz) {
 		if (clazz.isPrimitive()) {
-			Class<?> primitiveClazz = ReflectionUtils.getPrimitiveWrapper(clazz);
+			Class<?> primitiveClazz = ReflectionUtils
+					.getPrimitiveWrapper(clazz);
 			if (primitiveClazz != null) {
 				return primitiveClazz;
 			} else {
@@ -950,7 +1030,8 @@ public class ReflectionUtils {
 		private boolean exact;
 		private int hashCode;
 
-		public MethodDescriptor(Class<?> cls, String methodName, Class<?>[] paramTypes, boolean exact) {
+		public MethodDescriptor(Class<?> cls, String methodName,
+				Class<?>[] paramTypes, boolean exact) {
 			if (cls == null) {
 				throw new IllegalArgumentException("Class cannot be null");
 			}
@@ -975,8 +1056,9 @@ public class ReflectionUtils {
 			}
 			MethodDescriptor md = (MethodDescriptor) obj;
 
-			return (exact == md.exact && methodName.equals(md.methodName) && cls.equals(md.cls) && java.util.Arrays
-					.equals(paramTypes, md.paramTypes));
+			return (exact == md.exact && methodName.equals(md.methodName)
+					&& cls.equals(md.cls) && java.util.Arrays.equals(
+					paramTypes, md.paramTypes));
 		}
 
 		public int hashCode() {
@@ -994,7 +1076,8 @@ public class ReflectionUtils {
 
 	}
 
-	public static boolean isExtendsClass(Class<?> superClass, Class<?> childClass) {
+	public static boolean isExtendsClass(Class<?> superClass,
+			Class<?> childClass) {
 		if (childClass.equals(superClass))
 			return true;
 
@@ -1014,7 +1097,8 @@ public class ReflectionUtils {
 	}
 
 	public static boolean isPublic(Class<?> clazz, Member member) {
-		return Modifier.isPublic(member.getModifiers()) && Modifier.isPublic(clazz.getModifiers());
+		return Modifier.isPublic(member.getModifiers())
+				&& Modifier.isPublic(clazz.getModifiers());
 	}
 
 	public static Method[] getAllMethods(Class<?> objectClass) {
@@ -1030,7 +1114,8 @@ public class ReflectionUtils {
 		return allMethods;
 	}
 
-	public static Method findMethodObject(Class<?> objectClass, String methodName) {
+	public static Method findMethodObject(Class<?> objectClass,
+			String methodName) {
 		Method[] allMethods = getAllMethods(objectClass);
 
 		for (Method method : allMethods) {
@@ -1042,9 +1127,11 @@ public class ReflectionUtils {
 		return null;
 	}
 
-	public static void invokeMethodWithParameterString(Object object, String methodName, String value)
-			throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
-		Method method = ReflectionUtils.findMethodObject(object.getClass(), methodName);
+	public static void invokeMethodWithParameterString(Object object,
+			String methodName, String value) throws IllegalArgumentException,
+			IllegalAccessException, InvocationTargetException {
+		Method method = ReflectionUtils.findMethodObject(object.getClass(),
+				methodName);
 		if (method != null) {
 			if (method.getParameterTypes().length > 0) {
 				if (method.getParameterTypes()[0] == String.class) {
@@ -1066,7 +1153,8 @@ public class ReflectionUtils {
 				} else if (method.getParameterTypes()[0] == int.class) {
 					method.invoke(object, new Integer(value.trim()).intValue());
 				} else if (method.getParameterTypes()[0] == double.class) {
-					method.invoke(object, new Double(value.trim()).doubleValue());
+					method.invoke(object,
+							new Double(value.trim()).doubleValue());
 				} else if (method.getParameterTypes()[0] == float.class) {
 					method.invoke(object, new Float(value.trim()).floatValue());
 				}
@@ -1075,7 +1163,8 @@ public class ReflectionUtils {
 
 	}
 
-	public static int countNumberOfAnnotation(Class<?> sourceClass, Class<? extends Annotation> annotationClass) {
+	public static int countNumberOfAnnotation(Class<?> sourceClass,
+			Class<? extends Annotation> annotationClass) {
 		Field[] fields = getAllDeclaredFields(sourceClass);
 		int countAnnotation = 0;
 		for (Field field : fields) {
@@ -1104,11 +1193,13 @@ public class ReflectionUtils {
 
 	private static final AnnotatedElement EMPTY = new Annotations();
 
-	public static AnnotatedElement getAnnotatedElement(Class<?> beanClass, String propertyName, Class<?> propertyClass) {
+	public static AnnotatedElement getAnnotatedElement(Class<?> beanClass,
+			String propertyName, Class<?> propertyClass) {
 		Field field = getFieldOrNull(beanClass, propertyName);
 		Method method = getGetterOrNull(beanClass, propertyName, propertyClass);
 		if (field == null || field.getAnnotations().length == 0) {
-			return (method != null && method.getAnnotations().length > 0) ? method : EMPTY;
+			return (method != null && method.getAnnotations().length > 0) ? method
+					: EMPTY;
 		} else if (method == null || method.getAnnotations().length == 0) {
 			return field;
 		} else {
@@ -1137,8 +1228,10 @@ public class ReflectionUtils {
 		}
 	}
 
-	public static Method getGetterOrNull(Class<?> beanClass, String name, Class<?> type) {
-		String methodName = ((type.equals(Boolean.class) || type.equals(boolean.class)) ? "is" : "get")
+	public static Method getGetterOrNull(Class<?> beanClass, String name,
+			Class<?> type) {
+		String methodName = ((type.equals(Boolean.class) || type
+				.equals(boolean.class)) ? "is" : "get")
 				+ StringUtils.capitalize(name);
 		while (beanClass != null && !beanClass.equals(Object.class)) {
 			try {
@@ -1152,9 +1245,11 @@ public class ReflectionUtils {
 
 	}
 
-	public static Class classForName(String name, Class caller) throws ClassNotFoundException {
+	public static Class classForName(String name, Class caller)
+			throws ClassNotFoundException {
 		try {
-			ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+			ClassLoader contextClassLoader = Thread.currentThread()
+					.getContextClassLoader();
 			if (contextClassLoader != null) {
 				return contextClassLoader.loadClass(name);
 			}
@@ -1165,7 +1260,8 @@ public class ReflectionUtils {
 
 	public static Class classForName(String name) throws ClassNotFoundException {
 		try {
-			ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+			ClassLoader contextClassLoader = Thread.currentThread()
+					.getContextClassLoader();
 			if (contextClassLoader != null) {
 				return contextClassLoader.loadClass(name);
 			}
@@ -1181,7 +1277,8 @@ public class ReflectionUtils {
 		Type genericType = method.getGenericReturnType();
 		Map<TypeVariable, Type> typeVariableMap = getTypeVariableMap(clazz);
 		Type rawType = getRawType(genericType, typeVariableMap);
-		return (rawType instanceof Class ? (Class) rawType : method.getReturnType());
+		return (rawType instanceof Class ? (Class) rawType : method
+				.getReturnType());
 	}
 
 	public static Class<?> resolveTypeArgument(Class clazz, Class genericIfc) {
@@ -1190,8 +1287,10 @@ public class ReflectionUtils {
 			return null;
 		}
 		if (typeArgs.length != 1) {
-			throw new IllegalArgumentException("Expected 1 type argument on generic interface [" + genericIfc.getName()
-					+ "] but found " + typeArgs.length);
+			throw new IllegalArgumentException(
+					"Expected 1 type argument on generic interface ["
+							+ genericIfc.getName() + "] but found "
+							+ typeArgs.length);
 		}
 		return typeArgs[0];
 	}
@@ -1200,7 +1299,8 @@ public class ReflectionUtils {
 		return doResolveTypeArguments(clazz, clazz, genericIfc);
 	}
 
-	private static Class[] doResolveTypeArguments(Class ownerClass, Class classToIntrospect, Class genericIfc) {
+	private static Class[] doResolveTypeArguments(Class ownerClass,
+			Class classToIntrospect, Class genericIfc) {
 		while (classToIntrospect != null) {
 			Type[] ifcs = classToIntrospect.getGenericInterfaces();
 			for (Type ifc : ifcs) {
@@ -1219,14 +1319,17 @@ public class ReflectionUtils {
 									arg = extractBoundForTypeVariable(tv);
 								}
 							}
-							result[i] = (arg instanceof Class ? (Class) arg : Object.class);
+							result[i] = (arg instanceof Class ? (Class) arg
+									: Object.class);
 						}
 						return result;
 					} else if (genericIfc.isAssignableFrom((Class) rawType)) {
-						return doResolveTypeArguments(ownerClass, (Class) rawType, genericIfc);
+						return doResolveTypeArguments(ownerClass,
+								(Class) rawType, genericIfc);
 					}
 				} else if (genericIfc.isAssignableFrom((Class) ifc)) {
-					return doResolveTypeArguments(ownerClass, (Class) ifc, genericIfc);
+					return doResolveTypeArguments(ownerClass, (Class) ifc,
+							genericIfc);
 				}
 			}
 			classToIntrospect = classToIntrospect.getSuperclass();
@@ -1234,12 +1337,14 @@ public class ReflectionUtils {
 		return null;
 	}
 
-	static Class resolveType(Type genericType, Map<TypeVariable, Type> typeVariableMap) {
+	static Class resolveType(Type genericType,
+			Map<TypeVariable, Type> typeVariableMap) {
 		Type rawType = getRawType(genericType, typeVariableMap);
 		return (rawType instanceof Class ? (Class) rawType : Object.class);
 	}
 
-	static Type getRawType(Type genericType, Map<TypeVariable, Type> typeVariableMap) {
+	static Type getRawType(Type genericType,
+			Map<TypeVariable, Type> typeVariableMap) {
 		Type resolvedType = genericType;
 		if (genericType instanceof TypeVariable) {
 			TypeVariable tv = (TypeVariable) genericType;
@@ -1257,13 +1362,15 @@ public class ReflectionUtils {
 
 	static Map<TypeVariable, Type> getTypeVariableMap(Class clazz) {
 		Reference<Map<TypeVariable, Type>> ref = typeVariableCache.get(clazz);
-		Map<TypeVariable, Type> typeVariableMap = (ref != null ? ref.get() : null);
+		Map<TypeVariable, Type> typeVariableMap = (ref != null ? ref.get()
+				: null);
 
 		if (typeVariableMap == null) {
 			typeVariableMap = new HashMap<TypeVariable, Type>();
 
 			// interfaces
-			extractTypeVariablesFromGenericInterfaces(clazz.getGenericInterfaces(), typeVariableMap);
+			extractTypeVariablesFromGenericInterfaces(
+					clazz.getGenericInterfaces(), typeVariableMap);
 
 			// super class
 			Type genericType = clazz.getGenericSuperclass();
@@ -1273,7 +1380,8 @@ public class ReflectionUtils {
 					ParameterizedType pt = (ParameterizedType) genericType;
 					populateTypeMapFromParameterizedType(pt, typeVariableMap);
 				}
-				extractTypeVariablesFromGenericInterfaces(type.getGenericInterfaces(), typeVariableMap);
+				extractTypeVariablesFromGenericInterfaces(
+						type.getGenericInterfaces(), typeVariableMap);
 				genericType = type.getGenericSuperclass();
 				type = type.getSuperclass();
 			}
@@ -1289,7 +1397,9 @@ public class ReflectionUtils {
 				type = type.getEnclosingClass();
 			}
 
-			typeVariableCache.put(clazz, new WeakReference<Map<TypeVariable, Type>>(typeVariableMap));
+			typeVariableCache
+					.put(clazz, new WeakReference<Map<TypeVariable, Type>>(
+							typeVariableMap));
 		}
 
 		return typeVariableMap;
@@ -1307,28 +1417,31 @@ public class ReflectionUtils {
 		return bound;
 	}
 
-	private static void extractTypeVariablesFromGenericInterfaces(Type[] genericInterfaces,
-			Map<TypeVariable, Type> typeVariableMap) {
+	private static void extractTypeVariablesFromGenericInterfaces(
+			Type[] genericInterfaces, Map<TypeVariable, Type> typeVariableMap) {
 		for (Type genericInterface : genericInterfaces) {
 			if (genericInterface instanceof ParameterizedType) {
 				ParameterizedType pt = (ParameterizedType) genericInterface;
 				populateTypeMapFromParameterizedType(pt, typeVariableMap);
 				if (pt.getRawType() instanceof Class) {
-					extractTypeVariablesFromGenericInterfaces(((Class) pt.getRawType()).getGenericInterfaces(),
+					extractTypeVariablesFromGenericInterfaces(
+							((Class) pt.getRawType()).getGenericInterfaces(),
 							typeVariableMap);
 				}
 			} else if (genericInterface instanceof Class) {
-				extractTypeVariablesFromGenericInterfaces(((Class) genericInterface).getGenericInterfaces(),
+				extractTypeVariablesFromGenericInterfaces(
+						((Class) genericInterface).getGenericInterfaces(),
 						typeVariableMap);
 			}
 		}
 	}
 
-	private static void populateTypeMapFromParameterizedType(ParameterizedType type,
-			Map<TypeVariable, Type> typeVariableMap) {
+	private static void populateTypeMapFromParameterizedType(
+			ParameterizedType type, Map<TypeVariable, Type> typeVariableMap) {
 		if (type.getRawType() instanceof Class) {
 			Type[] actualTypeArguments = type.getActualTypeArguments();
-			TypeVariable[] typeVariables = ((Class) type.getRawType()).getTypeParameters();
+			TypeVariable[] typeVariables = ((Class) type.getRawType())
+					.getTypeParameters();
 			for (int i = 0; i < actualTypeArguments.length; i++) {
 				Type actualTypeArgument = actualTypeArguments[i];
 				TypeVariable variable = typeVariables[i];
@@ -1344,7 +1457,8 @@ public class ReflectionUtils {
 					// the nearest match on the bridge method will be the
 					// bounded type.
 					TypeVariable typeVariableArgument = (TypeVariable) actualTypeArgument;
-					Type resolvedType = typeVariableMap.get(typeVariableArgument);
+					Type resolvedType = typeVariableMap
+							.get(typeVariableArgument);
 					if (resolvedType == null) {
 						resolvedType = extractBoundForTypeVariable(typeVariableArgument);
 					}
@@ -1384,17 +1498,20 @@ public class ReflectionUtils {
 			return field.get(target);
 		} catch (IllegalAccessException ex) {
 			handleReflectionException(ex);
-			throw new IllegalStateException("Unexpected reflection exception - " + ex.getClass().getName() + ": "
-					+ ex.getMessage());
+			throw new IllegalStateException(
+					"Unexpected reflection exception - "
+							+ ex.getClass().getName() + ": " + ex.getMessage());
 		}
 	}
 
 	public static void handleReflectionException(Exception ex) {
 		if (ex instanceof NoSuchMethodException) {
-			throw new IllegalStateException("Method not found: " + ex.getMessage());
+			throw new IllegalStateException("Method not found: "
+					+ ex.getMessage());
 		}
 		if (ex instanceof IllegalAccessException) {
-			throw new IllegalStateException("Could not access method: " + ex.getMessage());
+			throw new IllegalStateException("Could not access method: "
+					+ ex.getMessage());
 		}
 		if (ex instanceof InvocationTargetException) {
 			handleInvocationTargetException((InvocationTargetException) ex);
@@ -1405,7 +1522,8 @@ public class ReflectionUtils {
 		throw new UndeclaredThrowableException(ex);
 	}
 
-	public static void handleInvocationTargetException(InvocationTargetException ex) {
+	public static void handleInvocationTargetException(
+			InvocationTargetException ex) {
 		rethrowRuntimeException(ex.getTargetException());
 	}
 
@@ -1419,15 +1537,18 @@ public class ReflectionUtils {
 		throw new UndeclaredThrowableException(ex);
 	}
 
-	public static Method findMethod(Class<?> clazz, String name, Class<?>... paramTypes) {
+	public static Method findMethod(Class<?> clazz, String name,
+			Class<?>... paramTypes) {
 		Assert.notNull(clazz, "Class must not be null");
 		Assert.notNull(name, "Method name must not be null");
 		Class<?> searchType = clazz;
 		while (searchType != null) {
-			Method[] methods = (searchType.isInterface() ? searchType.getMethods() : getAllDeclaredMethods(searchType));
+			Method[] methods = (searchType.isInterface() ? searchType
+					.getMethods() : getAllDeclaredMethods(searchType));
 			for (Method method : methods) {
 				if (name.equals(method.getName())
-						&& (paramTypes == null || Arrays.equals(paramTypes, method.getParameterTypes()))) {
+						&& (paramTypes == null || Arrays.equals(paramTypes,
+								method.getParameterTypes()))) {
 					return method;
 				}
 			}
@@ -1466,8 +1587,9 @@ public class ReflectionUtils {
 	 * @see #invokeConstructor(java.lang.Class, java.lang.Object[],
 	 *      java.lang.Class[])
 	 */
-	public static <T> T invokeConstructor(Class<T> cls, Object... args) throws NoSuchMethodException,
-			IllegalAccessException, InvocationTargetException, InstantiationException {
+	public static <T> T invokeConstructor(Class<T> cls, Object... args)
+			throws NoSuchMethodException, IllegalAccessException,
+			InvocationTargetException, InstantiationException {
 		if (args == null) {
 			args = ArrayUtils.EMPTY_OBJECT_ARRAY;
 		}
@@ -1509,17 +1631,22 @@ public class ReflectionUtils {
 	 *             if an error occurs on instantiation
 	 * @see Constructor#newInstance
 	 */
-	public static <T> T invokeConstructor(Class<T> cls, Object[] args, Class<?>[] parameterTypes)
-			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+	public static <T> T invokeConstructor(Class<T> cls, Object[] args,
+			Class<?>[] parameterTypes) throws NoSuchMethodException,
+			IllegalAccessException, InvocationTargetException,
+			InstantiationException {
 		if (parameterTypes == null) {
 			parameterTypes = ArrayUtils.EMPTY_CLASS_ARRAY;
 		}
 		if (args == null) {
 			args = ArrayUtils.EMPTY_OBJECT_ARRAY;
 		}
-		Constructor<T> ctor = getMatchingAccessibleConstructor(cls, parameterTypes);
+		Constructor<T> ctor = getMatchingAccessibleConstructor(cls,
+				parameterTypes);
 		if (ctor == null) {
-			throw new NoSuchMethodException("No such accessible constructor on object: " + cls.getName());
+			throw new NoSuchMethodException(
+					"No such accessible constructor on object: "
+							+ cls.getName());
 		}
 		return ctor.newInstance(args);
 	}
@@ -1554,8 +1681,9 @@ public class ReflectionUtils {
 	 * @see #invokeExactConstructor(java.lang.Class, java.lang.Object[],
 	 *      java.lang.Class[])
 	 */
-	public static <T> T invokeExactConstructor(Class<T> cls, Object... args) throws NoSuchMethodException,
-			IllegalAccessException, InvocationTargetException, InstantiationException {
+	public static <T> T invokeExactConstructor(Class<T> cls, Object... args)
+			throws NoSuchMethodException, IllegalAccessException,
+			InvocationTargetException, InstantiationException {
 		if (args == null) {
 			args = ArrayUtils.EMPTY_OBJECT_ARRAY;
 		}
@@ -1598,8 +1726,10 @@ public class ReflectionUtils {
 	 *             if an error occurs on instantiation
 	 * @see Constructor#newInstance
 	 */
-	public static <T> T invokeExactConstructor(Class<T> cls, Object[] args, Class<?>[] parameterTypes)
-			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+	public static <T> T invokeExactConstructor(Class<T> cls, Object[] args,
+			Class<?>[] parameterTypes) throws NoSuchMethodException,
+			IllegalAccessException, InvocationTargetException,
+			InstantiationException {
 		if (args == null) {
 			args = ArrayUtils.EMPTY_OBJECT_ARRAY;
 		}
@@ -1608,7 +1738,9 @@ public class ReflectionUtils {
 		}
 		Constructor<T> ctor = getAccessibleConstructor(cls, parameterTypes);
 		if (ctor == null) {
-			throw new NoSuchMethodException("No such accessible constructor on object: " + cls.getName());
+			throw new NoSuchMethodException(
+					"No such accessible constructor on object: "
+							+ cls.getName());
 		}
 		return ctor.newInstance(args);
 	}
@@ -1634,7 +1766,8 @@ public class ReflectionUtils {
 	 * @see Class#getConstructor
 	 * @see #getAccessibleConstructor(java.lang.reflect.Constructor)
 	 */
-	public static <T> Constructor<T> getAccessibleConstructor(Class<T> cls, Class<?>... parameterTypes) {
+	public static <T> Constructor<T> getAccessibleConstructor(Class<T> cls,
+			Class<?>... parameterTypes) {
 		try {
 			return getAccessibleConstructor(cls.getConstructor(parameterTypes));
 		} catch (NoSuchMethodException e) {
@@ -1658,12 +1791,16 @@ public class ReflectionUtils {
 	 * @return the constructor, null if no matching accessible constructor found
 	 * @see java.lang.SecurityManager
 	 */
-	public static <T> Constructor<T> getAccessibleConstructor(Constructor<T> ctor) {
-		return isAccessible(ctor) && Modifier.isPublic(ctor.getDeclaringClass().getModifiers()) ? ctor : null;
+	public static <T> Constructor<T> getAccessibleConstructor(
+			Constructor<T> ctor) {
+		return isAccessible(ctor)
+				&& Modifier.isPublic(ctor.getDeclaringClass().getModifiers()) ? ctor
+				: null;
 	}
 
 	public static boolean isAccessible(Member m) {
-		return m != null && Modifier.isPublic(m.getModifiers()) && !m.isSynthetic();
+		return m != null && Modifier.isPublic(m.getModifiers())
+				&& !m.isSynthetic();
 	}
 
 	/**
@@ -1693,7 +1830,8 @@ public class ReflectionUtils {
 	 *            find method with compatible parameters
 	 * @return the constructor, null if no matching accessible constructor found
 	 */
-	public static <T> Constructor<T> getMatchingAccessibleConstructor(Class<T> cls, Class<?>... parameterTypes) {
+	public static <T> Constructor<T> getMatchingAccessibleConstructor(
+			Class<T> cls, Class<?>... parameterTypes) {
 		try {
 			Constructor<T> ctor = cls.getConstructor(parameterTypes);
 			setAccessibleWorkaround(ctor);
@@ -1704,13 +1842,14 @@ public class ReflectionUtils {
 		Constructor<?>[] ctors = cls.getConstructors();
 
 		for (Constructor<?> ctor : ctors) {
-			if (ClassUtils.isAssignable(parameterTypes, ctor.getParameterTypes(), true)) {
+			if (ClassUtils.isAssignable(parameterTypes,
+					ctor.getParameterTypes(), true)) {
 				ctor = getAccessibleConstructor(ctor);
 				if (ctor != null) {
 					setAccessibleWorkaround(ctor);
 					if (result == null
-							|| compareParameterTypes(ctor.getParameterTypes(), result.getParameterTypes(),
-									parameterTypes) < 0) {
+							|| compareParameterTypes(ctor.getParameterTypes(),
+									result.getParameterTypes(), parameterTypes) < 0) {
 						@SuppressWarnings("unchecked")
 						Constructor<T> constructor = (Constructor<T>) ctor;
 						result = constructor;
@@ -1721,7 +1860,8 @@ public class ReflectionUtils {
 		return result;
 	}
 
-	static int compareParameterTypes(Class<?>[] left, Class<?>[] right, Class<?>[] actual) {
+	static int compareParameterTypes(Class<?>[] left, Class<?>[] right,
+			Class<?>[] actual) {
 		float leftCost = getTotalTransformationCost(actual, left);
 		float rightCost = getTotalTransformationCost(actual, right);
 		return leftCost < rightCost ? -1 : rightCost < leftCost ? 1 : 0;
@@ -1732,7 +1872,8 @@ public class ReflectionUtils {
 			return;
 		}
 		Member m = (Member) o;
-		if (Modifier.isPublic(m.getModifiers()) && isPackageAccess(m.getDeclaringClass().getModifiers())) {
+		if (Modifier.isPublic(m.getModifiers())
+				&& isPackageAccess(m.getDeclaringClass().getModifiers())) {
 			try {
 				o.setAccessible(true);
 			} catch (SecurityException e) {
