@@ -27,6 +27,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Blob;
 import java.sql.Clob;
+import java.sql.NClob;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -600,8 +601,12 @@ public abstract class ObjectUtils {
 			result = new BigInteger(((BigInteger) source).toByteArray());
 		} else if (source instanceof BigDecimal) {
 			result = new BigDecimal(((BigDecimal) source).toString());
-		} else if (source instanceof Enum) {
-			result = source;
+		} else if (source instanceof Blob) {
+			result =  IOUtils.toByteArray(((Blob)source).getBinaryStream());
+		} else if (source instanceof Clob) {
+			result = IOUtils.toByteArray(((Blob)source).getBinaryStream());
+		} else if (source instanceof NClob) {
+			result = IOUtils.toByteArray(((Blob)source).getBinaryStream());
 		} else if (source instanceof byte[]) {
 			result = source;
 		} else if (source instanceof Map) {
@@ -677,6 +682,9 @@ public abstract class ObjectUtils {
 
 	public static Object convert(Object value, Class<?> type) throws Exception {
 		if (value instanceof Clob) {
+			if (type == Clob.class)
+				return value;
+
 			Clob lob = ((Clob) value);
 			String s = lob.getSubString(new Long(1).longValue(), (int) lob.length());
 			if (type == char[].class) {
@@ -690,7 +698,26 @@ public abstract class ObjectUtils {
 			} else if (type == Byte[].class) {
 				return ArrayUtils.toObject(s.getBytes());
 			}
+		} else if (value instanceof NClob) {
+			if (type == NClob.class)
+				return value;
+
+			NClob lob = ((NClob) value);
+			String s = lob.getSubString(new Long(1).longValue(), (int) lob.length());
+			if (type == char[].class) {
+				return s.toCharArray();
+			} else if (type == Character[].class) {
+				return ArrayUtils.toObject(s.toCharArray());
+			} else if (type == String.class) {
+				return s;
+			} else if (type == byte[].class) {
+				return s.getBytes();
+			} else if (type == Byte[].class) {
+				return ArrayUtils.toObject(s.getBytes());
+			}
 		} else if (value instanceof Blob) {
+			if (type == Blob.class)
+				return value;
 			InputStream in = ((Blob) value).getBinaryStream();
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			byte[] buf = new byte[1024];
@@ -771,19 +798,19 @@ public abstract class ObjectUtils {
 			chars[i] = new Character(c[i]);
 		return chars;
 	}
-	
+
 	public static <T> T defaultIfNull(T object, T defaultValue) {
-        return object != null ? object : defaultValue;
-    }
-	
+		return object != null ? object : defaultValue;
+	}
+
 	public static boolean equals(Object object1, Object object2) {
-        if (object1 == object2) {
-            return true;
-        }
-        if ((object1 == null) || (object2 == null)) {
-            return false;
-        }
-        return object1.equals(object2);
-    }
+		if (object1 == object2) {
+			return true;
+		}
+		if ((object1 == null) || (object2 == null)) {
+			return false;
+		}
+		return object1.equals(object2);
+	}
 
 }
