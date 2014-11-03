@@ -628,6 +628,8 @@ public abstract class ObjectUtils {
 			}
 		} else if (source instanceof Date) {
 			result = new Date(((Date) source).getTime());
+		} else if (source instanceof Enum) {
+			result = new String(((Enum)source).name());
 		}
 
 		return result;
