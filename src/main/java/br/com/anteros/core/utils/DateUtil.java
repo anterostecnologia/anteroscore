@@ -28,16 +28,34 @@ import java.util.TimeZone;
  */
 public class DateUtil {
 
-	public static int DOMINGO = Calendar.SUNDAY;
-	public static int SEGUNDA = Calendar.MONDAY;
-	public static int TERCA = Calendar.TUESDAY;
-	public static int QUARTA = Calendar.WEDNESDAY;
-	public static int QUINTA = Calendar.THURSDAY;
-	public static int SEXTA = Calendar.FRIDAY;
-	public static int SABADO = Calendar.SATURDAY;
+	public static int SUNDAY = Calendar.SUNDAY;
+	public static int MONDAY = Calendar.MONDAY;
+	public static int TUESDAY = Calendar.TUESDAY;
+	public static int WEDNESDAY = Calendar.WEDNESDAY;
+	public static int THURSDAY = Calendar.THURSDAY;
+	public static int FRIDAY = Calendar.FRIDAY;
+	public static int SATURDAY = Calendar.SATURDAY;
+
 	public static final int DATE = 1;
 	public static final int TIME = 2;
 	public static final int DATE_TIME = 3;
+
+	private static final int MODIFY_TRUNCATE = 0;
+	private static final int MODIFY_ROUND = 1;
+	private static final int MODIFY_CEILING = 2;
+
+	public static final int SEMI_MONTH = 1001;
+
+	private static final int[][] fields = { { Calendar.MILLISECOND },
+			{ Calendar.SECOND }, { Calendar.MINUTE },
+			{ Calendar.HOUR_OF_DAY, Calendar.HOUR },
+			{ Calendar.DATE, Calendar.DAY_OF_MONTH, Calendar.AM_PM
+			/*
+			 * Calendar.DAY_OF_YEAR, Calendar.DAY_OF_WEEK,
+			 * Calendar.DAY_OF_WEEK_IN_MONTH
+			 */
+			}, { Calendar.MONTH, DateUtil.SEMI_MONTH }, { Calendar.YEAR },
+			{ Calendar.ERA } };
 
 	public static String getCurrentTimeHMS() {
 		TimeZone timeZone = TimeZone.getTimeZone("GMT-03:00");
@@ -45,10 +63,12 @@ public class DateUtil {
 		calendario.setTime(new Date());
 		String horas = String.valueOf(calendario.get(Calendar.HOUR_OF_DAY))
 				+ ':'
-				+ (calendario.get(Calendar.MINUTE) >= 10 ? String.valueOf(calendario.get(Calendar.MINUTE)) : "0"
+				+ (calendario.get(Calendar.MINUTE) >= 10 ? String
+						.valueOf(calendario.get(Calendar.MINUTE)) : "0"
 						+ String.valueOf(calendario.get(Calendar.MINUTE)))
 				+ ":"
-				+ (calendario.get(Calendar.SECOND) >= 10 ? String.valueOf(calendario.get(Calendar.SECOND)) : "0"
+				+ (calendario.get(Calendar.SECOND) >= 10 ? String
+						.valueOf(calendario.get(Calendar.SECOND)) : "0"
 						+ String.valueOf(calendario.get(Calendar.SECOND)));
 		return horas;
 	}
@@ -59,7 +79,8 @@ public class DateUtil {
 		calendario.setTime(new Date());
 		String horas = String.valueOf(calendario.get(Calendar.HOUR_OF_DAY))
 				+ ':'
-				+ (calendario.get(Calendar.MINUTE) >= 10 ? String.valueOf(calendario.get(Calendar.MINUTE)) : "0"
+				+ (calendario.get(Calendar.MINUTE) >= 10 ? String
+						.valueOf(calendario.get(Calendar.MINUTE)) : "0"
 						+ String.valueOf(calendario.get(Calendar.MINUTE)));
 		return horas;
 	}
@@ -68,8 +89,9 @@ public class DateUtil {
 		TimeZone timeZone = TimeZone.getTimeZone("GMT-03:00");
 		Calendar calendario = Calendar.getInstance(timeZone);
 		calendario.setTime(new Date());
-		String data = String.valueOf(calendario.get(Calendar.DAY_OF_MONTH)) + '/'
-				+ String.valueOf(calendario.get(Calendar.MONTH) + 1) + '/' + String.valueOf(calendario.get(Calendar.YEAR));
+		String data = String.valueOf(calendario.get(Calendar.DAY_OF_MONTH))
+				+ '/' + String.valueOf(calendario.get(Calendar.MONTH) + 1)
+				+ '/' + String.valueOf(calendario.get(Calendar.YEAR));
 		return data;
 	}
 
@@ -77,8 +99,9 @@ public class DateUtil {
 		TimeZone timeZone = TimeZone.getTimeZone("GMT-03:00");
 		Calendar calendario = Calendar.getInstance(timeZone);
 		calendario.setTime(new Date());
-		String data = String.valueOf(calendario.get(Calendar.YEAR)) + '/' + String.valueOf(calendario.get(Calendar.MONTH) + 1)
-				+ '/' + String.valueOf(calendario.get(Calendar.DAY_OF_MONTH));
+		String data = String.valueOf(calendario.get(Calendar.YEAR)) + '/'
+				+ String.valueOf(calendario.get(Calendar.MONTH) + 1) + '/'
+				+ String.valueOf(calendario.get(Calendar.DAY_OF_MONTH));
 		return data;
 	}
 
@@ -87,10 +110,12 @@ public class DateUtil {
 		calendario.setTime(new Date());
 		String horas = String.valueOf(calendario.get(Calendar.HOUR_OF_DAY))
 				+ ':'
-				+ (calendario.get(Calendar.MINUTE) >= 10 ? String.valueOf(calendario.get(Calendar.MINUTE)) : "0"
+				+ (calendario.get(Calendar.MINUTE) >= 10 ? String
+						.valueOf(calendario.get(Calendar.MINUTE)) : "0"
 						+ String.valueOf(calendario.get(Calendar.MINUTE)))
 				+ ":"
-				+ (calendario.get(Calendar.SECOND) >= 10 ? String.valueOf(calendario.get(Calendar.SECOND)) : "0"
+				+ (calendario.get(Calendar.SECOND) >= 10 ? String
+						.valueOf(calendario.get(Calendar.SECOND)) : "0"
 						+ String.valueOf(calendario.get(Calendar.SECOND)));
 		return horas;
 	}
@@ -100,7 +125,8 @@ public class DateUtil {
 		calendario.setTime(new Date());
 		String horas = String.valueOf(calendario.get(Calendar.HOUR_OF_DAY))
 				+ ':'
-				+ (calendario.get(Calendar.MINUTE) >= 10 ? String.valueOf(calendario.get(Calendar.MINUTE)) : "0"
+				+ (calendario.get(Calendar.MINUTE) >= 10 ? String
+						.valueOf(calendario.get(Calendar.MINUTE)) : "0"
 						+ String.valueOf(calendario.get(Calendar.MINUTE)));
 		return horas;
 	}
@@ -108,16 +134,18 @@ public class DateUtil {
 	public static String getCurrentDateDMA(TimeZone timeZone) {
 		Calendar calendario = Calendar.getInstance(timeZone);
 		calendario.setTime(new Date());
-		String data = String.valueOf(calendario.get(Calendar.DAY_OF_MONTH)) + '/'
-				+ String.valueOf(calendario.get(Calendar.MONTH) + 1) + '/' + String.valueOf(calendario.get(Calendar.YEAR));
+		String data = String.valueOf(calendario.get(Calendar.DAY_OF_MONTH))
+				+ '/' + String.valueOf(calendario.get(Calendar.MONTH) + 1)
+				+ '/' + String.valueOf(calendario.get(Calendar.YEAR));
 		return data;
 	}
 
 	public static String getCurrentDateAMD(TimeZone timeZone) {
 		Calendar calendario = Calendar.getInstance(timeZone);
 		calendario.setTime(new Date());
-		String data = String.valueOf(calendario.get(Calendar.YEAR)) + '/' + String.valueOf(calendario.get(Calendar.MONTH) + 1)
-				+ '/' + String.valueOf(calendario.get(Calendar.DAY_OF_MONTH));
+		String data = String.valueOf(calendario.get(Calendar.YEAR)) + '/'
+				+ String.valueOf(calendario.get(Calendar.MONTH) + 1) + '/'
+				+ String.valueOf(calendario.get(Calendar.DAY_OF_MONTH));
 		return data;
 	}
 
@@ -128,10 +156,12 @@ public class DateUtil {
 		calendario.setTime(date);
 		String horas = String.valueOf(calendario.get(Calendar.HOUR_OF_DAY))
 				+ ':'
-				+ (calendario.get(Calendar.MINUTE) >= 10 ? String.valueOf(calendario.get(Calendar.MINUTE)) : "0"
+				+ (calendario.get(Calendar.MINUTE) >= 10 ? String
+						.valueOf(calendario.get(Calendar.MINUTE)) : "0"
 						+ String.valueOf(calendario.get(Calendar.MINUTE)))
 				+ ":"
-				+ (calendario.get(Calendar.SECOND) >= 10 ? String.valueOf(calendario.get(Calendar.SECOND)) : "0"
+				+ (calendario.get(Calendar.SECOND) >= 10 ? String
+						.valueOf(calendario.get(Calendar.SECOND)) : "0"
 						+ String.valueOf(calendario.get(Calendar.SECOND)));
 		return horas;
 	}
@@ -143,7 +173,8 @@ public class DateUtil {
 		calendario.setTime(date);
 		String horas = String.valueOf(calendario.get(Calendar.HOUR_OF_DAY))
 				+ ':'
-				+ (calendario.get(Calendar.MINUTE) >= 10 ? String.valueOf(calendario.get(Calendar.MINUTE)) : "0"
+				+ (calendario.get(Calendar.MINUTE) >= 10 ? String
+						.valueOf(calendario.get(Calendar.MINUTE)) : "0"
 						+ String.valueOf(calendario.get(Calendar.MINUTE)));
 		return horas;
 	}
@@ -153,8 +184,9 @@ public class DateUtil {
 			return "";
 		Calendar calendario = Calendar.getInstance();
 		calendario.setTime(date);
-		String data = String.valueOf(calendario.get(Calendar.DAY_OF_MONTH)) + '/'
-				+ String.valueOf(calendario.get(Calendar.MONTH) + 1) + '/' + String.valueOf(calendario.get(Calendar.YEAR));
+		String data = String.valueOf(calendario.get(Calendar.DAY_OF_MONTH))
+				+ '/' + String.valueOf(calendario.get(Calendar.MONTH) + 1)
+				+ '/' + String.valueOf(calendario.get(Calendar.YEAR));
 		return data;
 	}
 
@@ -163,8 +195,9 @@ public class DateUtil {
 			return "";
 		Calendar calendario = Calendar.getInstance();
 		calendario.setTime(date);
-		String data = String.valueOf(calendario.get(Calendar.YEAR)) + '/' + String.valueOf(calendario.get(Calendar.MONTH) + 1)
-				+ '/' + String.valueOf(calendario.get(Calendar.DAY_OF_MONTH));
+		String data = String.valueOf(calendario.get(Calendar.YEAR)) + '/'
+				+ String.valueOf(calendario.get(Calendar.MONTH) + 1) + '/'
+				+ String.valueOf(calendario.get(Calendar.DAY_OF_MONTH));
 		return data;
 	}
 
@@ -175,8 +208,10 @@ public class DateUtil {
 		String stDate = dateString;
 		String stTime = null;
 		if (dateString.indexOf(" ") > 0) {
-			stDate = new String(dateString.substring(0, dateString.indexOf(" ")));
-			stTime = new String(dateString.substring(dateString.indexOf(" ") + 1));
+			stDate = new String(
+					dateString.substring(0, dateString.indexOf(" ")));
+			stTime = new String(
+					dateString.substring(dateString.indexOf(" ") + 1));
 		}
 
 		String[] sDt = split(stDate, '/');
@@ -187,7 +222,8 @@ public class DateUtil {
 
 		if ((type & DATE) != 0) {
 			calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(sDt[0]));
-			calendar.set(Calendar.MONTH, Integer.parseInt(sDt[1]) - 1 + Calendar.JANUARY);
+			calendar.set(Calendar.MONTH, Integer.parseInt(sDt[1]) - 1
+					+ Calendar.JANUARY);
 			calendar.set(Calendar.YEAR, Integer.parseInt(sDt[2]));
 
 			if (type != DATE_TIME || dateString.length() < 11) {
@@ -229,7 +265,8 @@ public class DateUtil {
 		if (pos < dateString.length()) {
 
 			if (dateString.charAt(pos) == '+' || dateString.charAt(pos) == '-') {
-				calendar.setTimeZone(TimeZone.getTimeZone("GMT" + new String(dateString.substring(pos))));
+				calendar.setTimeZone(TimeZone.getTimeZone("GMT"
+						+ new String(dateString.substring(pos))));
 			} else if (dateString.charAt(pos) == 'Z') {
 				calendar.setTimeZone(TimeZone.getTimeZone("GMT"));
 			} else {
@@ -247,8 +284,10 @@ public class DateUtil {
 			String stDate = dateString;
 			String stTime = null;
 			if (dateString.indexOf(" ") > 0) {
-				stDate = new String(dateString.substring(0, dateString.indexOf(" ")));
-				stTime = new String(dateString.substring(dateString.indexOf(" ") + 1));
+				stDate = new String(dateString.substring(0,
+						dateString.indexOf(" ")));
+				stTime = new String(dateString.substring(dateString
+						.indexOf(" ") + 1));
 			}
 
 			String[] sDt = split(stDate, '/');
@@ -257,7 +296,8 @@ public class DateUtil {
 				sTm = split(stTime, ':');
 			}
 			calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(sDt[0]));
-			calendar.set(Calendar.MONTH, Integer.parseInt(sDt[1]) - 1 + Calendar.JANUARY);
+			calendar.set(Calendar.MONTH, Integer.parseInt(sDt[1]) - 1
+					+ Calendar.JANUARY);
 			calendar.set(Calendar.YEAR, Integer.parseInt(sDt[2]));
 			if (sTm != null) {
 				calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(sTm[0]));
@@ -334,7 +374,8 @@ public class DateUtil {
 	 * @return
 	 */
 	public static long getIntervalInMilliseconds(String strTime, String strTime2) {
-		return getIntervalInMilliseconds(stringTimeToDate(strTime), stringTimeToDate(strTime2));
+		return getIntervalInMilliseconds(stringTimeToDate(strTime),
+				stringTimeToDate(strTime2));
 	}
 
 	public static long getIntervalInMilliseconds(Date time, Date time2) {
@@ -410,6 +451,287 @@ public class DateUtil {
 		to.set(Calendar.DAY_OF_MONTH, from.get(Calendar.DAY_OF_MONTH));
 		to.set(Calendar.MONTH, from.get(Calendar.MONTH));
 		to.set(Calendar.YEAR, from.get(Calendar.YEAR));
+	}
+
+	/**
+	 * Copia hora, minuto, segundo e milésimo de segundo de uma data para outro
+	 */
+	public static Date copyTimeStamp(Date from, Date to) {
+		Calendar cFrom = Calendar.getInstance();
+		cFrom.setTime(from);
+		Calendar cTo = Calendar.getInstance();
+		cTo.setTime(to);
+		copyTimeStamp(cFrom, cTo);
+		return cTo.getTime();
+	}
+
+	/*
+	 * Compara dois calendários de acordo com o tipo de field informado
+	 */
+	public static int truncatedCompareTo(final Calendar cal1,
+			final Calendar cal2, final int field) {
+		final Calendar truncatedCal1 = truncate(cal1, field);
+		final Calendar truncatedCal2 = truncate(cal2, field);
+		return truncatedCal1.compareTo(truncatedCal2);
+	}
+
+	/*
+	 * Compara duas datas de acordo com o tipo de field informado
+	 */
+	public static int truncatedCompareTo(final Date date1, final Date date2,
+			final int field) {
+		final Date truncatedDate1 = truncate(date1, field);
+		final Date truncatedDate2 = truncate(date2, field);
+		return truncatedDate1.compareTo(truncatedDate2);
+	}
+
+	/*
+	 * Trunca uma data, deixando o campo especificado como o campo mais
+	 * significativo
+	 */
+	public static Date truncate(final Date date, final int field) {
+		if (date == null) {
+			throw new IllegalArgumentException("The date must not be null");
+		}
+		final Calendar gval = Calendar.getInstance();
+		gval.setTime(date);
+		modify(gval, field, MODIFY_TRUNCATE);
+		return gval.getTime();
+
+	}
+
+	/*
+	 * Trunca uma calendário, deixando o campo especificado como o campo mais
+	 * significativa
+	 */
+	public static Calendar truncate(final Calendar date, final int field) {
+		if (date == null) {
+			throw new IllegalArgumentException("The date must not be null");
+		}
+		final Calendar truncated = (Calendar) date.clone();
+		modify(truncated, field, MODIFY_TRUNCATE);
+		return truncated;
+	}
+
+	/*
+	 * Trunca um objeto, deixando o campo especificado como o campo mais
+	 * significativa
+	 */
+	public static Date truncate(final Object date, final int field) {
+		if (date == null) {
+			throw new IllegalArgumentException("The date must not be null");
+		}
+		if (date instanceof Date) {
+			return truncate((Date) date, field);
+		} else if (date instanceof Calendar) {
+			return truncate((Calendar) date, field).getTime();
+		} else {
+			throw new ClassCastException("Could not truncate " + date);
+		}
+	}
+
+	/*
+	 * Determina se dois calendários são iguais até não mais do que o campo mais
+	 * significativo especificado.
+	 */
+	public static boolean truncatedEquals(final Calendar cal1,
+			final Calendar cal2, final int field) {
+		return truncatedCompareTo(cal1, cal2, field) == 0;
+	}
+
+	/*
+	 * Determina se duas datas são iguais até não mais do que o campo mais
+	 * significativo especificado.
+	 */
+	public static boolean truncatedEquals(final Date date1, final Date date2,
+			final int field) {
+		return truncatedCompareTo(date1, date2, field) == 0;
+	}
+
+	/*
+	 * Determina se uma data está entre um período informado
+	 */
+	public static boolean dateBetween(final Date date, final Date datePeriod1,
+			final Date datePeriod2) {
+		if (date != null && datePeriod1 != null && datePeriod2 != null)
+			return date.compareTo(datePeriod1) >= 0
+					&& date.compareTo(datePeriod2) <= 0;
+		return false;
+	}
+
+	public static boolean dateBetween(final Calendar date,
+			final Calendar datePeriod1, final Calendar datePeriod2) {
+		if (date != null && datePeriod1 != null && datePeriod2 != null)
+			return dateBetween(date.getTime(), datePeriod1.getTime(),
+					datePeriod2.getTime());
+		return false;
+	}
+
+	/**
+	 * <p>
+	 * Internal calculation method.
+	 * </p>
+	 * 
+	 * @param val
+	 *            the calendar, not null
+	 * @param field
+	 *            the field constant
+	 * @param modType
+	 *            type to truncate, round or ceiling
+	 * @throws ArithmeticException
+	 *             if the year is over 280 million
+	 */
+	private static void modify(final Calendar val, final int field,
+			final int modType) {
+		if (val.get(Calendar.YEAR) > 280000000) {
+			throw new ArithmeticException(
+					"Calendar value too large for accurate calculations");
+		}
+
+		if (field == Calendar.MILLISECOND) {
+			return;
+		}
+
+		// ----------------- Fix for LANG-59 ---------------------- START
+		// ---------------
+		// see http://issues.apache.org/jira/browse/LANG-59
+		//
+		// Manually truncate milliseconds, seconds and minutes, rather than
+		// using
+		// Calendar methods.
+
+		final Date date = val.getTime();
+		long time = date.getTime();
+		boolean done = false;
+
+		// truncate milliseconds
+		final int millisecs = val.get(Calendar.MILLISECOND);
+		if (MODIFY_TRUNCATE == modType || millisecs < 500) {
+			time = time - millisecs;
+		}
+		if (field == Calendar.SECOND) {
+			done = true;
+		}
+
+		// truncate seconds
+		final int seconds = val.get(Calendar.SECOND);
+		if (!done && (MODIFY_TRUNCATE == modType || seconds < 30)) {
+			time = time - (seconds * 1000L);
+		}
+		if (field == Calendar.MINUTE) {
+			done = true;
+		}
+
+		// truncate minutes
+		final int minutes = val.get(Calendar.MINUTE);
+		if (!done && (MODIFY_TRUNCATE == modType || minutes < 30)) {
+			time = time - (minutes * 60000L);
+		}
+
+		// reset time
+		if (date.getTime() != time) {
+			date.setTime(time);
+			val.setTime(date);
+		}
+		// ----------------- Fix for LANG-59 ----------------------- END
+		// ----------------
+
+		boolean roundUp = false;
+		for (final int[] aField : fields) {
+			for (final int element : aField) {
+				if (element == field) {
+					// This is our field... we stop looping
+					if (modType == MODIFY_CEILING
+							|| (modType == MODIFY_ROUND && roundUp)) {
+						if (field == DateUtil.SEMI_MONTH) {
+							// This is a special case that's hard to generalize
+							// If the date is 1, we round up to 16, otherwise
+							// we subtract 15 days and add 1 month
+							if (val.get(Calendar.DATE) == 1) {
+								val.add(Calendar.DATE, 15);
+							} else {
+								val.add(Calendar.DATE, -15);
+								val.add(Calendar.MONTH, 1);
+							}
+							// ----------------- Fix for LANG-440
+							// ---------------------- START ---------------
+						} else if (field == Calendar.AM_PM) {
+							// This is a special case
+							// If the time is 0, we round up to 12, otherwise
+							// we subtract 12 hours and add 1 day
+							if (val.get(Calendar.HOUR_OF_DAY) == 0) {
+								val.add(Calendar.HOUR_OF_DAY, 12);
+							} else {
+								val.add(Calendar.HOUR_OF_DAY, -12);
+								val.add(Calendar.DATE, 1);
+							}
+							// ----------------- Fix for LANG-440
+							// ---------------------- END ---------------
+						} else {
+							// We need at add one to this field since the
+							// last number causes us to round up
+							val.add(aField[0], 1);
+						}
+					}
+					return;
+				}
+			}
+			// We have various fields that are not easy roundings
+			int offset = 0;
+			boolean offsetSet = false;
+			// These are special types of fields that require different rounding
+			// rules
+			switch (field) {
+			case DateUtil.SEMI_MONTH:
+				if (aField[0] == Calendar.DATE) {
+					// If we're going to drop the DATE field's value,
+					// we want to do this our own way.
+					// We need to subtrace 1 since the date has a minimum of 1
+					offset = val.get(Calendar.DATE) - 1;
+					// If we're above 15 days adjustment, that means we're in
+					// the
+					// bottom half of the month and should stay accordingly.
+					if (offset >= 15) {
+						offset -= 15;
+					}
+					// Record whether we're in the top or bottom half of that
+					// range
+					roundUp = offset > 7;
+					offsetSet = true;
+				}
+				break;
+			case Calendar.AM_PM:
+				if (aField[0] == Calendar.HOUR_OF_DAY) {
+					// If we're going to drop the HOUR field's value,
+					// we want to do this our own way.
+					offset = val.get(Calendar.HOUR_OF_DAY);
+					if (offset >= 12) {
+						offset -= 12;
+					}
+					roundUp = offset >= 6;
+					offsetSet = true;
+				}
+				break;
+			default:
+				break;
+			}
+			if (!offsetSet) {
+				final int min = val.getActualMinimum(aField[0]);
+				final int max = val.getActualMaximum(aField[0]);
+				// Calculate the offset from the minimum allowed value
+				offset = val.get(aField[0]) - min;
+				// Set roundUp if this is more than half way between the minimum
+				// and maximum
+				roundUp = offset > ((max - min) / 2);
+			}
+			// We need to remove this field
+			if (offset != 0) {
+				val.set(aField[0], val.get(aField[0]) - offset);
+			}
+		}
+		throw new IllegalArgumentException("The field " + field
+				+ " is not supported");
+
 	}
 
 }
