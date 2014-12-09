@@ -414,6 +414,29 @@ public class ReflectionUtils {
 		}
 		return false;
 	}
+	
+	public static Method getSetterAccessor(final Class<?> clazz, Field field) {
+		final Method[] methods = getAllDeclaredMethods(clazz);
+
+		for (int i = 0; i < methods.length; i++) {
+			String name;
+			String methodName;
+			final Method method = methods[i];
+
+			methodName = method.getName();
+			if (!methodName.startsWith("set"))
+				continue;
+			if (method.getParameterTypes().length != 1)
+				continue;
+
+			name = methodName.substring("set".length()).toLowerCase();
+			if (name.length() == 0)
+				continue;
+			if (field.getName().equalsIgnoreCase(name))
+				return method;
+		}
+		return null;
+	}
 
 	public static Field getFieldByMethodSetter(Method method) {
 		if (method.getName().startsWith("set")) {
