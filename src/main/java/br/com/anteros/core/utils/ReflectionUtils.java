@@ -35,6 +35,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -123,6 +124,19 @@ public class ReflectionUtils {
 		for (Class<?> c : allInterfaces) {
 			if (c.equals(interf))
 				return true;
+		}
+		return false;
+	}
+
+	public static boolean isImplementsInterface(Class<?> clazz, Class<?>[] interfaces) {
+		for (Class interf : interfaces) {
+			if (clazz == interf)
+				return true;
+			Class<?>[] allInterfaces = getAllInterfaces(clazz);
+			for (Class<?> c : allInterfaces) {
+				if (c.equals(interf))
+					return true;
+			}
 		}
 		return false;
 	}
@@ -1786,6 +1800,53 @@ public class ReflectionUtils {
 
 	public static boolean isPackageAccess(int modifiers) {
 		return (modifiers & ACCESS_TEST) == 0;
+	}
+
+	public static boolean isSimpleField(Field field) {
+		return isSimple(field.getType());
+	}
+
+	public static boolean isNumberField(Field field) {
+		return isNumber(field.getType());
+	}
+
+	public static boolean isLobField(Field field) {
+		return isLob(field.getType());
+	}
+
+	public static boolean isDateTimeField(Field field) {
+		return isDateTime(field.getType());
+	}
+
+	public static boolean isSimple(Class<?> sourceClazz) {
+		if (isNumber(sourceClazz) || (sourceClazz == String.class) || (sourceClazz == Boolean.class)
+				|| (sourceClazz == Character.class) || (sourceClazz == java.util.Date.class)
+				|| (sourceClazz == Calendar.class) || (sourceClazz == java.sql.Date.class)
+				|| (sourceClazz == java.sql.Time.class) || isLob(sourceClazz)) {
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isNumber(Class<?> sourceClazz) {
+		return ((sourceClazz == Long.class) || (sourceClazz == Integer.class) || (sourceClazz == Float.class)
+				|| (sourceClazz == BigDecimal.class) || (sourceClazz == BigInteger.class)
+				|| (sourceClazz == Short.class) || (sourceClazz == Double.class));
+	}
+
+	public static boolean isLob(Class<?> sourceClazz) {
+		if ((sourceClazz == Byte[].class) || (sourceClazz == byte[].class) || (sourceClazz == java.sql.Blob.class)
+				|| (sourceClazz == java.sql.Clob.class)) {
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isDateTime(Class<?> sourceClazz) {
+		if ((sourceClazz == java.util.Date.class) || (sourceClazz == java.sql.Date.class)) {
+			return true;
+		}
+		return false;
 	}
 
 }

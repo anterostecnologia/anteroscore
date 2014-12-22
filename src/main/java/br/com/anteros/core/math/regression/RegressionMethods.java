@@ -33,7 +33,7 @@ public class RegressionMethods {
     int n;
     
     // trows exception if regression can not be performed
-    if (X.size()<2 | Y.size()<2) {
+    if ((X.size()<2) || (Y.size()<2)) {
       throw new NotEnoughValues();
     }
 
@@ -76,7 +76,7 @@ public class RegressionMethods {
     int n;
 
     // trows exception if regression can not be performed
-    if (X.size()<2 | Y.size()<2) {
+    if ((X.size()<2) || (Y.size()<2)) {
       throw new NotEnoughValues();
     }
 
@@ -119,7 +119,7 @@ public class RegressionMethods {
     int n;
 
     // trows exception if regression can not be performed
-    if (X.size()<2 | Y.size()<2) {
+    if ((X.size()<2) || (Y.size()<2)) {
       throw new NotEnoughValues();
     }
 
@@ -166,7 +166,7 @@ public class RegressionMethods {
     int n;
 
     // trows exception if regression can not be performed
-    if (X.size()<2 | Y.size()<2) {
+    if ((X.size()<2) || (Y.size()<2)) {
       throw new NotEnoughValues();
     }
 
@@ -209,7 +209,7 @@ public class RegressionMethods {
     int n;
 
     // trows exception if regression can not be performed
-    if (X.size()<2 | Y.size()<2) {
+    if ((X.size()<2) || (Y.size()<2)) {
       throw new NotEnoughValues();
     }
 

@@ -34,7 +34,7 @@ public class AnterosWeakHashMap<K, V> extends AbstractMap<K,V> implements Map<K,
 
     private final ReferenceQueue<Object> queue = new ReferenceQueue<Object>();
 
-    volatile int modCount;
+    private int modCount;
 
     @SuppressWarnings("unchecked")
     private Entry<K,V>[] newTable(int n) {
