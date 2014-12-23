@@ -1822,7 +1822,7 @@ public class ReflectionUtils {
 		if (isNumber(sourceClazz) || (sourceClazz == String.class) || (sourceClazz == Boolean.class)
 				|| (sourceClazz == Character.class) || (sourceClazz == java.util.Date.class)
 				|| (sourceClazz == Calendar.class) || (sourceClazz == java.sql.Date.class)
-				|| (sourceClazz == java.sql.Time.class) || isLob(sourceClazz)) {
+				|| (sourceClazz == java.sql.Time.class) || isLob(sourceClazz) || (ReflectionUtils.isExtendsClass(Enum.class, sourceClazz))) {
 			return true;
 		}
 		return false;
