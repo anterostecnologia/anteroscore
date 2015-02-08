@@ -179,6 +179,7 @@ public class ReflectionUtils {
 			while ((searchClazz != null) && (searchClazz != Object.class)) {
 				Field[] f = searchClazz.getDeclaredFields();
 				for (int i = 0; i < f.length; i++) {
+					f[i].setAccessible(true);
 					accum.add(f[i]);
 				}
 				searchClazz = searchClazz.getSuperclass();
