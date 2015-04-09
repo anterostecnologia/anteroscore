@@ -1,17 +1,14 @@
 /*******************************************************************************
  * Copyright 2012 Anteros Tecnologia
- *  
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
- *  
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  *******************************************************************************/
 package br.com.anteros.core.utils;
 
@@ -602,11 +599,11 @@ public abstract class ObjectUtils {
 		} else if (source instanceof BigDecimal) {
 			result = new BigDecimal(((BigDecimal) source).toString());
 		} else if (source instanceof Blob) {
-			result =  IOUtils.toByteArray(((Blob)source).getBinaryStream());
+			result = IOUtils.toByteArray(((Blob) source).getBinaryStream());
 		} else if (source instanceof Clob) {
-			result = IOUtils.toByteArray(((Blob)source).getBinaryStream());
+			result = IOUtils.toByteArray(((Blob) source).getBinaryStream());
 		} else if (source instanceof NClob) {
-			result = IOUtils.toByteArray(((Blob)source).getBinaryStream());
+			result = IOUtils.toByteArray(((Blob) source).getBinaryStream());
 		} else if (source instanceof byte[]) {
 			result = source;
 		} else if (source instanceof Map) {
@@ -629,7 +626,7 @@ public abstract class ObjectUtils {
 		} else if (source instanceof Date) {
 			result = new Date(((Date) source).getTime());
 		} else if (source instanceof Enum) {
-			result = new String(((Enum)source).name());
+			result = new String(((Enum) source).name());
 		}
 
 		return result;
@@ -813,6 +810,14 @@ public abstract class ObjectUtils {
 			return false;
 		}
 		return object1.equals(object2);
+	}
+
+	public static boolean equal(Object a, Object b) {
+		return a == b || (a != null && a.equals(b));
+	}
+
+	public static int hashCode(Object... objects) {
+		return Arrays.hashCode(objects);
 	}
 
 }

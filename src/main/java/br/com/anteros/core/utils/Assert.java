@@ -110,18 +110,18 @@ public abstract class Assert {
 	}
 
 	public static void notEmpty(Collection<?> collection, String message) {
-		if (CollectionUtils.isEmpty(collection)) {
+		if (collection == null || collection.isEmpty()) {
 			throw new IllegalArgumentException(message);
 		}
 	}
-
+	
 	public static void notEmpty(Collection<?> collection) {
 		notEmpty(collection,
 				"[Assertion failed] - this collection must not be empty: it must contain at least 1 element");
 	}
 
 	public static void notEmpty(Map<?, ?> map, String message) {
-		if (CollectionUtils.isEmpty(map)) {
+		if (map == null || map.isEmpty()) {
 			throw new IllegalArgumentException(message);
 		}
 	}
