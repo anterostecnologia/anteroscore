@@ -20,7 +20,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import br.com.anteros.core.converter.converters.ClassConverter;
 import br.com.anteros.core.utils.TranslateCoreException;
 
 public abstract class AbstractCoreTranslate {
