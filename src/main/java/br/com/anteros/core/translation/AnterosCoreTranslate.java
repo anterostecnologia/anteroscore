@@ -23,7 +23,7 @@ public class AnterosCoreTranslate extends AbstractCoreTranslate {
 
 	public static AnterosCoreTranslate getInstance() {
         if ( singleton == null )
-            singleton = new AnterosCoreTranslate(AnterosTranslateMessages.class);
+            singleton = new AnterosCoreTranslate(AnterosCoreTranslateMessages.class);
 
         return (AnterosCoreTranslate) singleton;
     }    

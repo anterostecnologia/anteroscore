@@ -48,10 +48,11 @@ public abstract class AbstractCoreTranslate {
 
 		ClassLoader loader = AbstractCoreTranslate.class.getClassLoader();		
 		String className = translateClass.getName()+"_"+locale.getLanguage()+locale.getCountry();
-		Class<?> _translateClass = translateClass;
+		Class<?> _translateClass = null;
 		try {
 			_translateClass = Class.forName(className, true, loader);
 		} catch (ClassNotFoundException e) {
+			_translateClass = translateClass;
 		}
 
 		try {

@@ -3,11 +3,11 @@ package br.com.anteros.core.translation;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AnterosTranslateMessages_ptBR implements TranslateMessage {
+public class AnterosCoreTranslateMessages implements TranslateMessage {
 
 	private final Map<String, String> messages = new HashMap<String, String>();
 
-	public AnterosTranslateMessages_ptBR() {
+	public AnterosCoreTranslateMessages() {
 		messages.put("ToStringVisitor.operation_unknown", "Opera\u00e7\u00e3o desconhecida com estes argumentos {0}");
 
 		messages.put("NamedParameterParserResult.toString", "SQL-> {0} Par\u00e2metros: {1}");
@@ -34,4 +34,5 @@ public class AnterosTranslateMessages_ptBR implements TranslateMessage {
 	public String getMessage(String key) {
 		return messages.get(key);
 	}
+
 }
