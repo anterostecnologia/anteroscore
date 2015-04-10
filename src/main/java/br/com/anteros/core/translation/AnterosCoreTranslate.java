@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package br.com.anteros.core.utils;
+package br.com.anteros.core.translation;
 
-import br.com.anteros.core.translation.AnterosTranslateMessages;
-import br.com.anteros.core.translation.TranslateMessage;
 
 
 public class AnterosCoreTranslate extends AbstractCoreTranslate {

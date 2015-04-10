@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package br.com.anteros.core.utils;
+package br.com.anteros.core.translation;
 
 import java.text.MessageFormat;
 import java.util.Locale;
@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import br.com.anteros.core.converter.converters.ClassConverter;
-import br.com.anteros.core.translation.TranslateMessage;
+import br.com.anteros.core.utils.TranslateCoreException;
 
 public abstract class AbstractCoreTranslate {
 

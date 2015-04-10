@@ -18,7 +18,7 @@ package br.com.anteros.core.metadata.beans;
 import java.lang.ref.Reference;
 import java.lang.reflect.Method;
 
-import br.com.anteros.core.utils.AnterosCoreTranslate;
+import br.com.anteros.core.translation.AnterosCoreTranslate;
 
 /**
  * An IndexedPropertyDescriptor describes a property that acts like an
