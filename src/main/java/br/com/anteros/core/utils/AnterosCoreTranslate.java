@@ -15,15 +15,25 @@
  *******************************************************************************/
 package br.com.anteros.core.utils;
 
+import br.com.anteros.core.translation.AnterosTranslateMessages;
+import br.com.anteros.core.translation.TranslateMessage;
+
 
 public class AnterosCoreTranslate extends AbstractCoreTranslate {
 	
-	public AnterosCoreTranslate(String messageBundleName) {
-		super(messageBundleName);
+	private static AnterosCoreTranslate singleton;
+
+	public static AnterosCoreTranslate getInstance() {
+        if ( singleton == null )
+            singleton = new AnterosCoreTranslate(AnterosTranslateMessages.class);
+
+        return (AnterosCoreTranslate) singleton;
+    }    
+	
+	public AnterosCoreTranslate(Class<? extends TranslateMessage> translateClass) {
+		super(translateClass);
 	}
 	
-	static {
-		setInstance(new AnterosCoreTranslate("anteroscore_messages"));
-	}
+
 
 }

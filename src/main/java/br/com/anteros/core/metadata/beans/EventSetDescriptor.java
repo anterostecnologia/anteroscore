@@ -30,6 +30,8 @@ import br.com.anteros.core.utils.AnterosCoreTranslate;
  * on a registration method supplied by the event source.
  */
 public class EventSetDescriptor extends FeatureDescriptor {
+	
+	private static AnterosCoreTranslate TRANSLATOR = AnterosCoreTranslate.getInstance();
 
 	private MethodDescriptor[] listenerMethodDescriptors;
 	private MethodDescriptor addMethodDescriptor;
@@ -78,7 +80,7 @@ public class EventSetDescriptor extends FeatureDescriptor {
 			// Check for EventSet compliance. Special case for vetoableChange.
 			// See 4529996
 			if (!"vetoableChange".equals(eventSetName) && !args[0].getName().endsWith(eventName)) {
-				throw new IntrospectionException(AnterosCoreTranslate.getMessage(EventSetDescriptor.class,
+				throw new IntrospectionException(TRANSLATOR.getMessage(EventSetDescriptor.class,
 						"IntrospectionException", listenerMethodName, eventName));
 			}
 		}
@@ -183,7 +185,7 @@ public class EventSetDescriptor extends FeatureDescriptor {
 		}
 		Method method = BeanUtils.findAccessibleMethodIncludeInterfaces(cls, name, args, null);
 		if (method == null) {
-			throw new IntrospectionException(AnterosCoreTranslate.getMessage(EventSetDescriptor.class,
+			throw new IntrospectionException(TRANSLATOR.getMessage(EventSetDescriptor.class,
 					"IntrospectionException2", name, cls.getName()));
 		}
 		return method;

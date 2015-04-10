@@ -31,6 +31,8 @@ import br.com.anteros.core.utils.AnterosCoreTranslate;
  */
 
 public class IndexedPropertyDescriptor extends PropertyDescriptor {
+	
+	private static AnterosCoreTranslate TRANSLATOR = AnterosCoreTranslate.getInstance();
 
 	private Reference indexedPropertyTypeRef;
 	private Reference indexedReadMethodRef;
@@ -98,12 +100,12 @@ public class IndexedPropertyDescriptor extends PropertyDescriptor {
 
 		this.indexedReadMethodName = indexedReadMethodName;
 		if(indexedReadMethodName != null && getIndexedReadMethod() == null){
-			throw new IntrospectionException(AnterosCoreTranslate.getMessage(IndexedPropertyDescriptor.class, "IntrospectionException", indexedReadMethodName));
+			throw new IntrospectionException(TRANSLATOR.getMessage(IndexedPropertyDescriptor.class, "IntrospectionException", indexedReadMethodName));
 		}
 
 		this.indexedWriteMethodName = indexedWriteMethodName;
 		if(indexedWriteMethodName != null && getIndexedWriteMethod() == null){
-			throw new IntrospectionException(AnterosCoreTranslate.getMessage(IndexedPropertyDescriptor.class, "IntrospectionException", indexedReadMethodName));
+			throw new IntrospectionException(TRANSLATOR.getMessage(IndexedPropertyDescriptor.class, "IntrospectionException", indexedReadMethodName));
 		}
 		// Implemented only for type checking.
 		findIndexedPropertyType(getIndexedReadMethod(), getIndexedWriteMethod());

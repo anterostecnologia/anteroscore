@@ -16,78 +16,65 @@
 package br.com.anteros.core.utils;
 
 import java.text.MessageFormat;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.concurrent.ConcurrentHashMap;
+
+import br.com.anteros.core.converter.converters.ClassConverter;
+import br.com.anteros.core.translation.TranslateMessage;
 
 public abstract class AbstractCoreTranslate {
 
-	protected Map<Locale, ResourceBundle> bundles;
+	protected Map<Locale, TranslateMessage> translators;
 
-	protected String bundleName = "";
-	
-	private static AbstractCoreTranslate singleton; 
-    private static AbstractCoreTranslate getInstance() {
-        if ( singleton == null )
-            throw new RuntimeException("Nenhuma implementação de AbstractCoreTranslate foi configurada.");
+	protected Class<? extends TranslateMessage> translateClass;
 
-        return singleton;
-    }    
-
-    public static void setInstance(AbstractCoreTranslate instance) {
-    	AbstractCoreTranslate.singleton = instance;
-    }
 	
-	
-	public AbstractCoreTranslate(String messageBundleName) {
-		this.bundleName = messageBundleName;
+	public AbstractCoreTranslate(Class<? extends TranslateMessage> translateClass) {
+		this.translateClass = translateClass;
 	}
-	
-	public static ResourceBundle getResourceBundle(Locale locale) { 
-        return getInstance().getResourceBundleImpl(locale);
-    }
-	
-	protected  ResourceBundle getResourceBundleImpl(Locale locale) {
-		if (bundleName.equals(""))
-			throw new RuntimeException("Variable bundleName not initialized. Use concrete clazz to translate. ");
-		if (bundles == null)
-			bundles = new HashMap<Locale, ResourceBundle>();
 
-		ResourceBundle bundle = bundles.get(locale);
+	protected  TranslateMessage getTranslateMessage(Locale locale) {
+		if (translateClass==null)
+			throw new RuntimeException("Variable translateClass not initialized. Use concrete clazz to translate. ");
+		if (translators == null)
+			translators = new ConcurrentHashMap<Locale, TranslateMessage>();
 
-		if (bundle != null) {
-			return bundle;
+		TranslateMessage translateMessage = translators.get(locale);
+
+		if (translateMessage != null) {
+			return translateMessage;
 		}
 
-		ClassLoader loader = AbstractCoreTranslate.class.getClassLoader();
-		bundle = ResourceBundle.getBundle(bundleName, locale, loader);
-		bundles.put(locale, bundle);
+		ClassLoader loader = AbstractCoreTranslate.class.getClassLoader();		
+		String className = translateClass.getName()+"_"+locale.getLanguage()+locale.getCountry();
+		Class<?> _translateClass = translateClass;
+		try {
+			_translateClass = Class.forName(className, true, loader);
+		} catch (ClassNotFoundException e) {
+		}
 
-		return bundle;
+		try {
+			translateMessage = (TranslateMessage) _translateClass.newInstance();
+		} catch (Exception e) {
+			throw new TranslateCoreException("Não foi possível instanciar a classe "+_translateClass.getName()+" de tradução.", e);
+		}
+		
+		translators.put(locale, translateMessage);
+
+		return translateMessage;
 	}
 	
-	public static  ResourceBundle getResourceBundle() {
-		return getInstance().getResourceBundleImpl(Locale.getDefault());
-	}
-
-	protected  ResourceBundle getResourceBundleImpl() {
-		return getResourceBundle(Locale.getDefault());
+	protected TranslateMessage getTranslateMessage() {
+		return getTranslateMessage(Locale.getDefault());
 	}
 	
-	public static  String getMessage(Class<?> clazz, String tag, Object... arguments) {
-		return MessageFormat.format(getInstance().getMessageImpl(clazz, tag), arguments);
-	}
-
-	protected  String getMessageImpl(Class<?> clazz, String tag, Object... arguments) {
-		return MessageFormat.format(getMessageImpl(clazz, tag), arguments);
-	}
-
-	public static  String getMessage(Class<?> clazz, String tag) {
-		return getInstance().getResourceBundleImpl().getString(clazz.getSimpleName() + "." + tag);
+	public String getMessage(Class<?> clazz, String tag, Object... arguments) {
+		return MessageFormat.format(getMessage(clazz, tag), arguments);
 	}
 	
-	protected  String getMessageImpl(Class<?> clazz, String tag) {
-		return getResourceBundleImpl().getString(clazz.getSimpleName() + "." + tag);
+	public String getMessage(Class<?> clazz, String tag) {
+		return getTranslateMessage().getMessage(clazz.getSimpleName() + "." + tag);
 	}
+
 }
