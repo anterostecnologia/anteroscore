@@ -1,25 +1,28 @@
 package br.com.anteros.core.log.impl;
 
+
+import org.apache.logging.log4j.LogManager;
+
 import br.com.anteros.core.log.LogLevel;
 import br.com.anteros.core.log.Logger;
 
 public class Log4jLogger extends Logger {
 
 	private static final long serialVersionUID = -3849491369896227753L;
-	private final org.apache.log4j.Logger logger;
+	private final org.apache.logging.log4j.Logger logger;
 
 	public Log4jLogger(String name) {
 		super(name);
-		logger = org.apache.log4j.Logger.getLogger(name);
+		logger = LogManager.getLogger(name);
 	}
 
 	public boolean isEnabled(LogLevel level) {
 		if (level != null)
 			switch (level) {
 			case ERROR:
-				return logger.isEnabledFor(org.apache.log4j.Level.ERROR);
+				return logger.isEnabled(org.apache.logging.log4j.Level.ERROR);
 			case WARN:
-				return logger.isEnabledFor(org.apache.log4j.Level.WARN);
+				return logger.isEnabled(org.apache.logging.log4j.Level.WARN);
 			case INFO:
 				return logger.isInfoEnabled();
 			case DEBUG:
