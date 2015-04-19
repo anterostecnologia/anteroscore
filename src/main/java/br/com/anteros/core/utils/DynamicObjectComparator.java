@@ -6,8 +6,6 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Date;
 
-import br.com.anteros.core.utils.ReflectionUtils;
-
 public class DynamicObjectComparator {
 	
 	private DynamicObjectComparator(){

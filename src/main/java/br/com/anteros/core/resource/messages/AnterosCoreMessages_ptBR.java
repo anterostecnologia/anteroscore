@@ -1,13 +1,16 @@
-package br.com.anteros.core.translation;
+package br.com.anteros.core.resource.messages;
 
+import java.text.MessageFormat;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Vector;
 
-public class AnterosCoreTranslateMessages_ptBR implements TranslateMessage {
+public class AnterosCoreMessages_ptBR implements AnterosBundle {
 
 	private final Map<String, String> messages = new HashMap<String, String>();
 
-	public AnterosCoreTranslateMessages_ptBR() {
+	public AnterosCoreMessages_ptBR() {
 		messages.put("ToStringVisitor.operation_unknown", "Opera\u00e7\u00e3o desconhecida com estes argumentos {0}");
 
 		messages.put("NamedParameterParserResult.toString", "SQL-> {0} Par\u00e2metros: {1}");
@@ -33,5 +36,15 @@ public class AnterosCoreTranslateMessages_ptBR implements TranslateMessage {
 
 	public String getMessage(String key) {
 		return messages.get(key);
+	}
+	
+	@Override
+	public String getMessage(String key, Object... parameters) {
+		return MessageFormat.format(getMessage(key), parameters);
+	}
+	
+	@Override
+	public Enumeration<String> getKeys() {
+		return new Vector<String>(messages.keySet()).elements();
 	}
 }

@@ -18,7 +18,10 @@ package br.com.anteros.core.metadata.beans;
 import java.lang.ref.Reference;
 import java.lang.reflect.Method;
 
-import br.com.anteros.core.translation.AnterosCoreTranslate;
+import br.com.anteros.core.configuration.AnterosCoreProperties;
+import br.com.anteros.core.resource.messages.AnterosBundle;
+import br.com.anteros.core.resource.messages.AnterosCoreMessages;
+import br.com.anteros.core.resource.messages.AnterosResourceBundle;
 
 
 /**
@@ -31,7 +34,7 @@ import br.com.anteros.core.translation.AnterosCoreTranslate;
  */
 public class EventSetDescriptor extends FeatureDescriptor {
 	
-	private static AnterosCoreTranslate TRANSLATOR = AnterosCoreTranslate.getInstance();
+	private static AnterosBundle MESSAGES = AnterosResourceBundle.getBundle(AnterosCoreProperties.ANTEROS_CORE, AnterosCoreMessages.class);
 
 	private MethodDescriptor[] listenerMethodDescriptors;
 	private MethodDescriptor addMethodDescriptor;
@@ -80,8 +83,7 @@ public class EventSetDescriptor extends FeatureDescriptor {
 			// Check for EventSet compliance. Special case for vetoableChange.
 			// See 4529996
 			if (!"vetoableChange".equals(eventSetName) && !args[0].getName().endsWith(eventName)) {
-				throw new IntrospectionException(TRANSLATOR.getMessage(EventSetDescriptor.class,
-						"IntrospectionException", listenerMethodName, eventName));
+				throw new IntrospectionException(MESSAGES.getMessage(EventSetDescriptor.class.getSimpleName()+".IntrospectionException", listenerMethodName, eventName));
 			}
 		}
 	}
@@ -185,8 +187,7 @@ public class EventSetDescriptor extends FeatureDescriptor {
 		}
 		Method method = BeanUtils.findAccessibleMethodIncludeInterfaces(cls, name, args, null);
 		if (method == null) {
-			throw new IntrospectionException(TRANSLATOR.getMessage(EventSetDescriptor.class,
-					"IntrospectionException2", name, cls.getName()));
+			throw new IntrospectionException(MESSAGES.getMessage(EventSetDescriptor.class.getSimpleName()+".IntrospectionException2", name, cls.getName()));
 		}
 		return method;
 	}

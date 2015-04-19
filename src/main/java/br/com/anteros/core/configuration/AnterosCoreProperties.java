@@ -17,6 +17,8 @@ package br.com.anteros.core.configuration;
 
 
 public class AnterosCoreProperties {
+	
+	public static final String ANTEROS_CORE = "ANTEROS_CORE";
 
 	public static final String XML_CONFIGURATION = "anteros-config.xml";
 	
