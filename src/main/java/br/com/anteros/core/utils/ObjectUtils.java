@@ -599,11 +599,20 @@ public abstract class ObjectUtils {
 		} else if (source instanceof BigDecimal) {
 			result = new BigDecimal(((BigDecimal) source).toString());
 		} else if (source instanceof Blob) {
-			result = IOUtils.toByteArray(((Blob) source).getBinaryStream());
+			InputStream binaryStream = ((Blob) source).getBinaryStream();
+			if (binaryStream==null)
+				return null;
+			result = IOUtils.toByteArray(binaryStream);
 		} else if (source instanceof Clob) {
-			result = IOUtils.toByteArray(((Blob) source).getBinaryStream());
+			InputStream asciiStream = ((Clob) source).getAsciiStream();
+			if (asciiStream==null)
+				return null;
+			result = IOUtils.toByteArray(asciiStream);
 		} else if (source instanceof NClob) {
-			result = IOUtils.toByteArray(((Blob) source).getBinaryStream());
+			InputStream asciiStream = ((NClob) source).getAsciiStream();
+			if (asciiStream==null)
+				return null;
+			result = IOUtils.toByteArray(asciiStream);
 		} else if (source instanceof byte[]) {
 			result = source;
 		} else if (source instanceof Map) {
