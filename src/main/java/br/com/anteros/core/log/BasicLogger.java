@@ -69,6 +69,31 @@ public interface BasicLogger {
 	 * @param message
 	 */
 	public void debug(Object message);
+	
+	/**
+	 * Envia uma mensagem de log com o level Debug.
+	 * 
+	 * @param message Mensagem
+	 * @param arg Argumento
+	 */
+	public void debug(Object message, Object arg);
+	
+	/**
+	 * Envia uma mensagem de log com o level Debug.
+	 * 
+	 * @param message Mensagem
+	 * @param arg1 Argumento 1
+	 * @param arg2 Argumento 2
+	 */
+	public void debug(Object message, Object arg1, Object arg2);
+	
+	/**
+	 * Envia uma mensagem de log com o level Debug.
+	 * 
+	 * @param message Mensagem
+	 * @param args Argumentos
+	 */
+	public void debug(Object message, Object... args);
 
 	/**
 	 * Retorna TRUE caso o LogLevel instanciado seja Info ou FALSE caso
@@ -89,9 +114,27 @@ public interface BasicLogger {
 	/**
 	 * Envia uma mensagem de log com o level Info.
 	 * 
-	 * @param message
+	 * @param message Mensagem
+	 * @param arg Argumento
 	 */
-	public void info(Object message);
+	public void info(Object message, Object arg);
+	
+	/**
+	 * Envia uma mensagem de log com o level Info.
+	 * 
+	 * @param message Mensagem
+	 * @param arg1 Argumento 1
+	 * @param arg2 Argumento 2
+	 */
+	public void info(Object message, Object arg1, Object arg2);
+	
+	/**
+	 * Envia uma mensagem de log com o level Info.
+	 * 
+	 * @param message Mensagem
+	 * @param args Argumentos
+	 */
+	public void info(Object message, Object... args);
 
 	/**
 	 * Retorna TRUE caso o LogLevel instanciado seja Warn ou FALSE caso
@@ -115,6 +158,31 @@ public interface BasicLogger {
 	 * @param message
 	 */
 	public void warn(Object message);
+	
+	/**
+	 * Envia uma mensagem de log com o level Warn.
+	 * 
+	 * @param message Mensagem
+	 * @param arg Argumento
+	 */
+	public void warn(Object message, Object arg);
+	
+	/**
+	 * Envia uma mensagem de log com o level Warn.
+	 * 
+	 * @param message Mensagem
+	 * @param arg1 Argumento 1
+	 * @param arg2 Argumento 2
+	 */
+	public void warn(Object message, Object arg1, Object arg2);
+	
+	/**
+	 * Envia uma mensagem de log com o level Warn.
+	 * 
+	 * @param message Mensagem
+	 * @param args Argumentos
+	 */
+	public void warn(Object message, Object... args);
 
 	/**
 	 * Retorna TRUE caso o LogLevel instanciado seja Error ou FALSE caso
@@ -138,6 +206,31 @@ public interface BasicLogger {
 	 * @param message
 	 */
 	public void error(Object message);
+	
+	/**
+	 * Envia uma mensagem de log com o level Error.
+	 * 
+	 * @param message Mensagem
+	 * @param arg Argumento
+	 */
+	public void error(Object message, Object arg);
+	
+	/**
+	 * Envia uma mensagem de log com o level Error.
+	 * 
+	 * @param message Mensagem
+	 * @param arg1 Argumento 1
+	 * @param arg2 Argumento 2
+	 */
+	public void error(Object message, Object arg1, Object arg2);
+	
+	/**
+	 * Envia uma mensagem de log com o level Error.
+	 * 
+	 * @param message Mensagem
+	 * @param args Argumentos
+	 */
+	public void error(Object message, Object... args);
 
 	/**
 	 * Envia uma mensagem de log com o level informado por parâmetro.
@@ -155,6 +248,34 @@ public interface BasicLogger {
 	 * @param message
 	 */
 	public void log(LogLevel level, Object message);
+	
+	/**
+	 * Envia uma mensagem de log com o level informado por parâmetro.
+	 * 
+	 * @param level Nível
+	 * @param message Mensagem
+	 * @param arg Argumento
+	 */
+	public void log(LogLevel level, Object message, Object arg);
+	
+	/**
+	 * Envia uma mensagem de log com o level informado por parâmetro.
+	 * 
+	 * @param level Nível
+	 * @param message Mensagem
+	 * @param arg1 Argumento 1
+	 * @param arg2 Argumento 2
+	 */
+	public void log(LogLevel level, Object message, Object arg1, Object arg2);
+	
+	/**
+	 * Envia uma mensagem de log com o level informado por parâmetro.
+	 * 
+	 * @param level Nível
+	 * @param message Mensagem
+	 * @param args Argumentos
+	 */
+	public void log(LogLevel level, Object message, Object... args);
 
 	/**
 	 * Retorna TRUE caso o LogLevel instanciado seja igual ao parâmetro
