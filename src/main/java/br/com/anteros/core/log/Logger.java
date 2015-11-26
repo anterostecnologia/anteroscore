@@ -33,6 +33,8 @@ public abstract class Logger implements Serializable, BasicLogger {
 	private static final long serialVersionUID = 2380204066565833673L;
 
 	private final String name;
+	
+	private Throwable _tThrowable;
 
 	public Logger(String name) {
 		this.name = name;
@@ -56,7 +58,7 @@ public abstract class Logger implements Serializable, BasicLogger {
 	}
 
 	public void verbose(Object message) {
-		verbose(message, null);
+		verbose(message, _tThrowable);
 	}
 
 	public boolean isDebugEnabled() {
@@ -68,7 +70,7 @@ public abstract class Logger implements Serializable, BasicLogger {
 	}
 
 	public void debug(Object message) {
-		debug(message);
+		debug(message, _tThrowable);
 	}
 
 	public boolean isInfoEnabled() {
@@ -80,7 +82,7 @@ public abstract class Logger implements Serializable, BasicLogger {
 	}
 
 	public void info(Object message) {
-		info(message);
+		info(message,_tThrowable);
 	}
 
 	public boolean isWarnEnabled() {
@@ -92,7 +94,7 @@ public abstract class Logger implements Serializable, BasicLogger {
 	}
 
 	public void warn(Object message) {
-		warn(message);
+		warn(message, _tThrowable);
 	}
 
 	public boolean isErrorEnabled() {
@@ -104,7 +106,7 @@ public abstract class Logger implements Serializable, BasicLogger {
 	}
 
 	public void error(Object message) {
-		error(message);
+		error(message, _tThrowable);
 	}
 
 	public void log(LogLevel level, Object message, Throwable t) {

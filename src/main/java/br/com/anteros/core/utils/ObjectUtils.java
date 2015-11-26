@@ -828,5 +828,20 @@ public abstract class ObjectUtils {
 	public static int hashCode(Object... objects) {
 		return Arrays.hashCode(objects);
 	}
+	
+	public static boolean isNotEmpty(Object value) {
+        if (value == null) {
+            return false;
+        } else if (value instanceof String) {
+            String text = (String) value;
+            return text.trim().length() > 0;
+        } else {
+            return true;
+        }
+    }
+	
+	public static boolean isEmpty(Object value) {
+        return !isNotEmpty(value);
+    }
 
 }
