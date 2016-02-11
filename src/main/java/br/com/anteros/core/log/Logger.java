@@ -114,7 +114,7 @@ public abstract class Logger implements Serializable, BasicLogger {
 	}
 
 	public void log(LogLevel level, Object message) {
-		log(level, message);
+		log(level, message, _tThrowable);
 	}
 
 	/**
