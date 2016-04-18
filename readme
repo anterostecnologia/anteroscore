@@ -1,0 +1,16 @@
+how to install gpg on macos:
+   brew install gpg   (command line)
+   https://gpgtools.org  download and install GPG KeyChain (GUI)
+
+how to send public key using gpg:
+   gpg --keyserver hkp://keyserver.ubuntu.com --send-keys 3FCC07F4        
+   (gpg --list-keys to obtain keyName)
+   
+how to deploy to maven central and bintray:
+   source:jar javadoc:jar deploy -P bintray
+   source:jar javadoc:jar deploy -P maven-central
+   
+   
+ how to configure PATH on Run Configuration Eclipse to execute GPG:
+	 Name: PATH
+	 Value: /usr/local/MacGPG2/bin   (directory brew install gpg)
