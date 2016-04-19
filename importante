@@ -13,4 +13,4 @@ how to deploy to maven central and bintray:
    
  how to configure PATH on Run Configuration Eclipse to execute GPG:
 	 Name: PATH
-	 Value: /usr/local/MacGPG2/bin   (directory brew install gpg)
+	 Value: /usr/local/MacGPG2/bin   (directory brew install gpg) or  which gpg   to see path
