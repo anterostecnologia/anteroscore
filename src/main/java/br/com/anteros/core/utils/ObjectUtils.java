@@ -600,17 +600,17 @@ public abstract class ObjectUtils {
 			result = new BigDecimal(((BigDecimal) source).toString());
 		} else if (source instanceof Blob) {
 			InputStream binaryStream = ((Blob) source).getBinaryStream();
-			if (binaryStream==null)
+			if (binaryStream == null)
 				return null;
 			result = IOUtils.toByteArray(binaryStream);
 		} else if (source instanceof Clob) {
 			InputStream asciiStream = ((Clob) source).getAsciiStream();
-			if (asciiStream==null)
+			if (asciiStream == null)
 				return null;
 			result = IOUtils.toByteArray(asciiStream);
 		} else if (source instanceof NClob) {
 			InputStream asciiStream = ((NClob) source).getAsciiStream();
-			if (asciiStream==null)
+			if (asciiStream == null)
 				return null;
 			result = IOUtils.toByteArray(asciiStream);
 		} else if (source instanceof byte[]) {
@@ -828,20 +828,45 @@ public abstract class ObjectUtils {
 	public static int hashCode(Object... objects) {
 		return Arrays.hashCode(objects);
 	}
-	
+
 	public static boolean isNotEmpty(Object value) {
-        if (value == null) {
-            return false;
-        } else if (value instanceof String) {
-            String text = (String) value;
-            return text.trim().length() > 0;
-        } else {
-            return true;
-        }
-    }
-	
+		if (value == null) {
+			return false;
+		} else if (value instanceof String) {
+			String text = (String) value;
+			return text.trim().length() > 0;
+		} else {
+			return true;
+		}
+	}
+
 	public static boolean isEmpty(Object value) {
-        return !isNotEmpty(value);
-    }
+		return !isNotEmpty(value);
+	}
+
+	public static boolean isNotNull(Object object) {
+
+		return (object != null);
+	}
+
+	public static boolean exists(Object object) {
+
+		return (object != null);
+	}
+
+	public static boolean isNull(Object object) {
+
+		return (object == null);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> T whenNull(Object object, Object defaultValue) {
+		return (T) (object != null ? object : defaultValue);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> T whenNull(Object object, Object defaultValue, Object notDefaultValue) {
+		return (T) (object == null ? defaultValue : notDefaultValue);
+	}
 
 }
