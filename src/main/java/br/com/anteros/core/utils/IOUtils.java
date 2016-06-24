@@ -30,11 +30,15 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.channels.Selector;
 import java.nio.charset.Charset;
+import java.util.Collection;
+import java.util.Iterator;
 
 public class IOUtils {
 
 	private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 	private static final int EOF = -1;
+
+	public static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
 	public static int copy(final InputStream input, final OutputStream output) throws IOException {
 		final long count = copyLarge(input, output);
@@ -189,6 +193,43 @@ public class IOUtils {
 				sock.close();
 			} catch (IOException ioe) {
 			}
+		}
+	}
+
+	public static void writeLines(Collection lines, String lineEnding, OutputStream output, String encoding)
+			throws IOException {
+		if (encoding == null) {
+			writeLines(lines, lineEnding, output);
+		} else {
+			if (lines == null) {
+				return;
+			}
+			if (lineEnding == null) {
+				lineEnding = LINE_SEPARATOR;
+			}
+			for (Iterator it = lines.iterator(); it.hasNext();) {
+				Object line = it.next();
+				if (line != null) {
+					output.write(line.toString().getBytes(encoding));
+				}
+				output.write(lineEnding.getBytes(encoding));
+			}
+		}
+	}
+
+	public static void writeLines(Collection lines, String lineEnding, OutputStream output) throws IOException {
+		if (lines == null) {
+			return;
+		}
+		if (lineEnding == null) {
+			lineEnding = LINE_SEPARATOR;
+		}
+		for (Iterator it = lines.iterator(); it.hasNext();) {
+			Object line = it.next();
+			if (line != null) {
+				output.write(line.toString().getBytes());
+			}
+			output.write(lineEnding.getBytes());
 		}
 	}
 
