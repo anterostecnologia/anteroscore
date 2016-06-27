@@ -15,6 +15,7 @@
  *******************************************************************************/
 package br.com.anteros.core.utils;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
@@ -30,8 +31,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.channels.Selector;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 public class IOUtils {
 
@@ -196,7 +199,7 @@ public class IOUtils {
 		}
 	}
 
-	public static void writeLines(Collection lines, String lineEnding, OutputStream output, String encoding)
+	public static void writeLines(Collection<String> lines, String lineEnding, OutputStream output, String encoding)
 			throws IOException {
 		if (encoding == null) {
 			writeLines(lines, lineEnding, output);
@@ -207,7 +210,7 @@ public class IOUtils {
 			if (lineEnding == null) {
 				lineEnding = LINE_SEPARATOR;
 			}
-			for (Iterator it = lines.iterator(); it.hasNext();) {
+			for (Iterator<String> it = lines.iterator(); it.hasNext();) {
 				Object line = it.next();
 				if (line != null) {
 					output.write(line.toString().getBytes(encoding));
@@ -217,20 +220,45 @@ public class IOUtils {
 		}
 	}
 
-	public static void writeLines(Collection lines, String lineEnding, OutputStream output) throws IOException {
+	public static void writeLines(Collection<String> lines, String lineEnding, OutputStream output) throws IOException {
 		if (lines == null) {
 			return;
 		}
 		if (lineEnding == null) {
 			lineEnding = LINE_SEPARATOR;
 		}
-		for (Iterator it = lines.iterator(); it.hasNext();) {
+		for (Iterator<String> it = lines.iterator(); it.hasNext();) {
 			Object line = it.next();
 			if (line != null) {
 				output.write(line.toString().getBytes());
 			}
 			output.write(lineEnding.getBytes());
 		}
+	}
+
+	public static List<String> readLines(InputStream input, String encoding) throws IOException {
+		if (encoding == null) {
+			return readLines(input);
+		} else {
+			InputStreamReader reader = new InputStreamReader(input, encoding);
+			return readLines(reader);
+		}
+	}
+
+	public static List<String> readLines(InputStream input) throws IOException {
+		InputStreamReader reader = new InputStreamReader(input);
+		return readLines(reader);
+	}
+
+	public static List<String> readLines(Reader input) throws IOException {
+		BufferedReader reader = new BufferedReader(input);
+		List<String> list = new ArrayList<String>();
+		String line = reader.readLine();
+		while (line != null) {
+			list.add(line);
+			line = reader.readLine();
+		}
+		return list;
 	}
 
 }
