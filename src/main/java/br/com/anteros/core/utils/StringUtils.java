@@ -2213,5 +2213,11 @@ public abstract class StringUtils {
 		}
 		return containsAny(str, searchChars.toCharArray());
 	}
+	
+	public static String removeCRLF(String text){
+		if (text==null)
+			return text;
+		return text.replaceAll("(\\r|\\n)", "");
+	}
 
 }
