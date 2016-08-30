@@ -255,6 +255,20 @@ public class ReflectionUtils {
 		return allInterfaces;
 	}
 
+	public static Class<?>[] getAllSuperClasses(Class<?> clazz) {
+		Class<?> searchClazz = clazz;
+		List<Class<?>> classList = new ArrayList<Class<?>>();
+		Class<?> superclass = searchClazz.getSuperclass();
+		classList.add(superclass);
+		while (superclass != null && superclass != Object.class) {
+			searchClazz = superclass;
+			superclass = searchClazz.getSuperclass();
+			if (superclass != null)
+				classList.add(superclass);
+		}
+		return classList.toArray(new Class[classList.size()]);
+	}
+
 	public static void makeAccessible(Field field) {
 		if ((!Modifier.isPublic(field.getModifiers()) || !Modifier.isPublic(field.getDeclaringClass().getModifiers())
 				|| Modifier.isFinal(field.getModifiers())) && !field.isAccessible()) {
@@ -1053,7 +1067,7 @@ public class ReflectionUtils {
 			MethodDescriptor md = (MethodDescriptor) obj;
 
 			return (exact == md.exact && methodName.equals(md.methodName) && cls.equals(md.cls)
-					&& java.util.Arrays.equals(paramTypes, md.paramTypes));
+			&& java.util.Arrays.equals(paramTypes, md.paramTypes));
 		}
 
 		public int hashCode() {
