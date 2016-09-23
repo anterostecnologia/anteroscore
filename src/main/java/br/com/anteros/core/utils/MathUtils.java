@@ -132,6 +132,45 @@ public final class MathUtils {
             }
         }
     }
+    
+    /**
+     * Round the given value to the specified number of decimal places. The
+     * value is rounded using the {@link BigDecimal#ROUND_HALF_UP} method.
+     *
+     * @param x the value to round.
+     * @param scale the number of digits to the right of the decimal point.
+     * @return the rounded value.
+     * @since 1.1
+     */
+    public static BigDecimal roundB(double x, int scale) {
+        return roundB(x, scale, BigDecimal.ROUND_HALF_UP);
+    }
+
+    /**
+     * Round the given value to the specified number of decimal places. The
+     * value is rounded using the given method which is any method defined in
+     * {@link BigDecimal}.
+     *
+     * @param x the value to round.
+     * @param scale the number of digits to the right of the decimal point.
+     * @param roundingMethod the rounding method as defined in
+     *        {@link BigDecimal}.
+     * @return the rounded value.
+     * @since 1.1
+     */
+    public static BigDecimal roundB(double x, int scale, int roundingMethod) {
+        try {
+            return (new BigDecimal
+                   (Double.toString(x))
+                   .setScale(scale, roundingMethod));
+        } catch (NumberFormatException ex) {
+            if (Double.isInfinite(x)) {
+                return new BigDecimal(x);
+            } else {
+                return BigDecimal.ZERO;
+            }
+        }
+    }
 
     /**
      * Round the given value to the specified number of decimal places. The
