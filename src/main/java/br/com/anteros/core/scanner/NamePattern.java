@@ -79,7 +79,7 @@ class NamePattern {
 	 * @return regex escaped version of the given text 
 	 */
 	private static String prepName(String name){
-		return escapeRE(name.replace("*", "##-##")).replace(
+		return escapeRE(name.replaceAll("(\\.\\*)|\\*", "##-##")).replace(
 				"##-##", ".*").replace("_", ".");
 	}
 
