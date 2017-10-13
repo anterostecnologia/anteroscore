@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>br.com.anteros</groupId>
 	<artifactId>Anteros-Core</artifactId>
-	<version>1.1.0</version>
+	<version>1.1.2</version>
 
 	<properties>
 		<java.versao>1.6</java.versao>
@@ -76,6 +76,11 @@
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
 			<version>2.3</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.15</version>
 		</dependency>
 	</dependencies>
 
