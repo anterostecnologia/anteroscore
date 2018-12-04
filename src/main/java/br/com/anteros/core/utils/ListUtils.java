@@ -1,5 +1,6 @@
 package br.com.anteros.core.utils;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -80,4 +81,34 @@ public abstract class ListUtils<E> {
 	static <T> Collection<T> cast(Iterable<T> iterable) {
 		return (Collection<T>) iterable;
 	}
+	
+	
+    public static Object convertToArray(final Class<?> type, final List<?> values) {
+        final Object exampleArray = Array.newInstance(type, values.size());
+        try {
+            return values.toArray((Object[]) exampleArray);
+        } catch (ClassCastException e) {
+            for (int i = 0; i < values.size(); i++) {
+                Array.set(exampleArray, i, values.get(i));
+            }
+            return exampleArray;
+        }
+    }
+    
+    public static <T> List<T> iterToList(final Iterable<T> it) {
+        if (it instanceof List) {
+            return (List<T>) it;
+        }
+        if (it == null) {
+            return null;
+        }
+
+        final List<T> ar = new ArrayList<T>();
+        for (final T o : it) {
+            ar.add(o);
+        }
+
+        return ar;
+    }
+
 }

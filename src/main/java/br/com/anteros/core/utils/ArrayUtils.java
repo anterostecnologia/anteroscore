@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ArrayUtils {
+public abstract class ArrayUtils {
 	public static final Character[] EMPTY_CHARACTER_OBJECT_ARRAY = new Character[0];
 	public static final Boolean[] EMPTY_BOOLEAN_OBJECT_ARRAY = new Boolean[0];
 	public static final Float[] EMPTY_FLOAT_OBJECT_ARRAY = new Float[0];

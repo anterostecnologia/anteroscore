@@ -651,13 +651,13 @@ public abstract class StringUtils {
 		return set;
 	}
 
-	public static String collectionToDelimitedString(Collection<String> coll, String delim, String prefix,
+	public static String collectionToDelimitedString(Collection<?> coll, String delim, String prefix,
 			String suffix) {
 		if (StringUtils.isEmpty(coll)) {
 			return "";
 		}
 		StringBuffer sb = new StringBuffer();
-		Iterator<String> it = coll.iterator();
+		Iterator<?> it = coll.iterator();
 		while (it.hasNext()) {
 			sb.append(prefix).append(it.next()).append(suffix);
 			if (it.hasNext()) {
@@ -675,11 +675,11 @@ public abstract class StringUtils {
 		return cs == null || cs.length() == 0;
 	}
 
-	public static String collectionToDelimitedString(Collection<String> coll, String delim) {
+	public static String collectionToDelimitedString(Collection<?> coll, String delim) {
 		return collectionToDelimitedString(coll, delim, "", "");
 	}
 
-	public static String collectionToCommaDelimitedString(Collection<String> coll) {
+	public static String collectionToCommaDelimitedString(Collection<?> coll) {
 		return collectionToDelimitedString(coll, ",");
 	}
 

@@ -17,9 +17,11 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.GenericDeclaration;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
@@ -28,6 +30,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.UndeclaredThrowableException;
+import java.lang.reflect.WildcardType;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -235,6 +238,15 @@ public class ReflectionUtils {
 			cacheMethods.put(clazz, allMethods);
 		}
 		return allMethods;
+	}
+	
+	public static Method getMethodByName(Class<?> clazz, String methodName) {
+		Method[] allDeclaredMethods = getAllDeclaredMethods(clazz);
+		for (Method m : allDeclaredMethods) {
+			if (m.getName().equals(methodName))
+				return m;
+		}
+		return null;
 	}
 
 	public static Class<?>[] getAllInterfaces(Class<?> clazz) {
@@ -1894,5 +1906,245 @@ public class ReflectionUtils {
 		}
 		return false;
 	}
+	
+	
+	/**
+     * Get the underlying class for a type, or null if the type is a variable type.
+     *
+     * @param type the type
+     * @return the underlying class
+     */
+    public static Class<?> getClass(final Type type) {
+        if (type instanceof Class) {
+            return (Class) type;
+        } else if (type instanceof ParameterizedType) {
+            return getClass(((ParameterizedType) type).getRawType());
+        } else if (type instanceof GenericArrayType) {
+            final Type componentType = ((GenericArrayType) type).getGenericComponentType();
+            final Class<?> componentClass = getClass(componentType);
+            if (componentClass != null) {
+                return Array.newInstance(componentClass, 0).getClass();
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+	
+	
+	/**
+     * Get the actual type arguments a child class has used to extend a generic base class.
+     *
+     * @param baseClass  the base class
+     * @param childClass the child class
+     * @param <T>        the type of the base class
+     * @return a list of the raw classes for the actual type arguments.
+     * @deprecated this class is unused in morphia and will be removed in a future release
+     */
+    public static <T> List<Class<?>> getTypeArguments(final Class<T> baseClass, final Class<? extends T> childClass) {
+        final Map<Type, Type> resolvedTypes = new HashMap<Type, Type>();
+        Type type = childClass;
+        // start walking up the inheritance hierarchy until we hit baseClass
+        while (!getClass(type).equals(baseClass)) {
+            if (type instanceof Class) {
+                // there is no useful information for us in raw types, so just
+                // keep going.
+                type = ((Class) type).getGenericSuperclass();
+            } else {
+                final ParameterizedType parameterizedType = (ParameterizedType) type;
+                final Class<?> rawType = (Class) parameterizedType.getRawType();
+
+                final Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
+                final TypeVariable<?>[] typeParameters = rawType.getTypeParameters();
+                for (int i = 0; i < actualTypeArguments.length; i++) {
+                    resolvedTypes.put(typeParameters[i], actualTypeArguments[i]);
+                }
+
+                if (!rawType.equals(baseClass)) {
+                    type = rawType.getGenericSuperclass();
+                }
+            }
+        }
+
+        // finally, for each actual type argument provided to baseClass,
+        // determine (if possible)
+        // the raw class for that type argument.
+        final Type[] actualTypeArguments;
+        if (type instanceof Class) {
+            actualTypeArguments = ((Class) type).getTypeParameters();
+        } else {
+            actualTypeArguments = ((ParameterizedType) type).getActualTypeArguments();
+        }
+        final List<Class<?>> typeArgumentsAsClasses = new ArrayList<Class<?>>();
+        // resolve types by chasing down type variables.
+        for (Type baseType : actualTypeArguments) {
+            while (resolvedTypes.containsKey(baseType)) {
+                baseType = resolvedTypes.get(baseType);
+            }
+            typeArgumentsAsClasses.add(getClass(baseType));
+        }
+        return typeArgumentsAsClasses;
+    }
+
+    /**
+     * Returns the type argument
+     *
+     * @param clazz the Class to examine
+     * @param tv    the TypeVariable to look for
+     * @param <T>   the type of the Class
+     * @return the Class type
+     */
+    public static <T> Class<?> getTypeArgument(final Class<? extends T> clazz, final TypeVariable<? extends GenericDeclaration> tv) {
+        final Map<Type, Type> resolvedTypes = new HashMap<Type, Type>();
+        Type type = clazz;
+        // start walking up the inheritance hierarchy until we hit the end
+        while (type != null && !Object.class.equals(getClass(type))) {
+            if (type instanceof Class) {
+                // there is no useful information for us in raw types, so just
+                // keep going.
+                type = ((Class) type).getGenericSuperclass();
+            } else {
+                final ParameterizedType parameterizedType = (ParameterizedType) type;
+                final Class<?> rawType = (Class) parameterizedType.getRawType();
+
+                final Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
+                final TypeVariable<?>[] typeParameters = rawType.getTypeParameters();
+                for (int i = 0; i < actualTypeArguments.length; i++) {
+                    if (typeParameters[i].equals(tv)) {
+                        final Class cls = getClass(actualTypeArguments[i]);
+                        if (cls != null) {
+                            return cls;
+                        }
+                        //We don't know that the type we want is the one in the map, if this argument has been
+                        //passed through multiple levels of the hierarchy.  Walk back until we run out.
+                        Type typeToTest = resolvedTypes.get(actualTypeArguments[i]);
+                        while (typeToTest != null) {
+                            final Class classToTest = getClass(typeToTest);
+                            if (classToTest != null) {
+                                return classToTest;
+                            }
+                            typeToTest = resolvedTypes.get(typeToTest);
+                        }
+                    }
+                    resolvedTypes.put(typeParameters[i], actualTypeArguments[i]);
+                }
+
+                if (!rawType.equals(Object.class)) {
+                    type = rawType.getGenericSuperclass();
+                }
+            }
+        }
+
+        return null;
+    }
+    
+    
+    /**
+     * Returns the parameterized type for a field
+     *
+     * @param field the field to examine
+     * @param index the location of the parameter to return
+     * @return the type
+     */
+    public static Type getParameterizedType(final Field field, final int index) {
+        if (field != null) {
+            if (field.getGenericType() instanceof ParameterizedType) {
+                final ParameterizedType type = (ParameterizedType) field.getGenericType();
+                if ((type.getActualTypeArguments() != null) && (type.getActualTypeArguments().length <= index)) {
+                    return null;
+                }
+                final Type paramType = type.getActualTypeArguments()[index];
+                if (paramType instanceof GenericArrayType) {
+                    return paramType; //((GenericArrayType) paramType).getGenericComponentType();
+                } else {
+                    if (paramType instanceof ParameterizedType) {
+                        return paramType;
+                    } else {
+                        if (paramType instanceof TypeVariable) {
+                            // TODO: Figure out what to do... Walk back up the to
+                            // the parent class and try to get the variable type
+                            // from the T/V/X
+                            // throw new MappingException("Generic Typed Class not supported:  <" + ((TypeVariable)
+                            // paramType).getName() + "> = " + ((TypeVariable) paramType).getBounds()[0]);
+                            return paramType;
+                        } else if (paramType instanceof WildcardType) {
+                            return paramType;
+                        } else if (paramType instanceof Class) {
+                            return paramType;
+                        } else {
+                            throw new RuntimeException("Unknown type... pretty bad... call for help, wave your hands... yeah!");
+                        }
+                    }
+                }
+            }
+
+            // Not defined on field, but may be on class or super class...
+            return getParameterizedClass(field.getType());
+        }
+
+        return null;
+    }
+    
+
+    /**
+     * Returns the parameterized type of a Class
+     *
+     * @param c the class to examine
+     * @return the type
+     */
+    public static Class getParameterizedClass(final Class c) {
+        return getParameterizedClass(c, 0);
+    }
+
+    /**
+     * Returns the parameterized type in the given position
+     *
+     * @param c     the class to examine
+     * @param index the position of the type to return
+     * @return the type
+     */
+    public static Class getParameterizedClass(final Class c, final int index) {
+        final TypeVariable[] typeVars = c.getTypeParameters();
+        if (typeVars.length > 0) {
+            final TypeVariable typeVariable = typeVars[index];
+            final Type[] bounds = typeVariable.getBounds();
+
+            final Type type = bounds[0];
+            if (type instanceof Class) {
+                return (Class) type; // broke for EnumSet, cause bounds contain
+                // type instead of class
+            } else {
+                return null;
+            }
+        } else {
+            Type superclass = c.getGenericSuperclass();
+            if (superclass == null && c.isInterface()) {
+                Type[] interfaces = c.getGenericInterfaces();
+                if (interfaces.length > 0) {
+                    superclass = interfaces[index];
+                }
+            }
+            if (superclass instanceof ParameterizedType) {
+                final Type[] actualTypeArguments = ((ParameterizedType) superclass).getActualTypeArguments();
+                return actualTypeArguments.length > index ? (Class<?>) actualTypeArguments[index] : null;
+            } else if (!Object.class.equals(superclass)) {
+                return getParameterizedClass((Class) superclass);
+            } else {
+                return null;
+            }
+        }
+    }
+    
+    public static Object invokeMethod(Method method, Object target, Object... args) {
+		try {
+			return method.invoke(target, args);
+		}
+		catch (Exception ex) {
+			handleReflectionException(ex);
+		}
+		throw new IllegalStateException("Should never get here");
+	}
+	
 
 }
