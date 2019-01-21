@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>br.com.anteros</groupId>
 	<artifactId>Anteros-Core</artifactId>
-	<version>1.1.4</version>
+	<version>1.1.5</version>
 
 	<properties>
 		<java.versao>1.6</java.versao>
@@ -156,7 +156,7 @@
 								</execution>
 							</executions>
 							<configuration>
-								<additionalparam>-Xdoclint:none</additionalparam>
+								<doclint>none</doclint>
 							</configuration>
 						</plugin>
 					</plugins>
@@ -223,7 +223,7 @@
 								</execution>
 							</executions>
 							<configuration>
-								<additionalparam>-Xdoclint:none</additionalparam>
+								<doclint>none</doclint>
 							</configuration>
 						</plugin>
 					</plugins>
