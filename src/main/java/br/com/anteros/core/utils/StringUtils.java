@@ -193,6 +193,254 @@ public abstract class StringUtils {
 		}
 		return buf.toString();
 	}
+	
+	
+
+    //-----------------------------------------------------------------------
+
+    /**
+     * <p>Check if a CharSequence starts with a specified prefix.</p>
+     *
+     * <p>{@code null}s are handled without exceptions. Two {@code null}
+     * references are considered to be equal. The comparison is case sensitive.</p>
+     *
+     * <pre>
+     * StringUtils.startsWith(null, null)      = true
+     * StringUtils.startsWith(null, "abc")     = false
+     * StringUtils.startsWith("abcdef", null)  = false
+     * StringUtils.startsWith("abcdef", "abc") = true
+     * StringUtils.startsWith("ABCDEF", "abc") = false
+     * </pre>
+     *
+     * @see java.lang.String#startsWith(String)
+     * @param str  the CharSequence to check, may be null
+     * @param prefix the prefix to find, may be null
+     * @return {@code true} if the CharSequence starts with the prefix, case sensitive, or
+     *  both {@code null}
+     * @since 2.4
+     * @since 3.0 Changed signature from startsWith(String, String) to startsWith(CharSequence, CharSequence)
+     */
+    public static boolean startsWith(final CharSequence str, final CharSequence prefix) {
+        return startsWith(str, prefix, false);
+    }
+
+    /**
+     * <p>Case insensitive check if a CharSequence starts with a specified prefix.</p>
+     *
+     * <p>{@code null}s are handled without exceptions. Two {@code null}
+     * references are considered to be equal. The comparison is case insensitive.</p>
+     *
+     * <pre>
+     * StringUtils.startsWithIgnoreCase(null, null)      = true
+     * StringUtils.startsWithIgnoreCase(null, "abc")     = false
+     * StringUtils.startsWithIgnoreCase("abcdef", null)  = false
+     * StringUtils.startsWithIgnoreCase("abcdef", "abc") = true
+     * StringUtils.startsWithIgnoreCase("ABCDEF", "abc") = true
+     * </pre>
+     *
+     * @see java.lang.String#startsWith(String)
+     * @param str  the CharSequence to check, may be null
+     * @param prefix the prefix to find, may be null
+     * @return {@code true} if the CharSequence starts with the prefix, case insensitive, or
+     *  both {@code null}
+     * @since 2.4
+     * @since 3.0 Changed signature from startsWithIgnoreCase(String, String) to startsWithIgnoreCase(CharSequence, CharSequence)
+     */
+    public static boolean startsWithIgnoreCase(final CharSequence str, final CharSequence prefix) {
+        return startsWith(str, prefix, true);
+    }
+
+    /**
+     * <p>Check if a CharSequence starts with a specified prefix (optionally case insensitive).</p>
+     *
+     * @see java.lang.String#startsWith(String)
+     * @param str  the CharSequence to check, may be null
+     * @param prefix the prefix to find, may be null
+     * @param ignoreCase indicates whether the compare should ignore case
+     *  (case insensitive) or not.
+     * @return {@code true} if the CharSequence starts with the prefix or
+     *  both {@code null}
+     */
+    private static boolean startsWith(final CharSequence str, final CharSequence prefix, final boolean ignoreCase) {
+        if (str == null || prefix == null) {
+            return str == prefix;
+        }
+        if (prefix.length() > str.length()) {
+            return false;
+        }
+        return regionMatches(str, ignoreCase, 0, prefix, 0, prefix.length());
+    }
+    
+    /**
+     * Green implementation of regionMatches.
+     *
+     * @param cs the {@code CharSequence} to be processed
+     * @param ignoreCase whether or not to be case insensitive
+     * @param thisStart the index to start on the {@code cs} CharSequence
+     * @param substring the {@code CharSequence} to be looked for
+     * @param start the index to start on the {@code substring} CharSequence
+     * @param length character length of the region
+     * @return whether the region matched
+     */
+    static boolean regionMatches(final CharSequence cs, final boolean ignoreCase, final int thisStart,
+            final CharSequence substring, final int start, final int length)    {
+        if (cs instanceof String && substring instanceof String) {
+            return ((String) cs).regionMatches(ignoreCase, thisStart, (String) substring, start, length);
+        }
+        int index1 = thisStart;
+        int index2 = start;
+        int tmpLen = length;
+
+        // Extract these first so we detect NPEs the same as the java.lang.String version
+        final int srcLen = cs.length() - thisStart;
+        final int otherLen = substring.length() - start;
+
+        // Check for invalid parameters
+        if (thisStart < 0 || start < 0 || length < 0) {
+            return false;
+        }
+
+        // Check that the regions are long enough
+        if (srcLen < length || otherLen < length) {
+            return false;
+        }
+
+        while (tmpLen-- > 0) {
+            final char c1 = cs.charAt(index1++);
+            final char c2 = substring.charAt(index2++);
+
+            if (c1 == c2) {
+                continue;
+            }
+
+            if (!ignoreCase) {
+                return false;
+            }
+
+            // The same check as in String.regionMatches():
+            if (Character.toUpperCase(c1) != Character.toUpperCase(c2)
+                    && Character.toLowerCase(c1) != Character.toLowerCase(c2)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * <p>Check if a CharSequence starts with any of the provided case-sensitive prefixes.</p>
+     *
+     * <pre>
+     * StringUtils.startsWithAny(null, null)      = false
+     * StringUtils.startsWithAny(null, new String[] {"abc"})  = false
+     * StringUtils.startsWithAny("abcxyz", null)     = false
+     * StringUtils.startsWithAny("abcxyz", new String[] {""}) = true
+     * StringUtils.startsWithAny("abcxyz", new String[] {"abc"}) = true
+     * StringUtils.startsWithAny("abcxyz", new String[] {null, "xyz", "abc"}) = true
+     * StringUtils.startsWithAny("abcxyz", null, "xyz", "ABCX") = false
+     * StringUtils.startsWithAny("ABCXYZ", null, "xyz", "abc") = false
+     * </pre>
+     *
+     * @param sequence the CharSequence to check, may be null
+     * @param searchStrings the case-sensitive CharSequence prefixes, may be empty or contain {@code null}
+     * @see StringUtils#startsWith(CharSequence, CharSequence)
+     * @return {@code true} if the input {@code sequence} is {@code null} AND no {@code searchStrings} are provided, or
+     *   the input {@code sequence} begins with any of the provided case-sensitive {@code searchStrings}.
+     * @since 2.5
+     * @since 3.0 Changed signature from startsWithAny(String, String[]) to startsWithAny(CharSequence, CharSequence...)
+     */
+    public static boolean startsWithAny(final CharSequence sequence, final CharSequence... searchStrings) {
+        if (isEmpty(sequence) || ArrayUtils.isEmpty(searchStrings)) {
+            return false;
+        }
+        for (final CharSequence searchString : searchStrings) {
+            if (startsWith(sequence, searchString)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // endsWith
+    //-----------------------------------------------------------------------
+
+    /**
+     * <p>Check if a CharSequence ends with a specified suffix.</p>
+     *
+     * <p>{@code null}s are handled without exceptions. Two {@code null}
+     * references are considered to be equal. The comparison is case sensitive.</p>
+     *
+     * <pre>
+     * StringUtils.endsWith(null, null)      = true
+     * StringUtils.endsWith(null, "def")     = false
+     * StringUtils.endsWith("abcdef", null)  = false
+     * StringUtils.endsWith("abcdef", "def") = true
+     * StringUtils.endsWith("ABCDEF", "def") = false
+     * StringUtils.endsWith("ABCDEF", "cde") = false
+     * StringUtils.endsWith("ABCDEF", "")    = true
+     * </pre>
+     *
+     * @see java.lang.String#endsWith(String)
+     * @param str  the CharSequence to check, may be null
+     * @param suffix the suffix to find, may be null
+     * @return {@code true} if the CharSequence ends with the suffix, case sensitive, or
+     *  both {@code null}
+     * @since 2.4
+     * @since 3.0 Changed signature from endsWith(String, String) to endsWith(CharSequence, CharSequence)
+     */
+    public static boolean endsWith(final CharSequence str, final CharSequence suffix) {
+        return endsWith(str, suffix, false);
+    }
+
+    /**
+     * <p>Case insensitive check if a CharSequence ends with a specified suffix.</p>
+     *
+     * <p>{@code null}s are handled without exceptions. Two {@code null}
+     * references are considered to be equal. The comparison is case insensitive.</p>
+     *
+     * <pre>
+     * StringUtils.endsWithIgnoreCase(null, null)      = true
+     * StringUtils.endsWithIgnoreCase(null, "def")     = false
+     * StringUtils.endsWithIgnoreCase("abcdef", null)  = false
+     * StringUtils.endsWithIgnoreCase("abcdef", "def") = true
+     * StringUtils.endsWithIgnoreCase("ABCDEF", "def") = true
+     * StringUtils.endsWithIgnoreCase("ABCDEF", "cde") = false
+     * </pre>
+     *
+     * @see java.lang.String#endsWith(String)
+     * @param str  the CharSequence to check, may be null
+     * @param suffix the suffix to find, may be null
+     * @return {@code true} if the CharSequence ends with the suffix, case insensitive, or
+     *  both {@code null}
+     * @since 2.4
+     * @since 3.0 Changed signature from endsWithIgnoreCase(String, String) to endsWithIgnoreCase(CharSequence, CharSequence)
+     */
+    public static boolean endsWithIgnoreCase(final CharSequence str, final CharSequence suffix) {
+        return endsWith(str, suffix, true);
+    }
+
+    /**
+     * <p>Check if a CharSequence ends with a specified suffix (optionally case insensitive).</p>
+     *
+     * @see java.lang.String#endsWith(String)
+     * @param str  the CharSequence to check, may be null
+     * @param suffix the suffix to find, may be null
+     * @param ignoreCase indicates whether the compare should ignore case
+     *  (case insensitive) or not.
+     * @return {@code true} if the CharSequence starts with the prefix or
+     *  both {@code null}
+     */
+    private static boolean endsWith(final CharSequence str, final CharSequence suffix, final boolean ignoreCase) {
+        if (str == null || suffix == null) {
+            return str == suffix;
+        }
+        if (suffix.length() > str.length()) {
+            return false;
+        }
+        final int strOffset = str.length() - suffix.length();
+        return regionMatches(str, ignoreCase, strOffset, suffix, 0, suffix.length());
+    }
+	
 
 	public static boolean startsWithIgnoreCase(String str, String prefix) {
 		if (str == null || prefix == null) {
@@ -224,6 +472,327 @@ public abstract class StringUtils {
 		String lcSuffix = suffix.toLowerCase();
 		return lcStr.equals(lcSuffix);
 	}
+	
+	
+	// Equals
+    //-----------------------------------------------------------------------
+    /**
+     * <p>Compares two CharSequences, returning {@code true} if they represent
+     * equal sequences of characters.</p>
+     *
+     * <p>{@code null}s are handled without exceptions. Two {@code null}
+     * references are considered to be equal. The comparison is <strong>case sensitive</strong>.</p>
+     *
+     * <pre>
+     * StringUtils.equals(null, null)   = true
+     * StringUtils.equals(null, "abc")  = false
+     * StringUtils.equals("abc", null)  = false
+     * StringUtils.equals("abc", "abc") = true
+     * StringUtils.equals("abc", "ABC") = false
+     * </pre>
+     *
+     * @param cs1  the first CharSequence, may be {@code null}
+     * @param cs2  the second CharSequence, may be {@code null}
+     * @return {@code true} if the CharSequences are equal (case-sensitive), or both {@code null}
+     * @since 3.0 Changed signature from equals(String, String) to equals(CharSequence, CharSequence)
+     * @see Object#equals(Object)
+     * @see #equalsIgnoreCase(CharSequence, CharSequence)
+     */
+    public static boolean equals(final CharSequence cs1, final CharSequence cs2) {
+        if (cs1 == cs2) {
+            return true;
+        }
+        if (cs1 == null || cs2 == null) {
+            return false;
+        }
+        if (cs1.length() != cs2.length()) {
+            return false;
+        }
+        if (cs1 instanceof String && cs2 instanceof String) {
+            return cs1.equals(cs2);
+        }
+        // Step-wise comparison
+        final int length = cs1.length();
+        for (int i = 0; i < length; i++) {
+            if (cs1.charAt(i) != cs2.charAt(i)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * <p>Compares two CharSequences, returning {@code true} if they represent
+     * equal sequences of characters, ignoring case.</p>
+     *
+     * <p>{@code null}s are handled without exceptions. Two {@code null}
+     * references are considered equal. The comparison is <strong>case insensitive</strong>.</p>
+     *
+     * <pre>
+     * StringUtils.equalsIgnoreCase(null, null)   = true
+     * StringUtils.equalsIgnoreCase(null, "abc")  = false
+     * StringUtils.equalsIgnoreCase("abc", null)  = false
+     * StringUtils.equalsIgnoreCase("abc", "abc") = true
+     * StringUtils.equalsIgnoreCase("abc", "ABC") = true
+     * </pre>
+     *
+     * @param cs1  the first CharSequence, may be {@code null}
+     * @param cs2  the second CharSequence, may be {@code null}
+     * @return {@code true} if the CharSequences are equal (case-insensitive), or both {@code null}
+     * @since 3.0 Changed signature from equalsIgnoreCase(String, String) to equalsIgnoreCase(CharSequence, CharSequence)
+     * @see #equals(CharSequence, CharSequence)
+     */
+    public static boolean equalsIgnoreCase(final CharSequence cs1, final CharSequence cs2) {
+        if (cs1 == cs2) {
+            return true;
+        }
+        if (cs1 == null || cs2 == null) {
+            return false;
+        }
+        if (cs1.length() != cs2.length()) {
+            return false;
+        }
+        return regionMatches(cs1, true, 0, cs2, 0, cs1.length());
+    }
+
+    // Compare
+    //-----------------------------------------------------------------------
+    /**
+     * <p>Compare two Strings lexicographically, as per {@link String#compareTo(String)}, returning :</p>
+     * <ul>
+     *  <li>{@code int = 0}, if {@code str1} is equal to {@code str2} (or both {@code null})</li>
+     *  <li>{@code int < 0}, if {@code str1} is less than {@code str2}</li>
+     *  <li>{@code int > 0}, if {@code str1} is greater than {@code str2}</li>
+     * </ul>
+     *
+     * <p>This is a {@code null} safe version of :</p>
+     * <blockquote><pre>str1.compareTo(str2)</pre></blockquote>
+     *
+     * <p>{@code null} value is considered less than non-{@code null} value.
+     * Two {@code null} references are considered equal.</p>
+     *
+     * <pre>
+     * StringUtils.compare(null, null)   = 0
+     * StringUtils.compare(null , "a")   &lt; 0
+     * StringUtils.compare("a", null)    &gt; 0
+     * StringUtils.compare("abc", "abc") = 0
+     * StringUtils.compare("a", "b")     &lt; 0
+     * StringUtils.compare("b", "a")     &gt; 0
+     * StringUtils.compare("a", "B")     &gt; 0
+     * StringUtils.compare("ab", "abc")  &lt; 0
+     * </pre>
+     *
+     * @see #compare(String, String, boolean)
+     * @see String#compareTo(String)
+     * @param str1  the String to compare from
+     * @param str2  the String to compare to
+     * @return &lt; 0, 0, &gt; 0, if {@code str1} is respectively less, equal or greater than {@code str2}
+     * @since 3.5
+     */
+    public static int compare(final String str1, final String str2) {
+        return compare(str1, str2, true);
+    }
+
+    /**
+     * <p>Compare two Strings lexicographically, as per {@link String#compareTo(String)}, returning :</p>
+     * <ul>
+     *  <li>{@code int = 0}, if {@code str1} is equal to {@code str2} (or both {@code null})</li>
+     *  <li>{@code int < 0}, if {@code str1} is less than {@code str2}</li>
+     *  <li>{@code int > 0}, if {@code str1} is greater than {@code str2}</li>
+     * </ul>
+     *
+     * <p>This is a {@code null} safe version of :</p>
+     * <blockquote><pre>str1.compareTo(str2)</pre></blockquote>
+     *
+     * <p>{@code null} inputs are handled according to the {@code nullIsLess} parameter.
+     * Two {@code null} references are considered equal.</p>
+     *
+     * <pre>
+     * StringUtils.compare(null, null, *)     = 0
+     * StringUtils.compare(null , "a", true)  &lt; 0
+     * StringUtils.compare(null , "a", false) &gt; 0
+     * StringUtils.compare("a", null, true)   &gt; 0
+     * StringUtils.compare("a", null, false)  &lt; 0
+     * StringUtils.compare("abc", "abc", *)   = 0
+     * StringUtils.compare("a", "b", *)       &lt; 0
+     * StringUtils.compare("b", "a", *)       &gt; 0
+     * StringUtils.compare("a", "B", *)       &gt; 0
+     * StringUtils.compare("ab", "abc", *)    &lt; 0
+     * </pre>
+     *
+     * @see String#compareTo(String)
+     * @param str1  the String to compare from
+     * @param str2  the String to compare to
+     * @param nullIsLess  whether consider {@code null} value less than non-{@code null} value
+     * @return &lt; 0, 0, &gt; 0, if {@code str1} is respectively less, equal ou greater than {@code str2}
+     * @since 3.5
+     */
+    public static int compare(final String str1, final String str2, final boolean nullIsLess) {
+        if (str1 == str2) {
+            return 0;
+        }
+        if (str1 == null) {
+            return nullIsLess ? -1 : 1;
+        }
+        if (str2 == null) {
+            return nullIsLess ? 1 : - 1;
+        }
+        return str1.compareTo(str2);
+    }
+
+    /**
+     * <p>Compare two Strings lexicographically, ignoring case differences,
+     * as per {@link String#compareToIgnoreCase(String)}, returning :</p>
+     * <ul>
+     *  <li>{@code int = 0}, if {@code str1} is equal to {@code str2} (or both {@code null})</li>
+     *  <li>{@code int < 0}, if {@code str1} is less than {@code str2}</li>
+     *  <li>{@code int > 0}, if {@code str1} is greater than {@code str2}</li>
+     * </ul>
+     *
+     * <p>This is a {@code null} safe version of :</p>
+     * <blockquote><pre>str1.compareToIgnoreCase(str2)</pre></blockquote>
+     *
+     * <p>{@code null} value is considered less than non-{@code null} value.
+     * Two {@code null} references are considered equal.
+     * Comparison is case insensitive.</p>
+     *
+     * <pre>
+     * StringUtils.compareIgnoreCase(null, null)   = 0
+     * StringUtils.compareIgnoreCase(null , "a")   &lt; 0
+     * StringUtils.compareIgnoreCase("a", null)    &gt; 0
+     * StringUtils.compareIgnoreCase("abc", "abc") = 0
+     * StringUtils.compareIgnoreCase("abc", "ABC") = 0
+     * StringUtils.compareIgnoreCase("a", "b")     &lt; 0
+     * StringUtils.compareIgnoreCase("b", "a")     &gt; 0
+     * StringUtils.compareIgnoreCase("a", "B")     &lt; 0
+     * StringUtils.compareIgnoreCase("A", "b")     &lt; 0
+     * StringUtils.compareIgnoreCase("ab", "ABC")  &lt; 0
+     * </pre>
+     *
+     * @see #compareIgnoreCase(String, String, boolean)
+     * @see String#compareToIgnoreCase(String)
+     * @param str1  the String to compare from
+     * @param str2  the String to compare to
+     * @return &lt; 0, 0, &gt; 0, if {@code str1} is respectively less, equal ou greater than {@code str2},
+     *          ignoring case differences.
+     * @since 3.5
+     */
+    public static int compareIgnoreCase(final String str1, final String str2) {
+        return compareIgnoreCase(str1, str2, true);
+    }
+
+    /**
+     * <p>Compare two Strings lexicographically, ignoring case differences,
+     * as per {@link String#compareToIgnoreCase(String)}, returning :</p>
+     * <ul>
+     *  <li>{@code int = 0}, if {@code str1} is equal to {@code str2} (or both {@code null})</li>
+     *  <li>{@code int < 0}, if {@code str1} is less than {@code str2}</li>
+     *  <li>{@code int > 0}, if {@code str1} is greater than {@code str2}</li>
+     * </ul>
+     *
+     * <p>This is a {@code null} safe version of :</p>
+     * <blockquote><pre>str1.compareToIgnoreCase(str2)</pre></blockquote>
+     *
+     * <p>{@code null} inputs are handled according to the {@code nullIsLess} parameter.
+     * Two {@code null} references are considered equal.
+     * Comparison is case insensitive.</p>
+     *
+     * <pre>
+     * StringUtils.compareIgnoreCase(null, null, *)     = 0
+     * StringUtils.compareIgnoreCase(null , "a", true)  &lt; 0
+     * StringUtils.compareIgnoreCase(null , "a", false) &gt; 0
+     * StringUtils.compareIgnoreCase("a", null, true)   &gt; 0
+     * StringUtils.compareIgnoreCase("a", null, false)  &lt; 0
+     * StringUtils.compareIgnoreCase("abc", "abc", *)   = 0
+     * StringUtils.compareIgnoreCase("abc", "ABC", *)   = 0
+     * StringUtils.compareIgnoreCase("a", "b", *)       &lt; 0
+     * StringUtils.compareIgnoreCase("b", "a", *)       &gt; 0
+     * StringUtils.compareIgnoreCase("a", "B", *)       &lt; 0
+     * StringUtils.compareIgnoreCase("A", "b", *)       &lt; 0
+     * StringUtils.compareIgnoreCase("ab", "abc", *)    &lt; 0
+     * </pre>
+     *
+     * @see String#compareToIgnoreCase(String)
+     * @param str1  the String to compare from
+     * @param str2  the String to compare to
+     * @param nullIsLess  whether consider {@code null} value less than non-{@code null} value
+     * @return &lt; 0, 0, &gt; 0, if {@code str1} is respectively less, equal ou greater than {@code str2},
+     *          ignoring case differences.
+     * @since 3.5
+     */
+    public static int compareIgnoreCase(final String str1, final String str2, final boolean nullIsLess) {
+        if (str1 == str2) {
+            return 0;
+        }
+        if (str1 == null) {
+            return nullIsLess ? -1 : 1;
+        }
+        if (str2 == null) {
+            return nullIsLess ? 1 : - 1;
+        }
+        return str1.compareToIgnoreCase(str2);
+    }
+
+    /**
+     * <p>Compares given <code>string</code> to a CharSequences vararg of <code>searchStrings</code>,
+     * returning {@code true} if the <code>string</code> is equal to any of the <code>searchStrings</code>.</p>
+     *
+     * <pre>
+     * StringUtils.equalsAny(null, (CharSequence[]) null) = false
+     * StringUtils.equalsAny(null, null, null)    = true
+     * StringUtils.equalsAny(null, "abc", "def")  = false
+     * StringUtils.equalsAny("abc", null, "def")  = false
+     * StringUtils.equalsAny("abc", "abc", "def") = true
+     * StringUtils.equalsAny("abc", "ABC", "DEF") = false
+     * </pre>
+     *
+     * @param string to compare, may be {@code null}.
+     * @param searchStrings a vararg of strings, may be {@code null}.
+     * @return {@code true} if the string is equal (case-sensitive) to any other element of <code>searchStrings</code>;
+     * {@code false} if <code>searchStrings</code> is null or contains no matches.
+     * @since 3.5
+     */
+    public static boolean equalsAny(final CharSequence string, final CharSequence... searchStrings) {
+        if (!ArrayUtils.isEmpty(searchStrings)) {
+            for (final CharSequence next : searchStrings) {
+                if (equals(string, next)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * <p>Compares given <code>string</code> to a CharSequences vararg of <code>searchStrings</code>,
+     * returning {@code true} if the <code>string</code> is equal to any of the <code>searchStrings</code>, ignoring case.</p>
+     *
+     * <pre>
+     * StringUtils.equalsAnyIgnoreCase(null, (CharSequence[]) null) = false
+     * StringUtils.equalsAnyIgnoreCase(null, null, null)    = true
+     * StringUtils.equalsAnyIgnoreCase(null, "abc", "def")  = false
+     * StringUtils.equalsAnyIgnoreCase("abc", null, "def")  = false
+     * StringUtils.equalsAnyIgnoreCase("abc", "abc", "def") = true
+     * StringUtils.equalsAnyIgnoreCase("abc", "ABC", "DEF") = true
+     * </pre>
+     *
+     * @param string to compare, may be {@code null}.
+     * @param searchStrings a vararg of strings, may be {@code null}.
+     * @return {@code true} if the string is equal (case-insensitive) to any other element of <code>searchStrings</code>;
+     * {@code false} if <code>searchStrings</code> is null or contains no matches.
+     * @since 3.5
+     */
+    public static boolean equalsAnyIgnoreCase(final CharSequence string, final CharSequence...searchStrings) {
+        if (!ArrayUtils.isEmpty(searchStrings)) {
+            for (final CharSequence next : searchStrings) {
+                if (equalsIgnoreCase(string, next)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
 	public static boolean substringMatch(CharSequence str, int index, CharSequence substring) {
 		for (int j = 0; j < substring.length(); j++) {
@@ -1991,19 +2560,459 @@ public abstract class StringUtils {
 
 		return modifiedValue;
 	}
+	
+	
+	// Character Tests
+    //-----------------------------------------------------------------------
+    /**
+     * <p>Checks if the CharSequence contains only Unicode letters.</p>
+     *
+     * <p>{@code null} will return {@code false}.
+     * An empty CharSequence (length()=0) will return {@code false}.</p>
+     *
+     * <pre>
+     * StringUtils.isAlpha(null)   = false
+     * StringUtils.isAlpha("")     = false
+     * StringUtils.isAlpha("  ")   = false
+     * StringUtils.isAlpha("abc")  = true
+     * StringUtils.isAlpha("ab2c") = false
+     * StringUtils.isAlpha("ab-c") = false
+     * </pre>
+     *
+     * @param cs  the CharSequence to check, may be null
+     * @return {@code true} if only contains letters, and is non-null
+     * @since 3.0 Changed signature from isAlpha(String) to isAlpha(CharSequence)
+     * @since 3.0 Changed "" to return false and not true
+     */
+    public static boolean isAlpha(final CharSequence cs) {
+        if (isEmpty(cs)) {
+            return false;
+        }
+        final int sz = cs.length();
+        for (int i = 0; i < sz; i++) {
+            if (!Character.isLetter(cs.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+	
 
-	public static boolean isAlphanumeric(String str) {
-		if (str == null) {
-			return false;
-		}
-		int sz = str.length();
-		for (int i = 0; i < sz; i++) {
-			if (Character.isLetterOrDigit(str.charAt(i)) == false) {
-				return false;
-			}
-		}
-		return true;
-	}
+    /**
+     * <p>Checks if the CharSequence contains only Unicode letters and
+     * space (' ').</p>
+     *
+     * <p>{@code null} will return {@code false}
+     * An empty CharSequence (length()=0) will return {@code true}.</p>
+     *
+     * <pre>
+     * StringUtils.isAlphaSpace(null)   = false
+     * StringUtils.isAlphaSpace("")     = true
+     * StringUtils.isAlphaSpace("  ")   = true
+     * StringUtils.isAlphaSpace("abc")  = true
+     * StringUtils.isAlphaSpace("ab c") = true
+     * StringUtils.isAlphaSpace("ab2c") = false
+     * StringUtils.isAlphaSpace("ab-c") = false
+     * </pre>
+     *
+     * @param cs  the CharSequence to check, may be null
+     * @return {@code true} if only contains letters and space,
+     *  and is non-null
+     * @since 3.0 Changed signature from isAlphaSpace(String) to isAlphaSpace(CharSequence)
+     */
+    public static boolean isAlphaSpace(final CharSequence cs) {
+        if (cs == null) {
+            return false;
+        }
+        final int sz = cs.length();
+        for (int i = 0; i < sz; i++) {
+            if (!Character.isLetter(cs.charAt(i)) && cs.charAt(i) != ' ') {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * <p>Checks if the CharSequence contains only Unicode letters or digits.</p>
+     *
+     * <p>{@code null} will return {@code false}.
+     * An empty CharSequence (length()=0) will return {@code false}.</p>
+     *
+     * <pre>
+     * StringUtils.isAlphanumeric(null)   = false
+     * StringUtils.isAlphanumeric("")     = false
+     * StringUtils.isAlphanumeric("  ")   = false
+     * StringUtils.isAlphanumeric("abc")  = true
+     * StringUtils.isAlphanumeric("ab c") = false
+     * StringUtils.isAlphanumeric("ab2c") = true
+     * StringUtils.isAlphanumeric("ab-c") = false
+     * </pre>
+     *
+     * @param cs  the CharSequence to check, may be null
+     * @return {@code true} if only contains letters or digits,
+     *  and is non-null
+     * @since 3.0 Changed signature from isAlphanumeric(String) to isAlphanumeric(CharSequence)
+     * @since 3.0 Changed "" to return false and not true
+     */
+    public static boolean isAlphanumeric(final CharSequence cs) {
+        if (isEmpty(cs)) {
+            return false;
+        }
+        final int sz = cs.length();
+        for (int i = 0; i < sz; i++) {
+            if (!Character.isLetterOrDigit(cs.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    
+    /**
+     * <p>Checks if the CharSequence contains only Unicode letters, digits
+     * or space ({@code ' '}).</p>
+     *
+     * <p>{@code null} will return {@code false}.
+     * An empty CharSequence (length()=0) will return {@code true}.</p>
+     *
+     * <pre>
+     * StringUtils.isAlphanumericSpace(null)   = false
+     * StringUtils.isAlphanumericSpace("")     = true
+     * StringUtils.isAlphanumericSpace("  ")   = true
+     * StringUtils.isAlphanumericSpace("abc")  = true
+     * StringUtils.isAlphanumericSpace("ab c") = true
+     * StringUtils.isAlphanumericSpace("ab2c") = true
+     * StringUtils.isAlphanumericSpace("ab-c") = false
+     * </pre>
+     *
+     * @param cs  the CharSequence to check, may be null
+     * @return {@code true} if only contains letters, digits or space,
+     *  and is non-null
+     * @since 3.0 Changed signature from isAlphanumericSpace(String) to isAlphanumericSpace(CharSequence)
+     */
+    public static boolean isAlphanumericSpace(final CharSequence cs) {
+        if (cs == null) {
+            return false;
+        }
+        final int sz = cs.length();
+        for (int i = 0; i < sz; i++) {
+            if (!Character.isLetterOrDigit(cs.charAt(i)) && cs.charAt(i) != ' ') {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * <p>Checks if the CharSequence contains only ASCII printable characters.</p>
+     *
+     * <p>{@code null} will return {@code false}.
+     * An empty CharSequence (length()=0) will return {@code true}.</p>
+     *
+     * <pre>
+     * StringUtils.isAsciiPrintable(null)     = false
+     * StringUtils.isAsciiPrintable("")       = true
+     * StringUtils.isAsciiPrintable(" ")      = true
+     * StringUtils.isAsciiPrintable("Ceki")   = true
+     * StringUtils.isAsciiPrintable("ab2c")   = true
+     * StringUtils.isAsciiPrintable("!ab-c~") = true
+     * StringUtils.isAsciiPrintable("\u0020") = true
+     * StringUtils.isAsciiPrintable("\u0021") = true
+     * StringUtils.isAsciiPrintable("\u007e") = true
+     * StringUtils.isAsciiPrintable("\u007f") = false
+     * StringUtils.isAsciiPrintable("Ceki G\u00fclc\u00fc") = false
+     * </pre>
+     *
+     * @param cs the CharSequence to check, may be null
+     * @return {@code true} if every character is in the range
+     *  32 thru 126
+     * @since 2.1
+     * @since 3.0 Changed signature from isAsciiPrintable(String) to isAsciiPrintable(CharSequence)
+     */
+    public static boolean isAsciiPrintable(final CharSequence cs) {
+        if (cs == null) {
+            return false;
+        }
+        final int sz = cs.length();
+        for (int i = 0; i < sz; i++) {
+            if (!isAsciiPrintable(cs.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    public static boolean isAsciiPrintable(final char ch) {
+        return ch >= 32 && ch < 127;
+    }
+
+    /**
+     * <p>Checks if the CharSequence contains only Unicode digits.
+     * A decimal point is not a Unicode digit and returns false.</p>
+     *
+     * <p>{@code null} will return {@code false}.
+     * An empty CharSequence (length()=0) will return {@code false}.</p>
+     *
+     * <p>Note that the method does not allow for a leading sign, either positive or negative.
+     * Also, if a String passes the numeric test, it may still generate a NumberFormatException
+     * when parsed by Integer.parseInt or Long.parseLong, e.g. if the value is outside the range
+     * for int or long respectively.</p>
+     *
+     * <pre>
+     * StringUtils.isNumeric(null)   = false
+     * StringUtils.isNumeric("")     = false
+     * StringUtils.isNumeric("  ")   = false
+     * StringUtils.isNumeric("123")  = true
+     * StringUtils.isNumeric("\u0967\u0968\u0969")  = true
+     * StringUtils.isNumeric("12 3") = false
+     * StringUtils.isNumeric("ab2c") = false
+     * StringUtils.isNumeric("12-3") = false
+     * StringUtils.isNumeric("12.3") = false
+     * StringUtils.isNumeric("-123") = false
+     * StringUtils.isNumeric("+123") = false
+     * </pre>
+     *
+     * @param cs  the CharSequence to check, may be null
+     * @return {@code true} if only contains digits, and is non-null
+     * @since 3.0 Changed signature from isNumeric(String) to isNumeric(CharSequence)
+     * @since 3.0 Changed "" to return false and not true
+     */
+    public static boolean isNumeric(final CharSequence cs) {
+        if (isEmpty(cs)) {
+            return false;
+        }
+        final int sz = cs.length();
+        for (int i = 0; i < sz; i++) {
+            if (!Character.isDigit(cs.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * <p>Checks if the CharSequence contains only Unicode digits or space
+     * ({@code ' '}).
+     * A decimal point is not a Unicode digit and returns false.</p>
+     *
+     * <p>{@code null} will return {@code false}.
+     * An empty CharSequence (length()=0) will return {@code true}.</p>
+     *
+     * <pre>
+     * StringUtils.isNumericSpace(null)   = false
+     * StringUtils.isNumericSpace("")     = true
+     * StringUtils.isNumericSpace("  ")   = true
+     * StringUtils.isNumericSpace("123")  = true
+     * StringUtils.isNumericSpace("12 3") = true
+     * StringUtils.isNumeric("\u0967\u0968\u0969")  = true
+     * StringUtils.isNumeric("\u0967\u0968 \u0969")  = true
+     * StringUtils.isNumericSpace("ab2c") = false
+     * StringUtils.isNumericSpace("12-3") = false
+     * StringUtils.isNumericSpace("12.3") = false
+     * </pre>
+     *
+     * @param cs  the CharSequence to check, may be null
+     * @return {@code true} if only contains digits or space,
+     *  and is non-null
+     * @since 3.0 Changed signature from isNumericSpace(String) to isNumericSpace(CharSequence)
+     */
+    public static boolean isNumericSpace(final CharSequence cs) {
+        if (cs == null) {
+            return false;
+        }
+        final int sz = cs.length();
+        for (int i = 0; i < sz; i++) {
+            if (!Character.isDigit(cs.charAt(i)) && cs.charAt(i) != ' ') {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * <p>Checks if a String {@code str} contains Unicode digits,
+     * if yes then concatenate all the digits in {@code str} and return it as a String.</p>
+     *
+     * <p>An empty ("") String will be returned if no digits found in {@code str}.</p>
+     *
+     * <pre>
+     * StringUtils.getDigits(null)  = null
+     * StringUtils.getDigits("")    = ""
+     * StringUtils.getDigits("abc") = ""
+     * StringUtils.getDigits("1000$") = "1000"
+     * StringUtils.getDigits("1123~45") = "112345"
+     * StringUtils.getDigits("(541) 754-3010") = "5417543010"
+     * StringUtils.getDigits("\u0967\u0968\u0969") = "\u0967\u0968\u0969"
+     * </pre>
+     *
+     * @param str the String to extract digits from, may be null
+     * @return String with only digits,
+     *           or an empty ("") String if no digits found,
+     *           or {@code null} String if {@code str} is null
+     * @since 3.6
+     */
+    public static String getDigits(final String str) {
+        if (isEmpty(str)) {
+            return str;
+        }
+        final int sz = str.length();
+        final StringBuilder strDigits = new StringBuilder(sz);
+        for (int i = 0; i < sz; i++) {
+            final char tempChar = str.charAt(i);
+            if (Character.isDigit(tempChar)) {
+                strDigits.append(tempChar);
+            }
+        }
+        return strDigits.toString();
+    }
+
+    /**
+     * <p>Checks if the CharSequence contains only whitespace.</p>
+     *
+     * <p>Whitespace is defined by {@link Character#isWhitespace(char)}.</p>
+     *
+     * <p>{@code null} will return {@code false}.
+     * An empty CharSequence (length()=0) will return {@code true}.</p>
+     *
+     * <pre>
+     * StringUtils.isWhitespace(null)   = false
+     * StringUtils.isWhitespace("")     = true
+     * StringUtils.isWhitespace("  ")   = true
+     * StringUtils.isWhitespace("abc")  = false
+     * StringUtils.isWhitespace("ab2c") = false
+     * StringUtils.isWhitespace("ab-c") = false
+     * </pre>
+     *
+     * @param cs  the CharSequence to check, may be null
+     * @return {@code true} if only contains whitespace, and is non-null
+     * @since 2.0
+     * @since 3.0 Changed signature from isWhitespace(String) to isWhitespace(CharSequence)
+     */
+    public static boolean isWhitespace(final CharSequence cs) {
+        if (cs == null) {
+            return false;
+        }
+        final int sz = cs.length();
+        for (int i = 0; i < sz; i++) {
+            if (!Character.isWhitespace(cs.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * <p>Checks if the CharSequence contains only lowercase characters.</p>
+     *
+     * <p>{@code null} will return {@code false}.
+     * An empty CharSequence (length()=0) will return {@code false}.</p>
+     *
+     * <pre>
+     * StringUtils.isAllLowerCase(null)   = false
+     * StringUtils.isAllLowerCase("")     = false
+     * StringUtils.isAllLowerCase("  ")   = false
+     * StringUtils.isAllLowerCase("abc")  = true
+     * StringUtils.isAllLowerCase("abC")  = false
+     * StringUtils.isAllLowerCase("ab c") = false
+     * StringUtils.isAllLowerCase("ab1c") = false
+     * StringUtils.isAllLowerCase("ab/c") = false
+     * </pre>
+     *
+     * @param cs  the CharSequence to check, may be null
+     * @return {@code true} if only contains lowercase characters, and is non-null
+     * @since 2.5
+     * @since 3.0 Changed signature from isAllLowerCase(String) to isAllLowerCase(CharSequence)
+     */
+    public static boolean isAllLowerCase(final CharSequence cs) {
+        if (cs == null || isEmpty(cs)) {
+            return false;
+        }
+        final int sz = cs.length();
+        for (int i = 0; i < sz; i++) {
+            if (!Character.isLowerCase(cs.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * <p>Checks if the CharSequence contains only uppercase characters.</p>
+     *
+     * <p>{@code null} will return {@code false}.
+     * An empty String (length()=0) will return {@code false}.</p>
+     *
+     * <pre>
+     * StringUtils.isAllUpperCase(null)   = false
+     * StringUtils.isAllUpperCase("")     = false
+     * StringUtils.isAllUpperCase("  ")   = false
+     * StringUtils.isAllUpperCase("ABC")  = true
+     * StringUtils.isAllUpperCase("aBC")  = false
+     * StringUtils.isAllUpperCase("A C")  = false
+     * StringUtils.isAllUpperCase("A1C")  = false
+     * StringUtils.isAllUpperCase("A/C")  = false
+     * </pre>
+     *
+     * @param cs the CharSequence to check, may be null
+     * @return {@code true} if only contains uppercase characters, and is non-null
+     * @since 2.5
+     * @since 3.0 Changed signature from isAllUpperCase(String) to isAllUpperCase(CharSequence)
+     */
+    public static boolean isAllUpperCase(final CharSequence cs) {
+        if (cs == null || isEmpty(cs)) {
+            return false;
+        }
+        final int sz = cs.length();
+        for (int i = 0; i < sz; i++) {
+            if (!Character.isUpperCase(cs.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * <p>Checks if the CharSequence contains mixed casing of both uppercase and lowercase characters.</p>
+     *
+     * <p>{@code null} will return {@code false}. An empty CharSequence ({@code length()=0}) will return
+     * {@code false}.</p>
+     *
+     * <pre>
+     * StringUtils.isMixedCase(null)    = false
+     * StringUtils.isMixedCase("")      = false
+     * StringUtils.isMixedCase("ABC")   = false
+     * StringUtils.isMixedCase("abc")   = false
+     * StringUtils.isMixedCase("aBc")   = true
+     * StringUtils.isMixedCase("A c")   = true
+     * StringUtils.isMixedCase("A1c")   = true
+     * StringUtils.isMixedCase("a/C")   = true
+     * StringUtils.isMixedCase("aC\t")  = true
+     * </pre>
+     *
+     * @param cs the CharSequence to check, may be null
+     * @return {@code true} if the CharSequence contains both uppercase and lowercase characters
+     * @since 3.5
+     */
+    public static boolean isMixedCase(final CharSequence cs) {
+        if (isEmpty(cs) || cs.length() == 1) {
+            return false;
+        }
+        boolean containsUppercase = false;
+        boolean containsLowercase = false;
+        final int sz = cs.length();
+        for (int i = 0; i < sz; i++) {
+            if (containsUppercase && containsLowercase) {
+                return true;
+            } else if (Character.isUpperCase(cs.charAt(i))) {
+                containsUppercase = true;
+            } else if (Character.isLowerCase(cs.charAt(i))) {
+                containsLowercase = true;
+            }
+        }
+        return containsUppercase && containsLowercase;
+    }
+
 
 	public static String leftPad(String str, int size) {
 		return leftPad(str, size, ' ');
