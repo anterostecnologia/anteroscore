@@ -191,7 +191,7 @@ public class ReflectionUtils {
 		return allFields;
 	}
 
-	public static Method[] getAllMethodsAnnotatedWith(Set<String> clazzes, Class<? extends Annotation> annotatedWith)
+	public static Method[] getAllMethodsAnnotatedWith(Set<String> clazzes, Class<? extends Annotation>[] annotatedWith)
 			throws ClassNotFoundException {
 		List<Method> accum = new LinkedList<Method>();
 		for (String cl : clazzes) {
@@ -199,8 +199,10 @@ public class ReflectionUtils {
 			while (objectClass != Object.class) {
 				Method[] f = objectClass.getDeclaredMethods();
 				for (int i = 0; i < f.length; i++) {
-					if (f[i].isAnnotationPresent(annotatedWith)) {
-						accum.add(f[i]);
+					for (Class<? extends Annotation> an : annotatedWith) {
+						if (f[i].isAnnotationPresent(an)) {
+							accum.add(f[i]);
+						}
 					}
 				}
 				objectClass = objectClass.getSuperclass();
@@ -239,7 +241,7 @@ public class ReflectionUtils {
 		}
 		return allMethods;
 	}
-	
+
 	public static Method getMethodByName(Class<?> clazz, String methodName) {
 		Method[] allDeclaredMethods = getAllDeclaredMethods(clazz);
 		for (Method m : allDeclaredMethods) {
@@ -1079,7 +1081,7 @@ public class ReflectionUtils {
 			MethodDescriptor md = (MethodDescriptor) obj;
 
 			return (exact == md.exact && methodName.equals(md.methodName) && cls.equals(md.cls)
-			&& java.util.Arrays.equals(paramTypes, md.paramTypes));
+					&& java.util.Arrays.equals(paramTypes, md.paramTypes));
 		}
 
 		public int hashCode() {
@@ -1542,31 +1544,24 @@ public class ReflectionUtils {
 
 	/**
 	 * <p>
-	 * Returns a new instance of the specified class inferring the right
-	 * constructor from the types of the arguments.
+	 * Returns a new instance of the specified class inferring the right constructor
+	 * from the types of the arguments.
 	 * </p>
 	 * 
 	 * <p>
-	 * This locates and calls a constructor. The constructor signature must
-	 * match the argument types by assignment compatibility.
+	 * This locates and calls a constructor. The constructor signature must match
+	 * the argument types by assignment compatibility.
 	 * </p>
 	 *
-	 * @param <T>
-	 *            the type to be constructed
-	 * @param cls
-	 *            the class to be constructed, not null
-	 * @param args
-	 *            the array of arguments, null treated as empty
+	 * @param <T>  the type to be constructed
+	 * @param cls  the class to be constructed, not null
+	 * @param args the array of arguments, null treated as empty
 	 * @return new instance of <code>cls</code>, not null
 	 *
-	 * @throws NoSuchMethodException
-	 *             if a matching constructor cannot be found
-	 * @throws IllegalAccessException
-	 *             if invocation is not permitted by security
-	 * @throws InvocationTargetException
-	 *             if an error occurs on invocation
-	 * @throws InstantiationException
-	 *             if an error occurs on instantiation
+	 * @throws NoSuchMethodException     if a matching constructor cannot be found
+	 * @throws IllegalAccessException    if invocation is not permitted by security
+	 * @throws InvocationTargetException if an error occurs on invocation
+	 * @throws InstantiationException    if an error occurs on instantiation
 	 * @see #invokeConstructor(java.lang.Class, java.lang.Object[],
 	 *      java.lang.Class[])
 	 */
@@ -1584,33 +1579,25 @@ public class ReflectionUtils {
 
 	/**
 	 * <p>
-	 * Returns a new instance of the specified class choosing the right
-	 * constructor from the list of parameter types.
+	 * Returns a new instance of the specified class choosing the right constructor
+	 * from the list of parameter types.
 	 * </p>
 	 * 
 	 * <p>
-	 * This locates and calls a constructor. The constructor signature must
-	 * match the parameter types by assignment compatibility.
+	 * This locates and calls a constructor. The constructor signature must match
+	 * the parameter types by assignment compatibility.
 	 * </p>
 	 *
-	 * @param <T>
-	 *            the type to be constructed
-	 * @param cls
-	 *            the class to be constructed, not null
-	 * @param args
-	 *            the array of arguments, null treated as empty
-	 * @param parameterTypes
-	 *            the array of parameter types, null treated as empty
+	 * @param <T>            the type to be constructed
+	 * @param cls            the class to be constructed, not null
+	 * @param args           the array of arguments, null treated as empty
+	 * @param parameterTypes the array of parameter types, null treated as empty
 	 * @return new instance of <code>cls</code>, not null
 	 *
-	 * @throws NoSuchMethodException
-	 *             if a matching constructor cannot be found
-	 * @throws IllegalAccessException
-	 *             if invocation is not permitted by security
-	 * @throws InvocationTargetException
-	 *             if an error occurs on invocation
-	 * @throws InstantiationException
-	 *             if an error occurs on instantiation
+	 * @throws NoSuchMethodException     if a matching constructor cannot be found
+	 * @throws IllegalAccessException    if invocation is not permitted by security
+	 * @throws InvocationTargetException if an error occurs on invocation
+	 * @throws InstantiationException    if an error occurs on instantiation
 	 * @see Constructor#newInstance
 	 */
 	public static <T> T invokeConstructor(Class<T> cls, Object[] args, Class<?>[] parameterTypes)
@@ -1630,31 +1617,24 @@ public class ReflectionUtils {
 
 	/**
 	 * <p>
-	 * Returns a new instance of the specified class inferring the right
-	 * constructor from the types of the arguments.
+	 * Returns a new instance of the specified class inferring the right constructor
+	 * from the types of the arguments.
 	 * </p>
 	 *
 	 * <p>
-	 * This locates and calls a constructor. The constructor signature must
-	 * match the argument types exactly.
+	 * This locates and calls a constructor. The constructor signature must match
+	 * the argument types exactly.
 	 * </p>
 	 *
-	 * @param <T>
-	 *            the type to be constructed
-	 * @param cls
-	 *            the class to be constructed, not null
-	 * @param args
-	 *            the array of arguments, null treated as empty
+	 * @param <T>  the type to be constructed
+	 * @param cls  the class to be constructed, not null
+	 * @param args the array of arguments, null treated as empty
 	 * @return new instance of <code>cls</code>, not null
 	 *
-	 * @throws NoSuchMethodException
-	 *             if a matching constructor cannot be found
-	 * @throws IllegalAccessException
-	 *             if invocation is not permitted by security
-	 * @throws InvocationTargetException
-	 *             if an error occurs on invocation
-	 * @throws InstantiationException
-	 *             if an error occurs on instantiation
+	 * @throws NoSuchMethodException     if a matching constructor cannot be found
+	 * @throws IllegalAccessException    if invocation is not permitted by security
+	 * @throws InvocationTargetException if an error occurs on invocation
+	 * @throws InstantiationException    if an error occurs on instantiation
 	 * @see #invokeExactConstructor(java.lang.Class, java.lang.Object[],
 	 *      java.lang.Class[])
 	 */
@@ -1673,33 +1653,25 @@ public class ReflectionUtils {
 
 	/**
 	 * <p>
-	 * Returns a new instance of the specified class choosing the right
-	 * constructor from the list of parameter types.
+	 * Returns a new instance of the specified class choosing the right constructor
+	 * from the list of parameter types.
 	 * </p>
 	 *
 	 * <p>
-	 * This locates and calls a constructor. The constructor signature must
-	 * match the parameter types exactly.
+	 * This locates and calls a constructor. The constructor signature must match
+	 * the parameter types exactly.
 	 * </p>
 	 *
-	 * @param <T>
-	 *            the type to be constructed
-	 * @param cls
-	 *            the class to be constructed, not null
-	 * @param args
-	 *            the array of arguments, null treated as empty
-	 * @param parameterTypes
-	 *            the array of parameter types, null treated as empty
+	 * @param <T>            the type to be constructed
+	 * @param cls            the class to be constructed, not null
+	 * @param args           the array of arguments, null treated as empty
+	 * @param parameterTypes the array of parameter types, null treated as empty
 	 * @return new instance of <code>cls</code>, not null
 	 *
-	 * @throws NoSuchMethodException
-	 *             if a matching constructor cannot be found
-	 * @throws IllegalAccessException
-	 *             if invocation is not permitted by security
-	 * @throws InvocationTargetException
-	 *             if an error occurs on invocation
-	 * @throws InstantiationException
-	 *             if an error occurs on instantiation
+	 * @throws NoSuchMethodException     if a matching constructor cannot be found
+	 * @throws IllegalAccessException    if invocation is not permitted by security
+	 * @throws InvocationTargetException if an error occurs on invocation
+	 * @throws InstantiationException    if an error occurs on instantiation
 	 * @see Constructor#newInstance
 	 */
 	public static <T> T invokeExactConstructor(Class<T> cls, Object[] args, Class<?>[] parameterTypes)
@@ -1724,16 +1696,13 @@ public class ReflectionUtils {
 	 * </p>
 	 * 
 	 * <p>
-	 * This finds the constructor and ensures that it is accessible. The
-	 * constructor signature must match the parameter types exactly.
+	 * This finds the constructor and ensures that it is accessible. The constructor
+	 * signature must match the parameter types exactly.
 	 * </p>
 	 *
-	 * @param <T>
-	 *            the constructor type
-	 * @param cls
-	 *            the class to find a constructor for, not null
-	 * @param parameterTypes
-	 *            the array of parameter types, null treated as empty
+	 * @param <T>            the constructor type
+	 * @param cls            the class to find a constructor for, not null
+	 * @param parameterTypes the array of parameter types, null treated as empty
 	 * @return the constructor, null if no matching accessible constructor found
 	 * @see Class#getConstructor
 	 * @see #getAccessibleConstructor(java.lang.reflect.Constructor)
@@ -1755,10 +1724,8 @@ public class ReflectionUtils {
 	 * This simply ensures that the constructor is accessible.
 	 * </p>
 	 *
-	 * @param <T>
-	 *            the constructor type
-	 * @param ctor
-	 *            the prototype constructor object, not null
+	 * @param <T>  the constructor type
+	 * @param ctor the prototype constructor object, not null
 	 * @return the constructor, null if no matching accessible constructor found
 	 * @see java.lang.SecurityManager
 	 */
@@ -1788,25 +1755,21 @@ public class ReflectionUtils {
 	 * </p>
 	 * 
 	 * <p>
-	 * This checks all the constructor and finds one with compatible parameters
-	 * This requires that every parameter is assignable from the given parameter
-	 * types. This is a more flexible search than the normal exact matching
-	 * algorithm.
+	 * This checks all the constructor and finds one with compatible parameters This
+	 * requires that every parameter is assignable from the given parameter types.
+	 * This is a more flexible search than the normal exact matching algorithm.
 	 * </p>
 	 *
 	 * <p>
-	 * First it checks if there is a constructor matching the exact signature.
-	 * If not then all the constructors of the class are checked to see if their
+	 * First it checks if there is a constructor matching the exact signature. If
+	 * not then all the constructors of the class are checked to see if their
 	 * signatures are assignment compatible with the parameter types. The first
 	 * assignment compatible matching constructor is returned.
 	 * </p>
 	 *
-	 * @param <T>
-	 *            the constructor type
-	 * @param cls
-	 *            the class to find a constructor for, not null
-	 * @param parameterTypes
-	 *            find method with compatible parameters
+	 * @param <T>            the constructor type
+	 * @param cls            the class to find a constructor for, not null
+	 * @param parameterTypes find method with compatible parameters
 	 * @return the constructor, null if no matching accessible constructor found
 	 */
 	public static <T> Constructor<T> getMatchingAccessibleConstructor(Class<T> cls, Class<?>... parameterTypes) {
@@ -1906,245 +1869,245 @@ public class ReflectionUtils {
 		}
 		return false;
 	}
-	
-	
+
 	/**
-     * Get the underlying class for a type, or null if the type is a variable type.
-     *
-     * @param type the type
-     * @return the underlying class
-     */
-    public static Class<?> getClass(final Type type) {
-        if (type instanceof Class) {
-            return (Class) type;
-        } else if (type instanceof ParameterizedType) {
-            return getClass(((ParameterizedType) type).getRawType());
-        } else if (type instanceof GenericArrayType) {
-            final Type componentType = ((GenericArrayType) type).getGenericComponentType();
-            final Class<?> componentClass = getClass(componentType);
-            if (componentClass != null) {
-                return Array.newInstance(componentClass, 0).getClass();
-            } else {
-                return null;
-            }
-        } else {
-            return null;
-        }
-    }
-	
-	
+	 * Get the underlying class for a type, or null if the type is a variable type.
+	 *
+	 * @param type the type
+	 * @return the underlying class
+	 */
+	public static Class<?> getClass(final Type type) {
+		if (type instanceof Class) {
+			return (Class) type;
+		} else if (type instanceof ParameterizedType) {
+			return getClass(((ParameterizedType) type).getRawType());
+		} else if (type instanceof GenericArrayType) {
+			final Type componentType = ((GenericArrayType) type).getGenericComponentType();
+			final Class<?> componentClass = getClass(componentType);
+			if (componentClass != null) {
+				return Array.newInstance(componentClass, 0).getClass();
+			} else {
+				return null;
+			}
+		} else {
+			return null;
+		}
+	}
+
 	/**
-     * Get the actual type arguments a child class has used to extend a generic base class.
-     *
-     * @param baseClass  the base class
-     * @param childClass the child class
-     * @param <T>        the type of the base class
-     * @return a list of the raw classes for the actual type arguments.
-     * @deprecated this class is unused in morphia and will be removed in a future release
-     */
-    public static <T> List<Class<?>> getTypeArguments(final Class<T> baseClass, final Class<? extends T> childClass) {
-        final Map<Type, Type> resolvedTypes = new HashMap<Type, Type>();
-        Type type = childClass;
-        // start walking up the inheritance hierarchy until we hit baseClass
-        while (!getClass(type).equals(baseClass)) {
-            if (type instanceof Class) {
-                // there is no useful information for us in raw types, so just
-                // keep going.
-                type = ((Class) type).getGenericSuperclass();
-            } else {
-                final ParameterizedType parameterizedType = (ParameterizedType) type;
-                final Class<?> rawType = (Class) parameterizedType.getRawType();
+	 * Get the actual type arguments a child class has used to extend a generic base
+	 * class.
+	 *
+	 * @param baseClass  the base class
+	 * @param childClass the child class
+	 * @param <T>        the type of the base class
+	 * @return a list of the raw classes for the actual type arguments.
+	 * @deprecated this class is unused in morphia and will be removed in a future
+	 *             release
+	 */
+	public static <T> List<Class<?>> getTypeArguments(final Class<T> baseClass, final Class<? extends T> childClass) {
+		final Map<Type, Type> resolvedTypes = new HashMap<Type, Type>();
+		Type type = childClass;
+		// start walking up the inheritance hierarchy until we hit baseClass
+		while (!getClass(type).equals(baseClass)) {
+			if (type instanceof Class) {
+				// there is no useful information for us in raw types, so just
+				// keep going.
+				type = ((Class) type).getGenericSuperclass();
+			} else {
+				final ParameterizedType parameterizedType = (ParameterizedType) type;
+				final Class<?> rawType = (Class) parameterizedType.getRawType();
 
-                final Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
-                final TypeVariable<?>[] typeParameters = rawType.getTypeParameters();
-                for (int i = 0; i < actualTypeArguments.length; i++) {
-                    resolvedTypes.put(typeParameters[i], actualTypeArguments[i]);
-                }
+				final Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
+				final TypeVariable<?>[] typeParameters = rawType.getTypeParameters();
+				for (int i = 0; i < actualTypeArguments.length; i++) {
+					resolvedTypes.put(typeParameters[i], actualTypeArguments[i]);
+				}
 
-                if (!rawType.equals(baseClass)) {
-                    type = rawType.getGenericSuperclass();
-                }
-            }
-        }
+				if (!rawType.equals(baseClass)) {
+					type = rawType.getGenericSuperclass();
+				}
+			}
+		}
 
-        // finally, for each actual type argument provided to baseClass,
-        // determine (if possible)
-        // the raw class for that type argument.
-        final Type[] actualTypeArguments;
-        if (type instanceof Class) {
-            actualTypeArguments = ((Class) type).getTypeParameters();
-        } else {
-            actualTypeArguments = ((ParameterizedType) type).getActualTypeArguments();
-        }
-        final List<Class<?>> typeArgumentsAsClasses = new ArrayList<Class<?>>();
-        // resolve types by chasing down type variables.
-        for (Type baseType : actualTypeArguments) {
-            while (resolvedTypes.containsKey(baseType)) {
-                baseType = resolvedTypes.get(baseType);
-            }
-            typeArgumentsAsClasses.add(getClass(baseType));
-        }
-        return typeArgumentsAsClasses;
-    }
+		// finally, for each actual type argument provided to baseClass,
+		// determine (if possible)
+		// the raw class for that type argument.
+		final Type[] actualTypeArguments;
+		if (type instanceof Class) {
+			actualTypeArguments = ((Class) type).getTypeParameters();
+		} else {
+			actualTypeArguments = ((ParameterizedType) type).getActualTypeArguments();
+		}
+		final List<Class<?>> typeArgumentsAsClasses = new ArrayList<Class<?>>();
+		// resolve types by chasing down type variables.
+		for (Type baseType : actualTypeArguments) {
+			while (resolvedTypes.containsKey(baseType)) {
+				baseType = resolvedTypes.get(baseType);
+			}
+			typeArgumentsAsClasses.add(getClass(baseType));
+		}
+		return typeArgumentsAsClasses;
+	}
 
-    /**
-     * Returns the type argument
-     *
-     * @param clazz the Class to examine
-     * @param tv    the TypeVariable to look for
-     * @param <T>   the type of the Class
-     * @return the Class type
-     */
-    public static <T> Class<?> getTypeArgument(final Class<? extends T> clazz, final TypeVariable<? extends GenericDeclaration> tv) {
-        final Map<Type, Type> resolvedTypes = new HashMap<Type, Type>();
-        Type type = clazz;
-        // start walking up the inheritance hierarchy until we hit the end
-        while (type != null && !Object.class.equals(getClass(type))) {
-            if (type instanceof Class) {
-                // there is no useful information for us in raw types, so just
-                // keep going.
-                type = ((Class) type).getGenericSuperclass();
-            } else {
-                final ParameterizedType parameterizedType = (ParameterizedType) type;
-                final Class<?> rawType = (Class) parameterizedType.getRawType();
+	/**
+	 * Returns the type argument
+	 *
+	 * @param clazz the Class to examine
+	 * @param tv    the TypeVariable to look for
+	 * @param <T>   the type of the Class
+	 * @return the Class type
+	 */
+	public static <T> Class<?> getTypeArgument(final Class<? extends T> clazz,
+			final TypeVariable<? extends GenericDeclaration> tv) {
+		final Map<Type, Type> resolvedTypes = new HashMap<Type, Type>();
+		Type type = clazz;
+		// start walking up the inheritance hierarchy until we hit the end
+		while (type != null && !Object.class.equals(getClass(type))) {
+			if (type instanceof Class) {
+				// there is no useful information for us in raw types, so just
+				// keep going.
+				type = ((Class) type).getGenericSuperclass();
+			} else {
+				final ParameterizedType parameterizedType = (ParameterizedType) type;
+				final Class<?> rawType = (Class) parameterizedType.getRawType();
 
-                final Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
-                final TypeVariable<?>[] typeParameters = rawType.getTypeParameters();
-                for (int i = 0; i < actualTypeArguments.length; i++) {
-                    if (typeParameters[i].equals(tv)) {
-                        final Class cls = getClass(actualTypeArguments[i]);
-                        if (cls != null) {
-                            return cls;
-                        }
-                        //We don't know that the type we want is the one in the map, if this argument has been
-                        //passed through multiple levels of the hierarchy.  Walk back until we run out.
-                        Type typeToTest = resolvedTypes.get(actualTypeArguments[i]);
-                        while (typeToTest != null) {
-                            final Class classToTest = getClass(typeToTest);
-                            if (classToTest != null) {
-                                return classToTest;
-                            }
-                            typeToTest = resolvedTypes.get(typeToTest);
-                        }
-                    }
-                    resolvedTypes.put(typeParameters[i], actualTypeArguments[i]);
-                }
+				final Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
+				final TypeVariable<?>[] typeParameters = rawType.getTypeParameters();
+				for (int i = 0; i < actualTypeArguments.length; i++) {
+					if (typeParameters[i].equals(tv)) {
+						final Class cls = getClass(actualTypeArguments[i]);
+						if (cls != null) {
+							return cls;
+						}
+						// We don't know that the type we want is the one in the map, if this argument
+						// has been
+						// passed through multiple levels of the hierarchy. Walk back until we run out.
+						Type typeToTest = resolvedTypes.get(actualTypeArguments[i]);
+						while (typeToTest != null) {
+							final Class classToTest = getClass(typeToTest);
+							if (classToTest != null) {
+								return classToTest;
+							}
+							typeToTest = resolvedTypes.get(typeToTest);
+						}
+					}
+					resolvedTypes.put(typeParameters[i], actualTypeArguments[i]);
+				}
 
-                if (!rawType.equals(Object.class)) {
-                    type = rawType.getGenericSuperclass();
-                }
-            }
-        }
+				if (!rawType.equals(Object.class)) {
+					type = rawType.getGenericSuperclass();
+				}
+			}
+		}
 
-        return null;
-    }
-    
-    
-    /**
-     * Returns the parameterized type for a field
-     *
-     * @param field the field to examine
-     * @param index the location of the parameter to return
-     * @return the type
-     */
-    public static Type getParameterizedType(final Field field, final int index) {
-        if (field != null) {
-            if (field.getGenericType() instanceof ParameterizedType) {
-                final ParameterizedType type = (ParameterizedType) field.getGenericType();
-                if ((type.getActualTypeArguments() != null) && (type.getActualTypeArguments().length <= index)) {
-                    return null;
-                }
-                final Type paramType = type.getActualTypeArguments()[index];
-                if (paramType instanceof GenericArrayType) {
-                    return paramType; //((GenericArrayType) paramType).getGenericComponentType();
-                } else {
-                    if (paramType instanceof ParameterizedType) {
-                        return paramType;
-                    } else {
-                        if (paramType instanceof TypeVariable) {
-                            // TODO: Figure out what to do... Walk back up the to
-                            // the parent class and try to get the variable type
-                            // from the T/V/X
-                            // throw new MappingException("Generic Typed Class not supported:  <" + ((TypeVariable)
-                            // paramType).getName() + "> = " + ((TypeVariable) paramType).getBounds()[0]);
-                            return paramType;
-                        } else if (paramType instanceof WildcardType) {
-                            return paramType;
-                        } else if (paramType instanceof Class) {
-                            return paramType;
-                        } else {
-                            throw new RuntimeException("Unknown type... pretty bad... call for help, wave your hands... yeah!");
-                        }
-                    }
-                }
-            }
+		return null;
+	}
 
-            // Not defined on field, but may be on class or super class...
-            return getParameterizedClass(field.getType());
-        }
+	/**
+	 * Returns the parameterized type for a field
+	 *
+	 * @param field the field to examine
+	 * @param index the location of the parameter to return
+	 * @return the type
+	 */
+	public static Type getParameterizedType(final Field field, final int index) {
+		if (field != null) {
+			if (field.getGenericType() instanceof ParameterizedType) {
+				final ParameterizedType type = (ParameterizedType) field.getGenericType();
+				if ((type.getActualTypeArguments() != null) && (type.getActualTypeArguments().length <= index)) {
+					return null;
+				}
+				final Type paramType = type.getActualTypeArguments()[index];
+				if (paramType instanceof GenericArrayType) {
+					return paramType; // ((GenericArrayType) paramType).getGenericComponentType();
+				} else {
+					if (paramType instanceof ParameterizedType) {
+						return paramType;
+					} else {
+						if (paramType instanceof TypeVariable) {
+							// TODO: Figure out what to do... Walk back up the to
+							// the parent class and try to get the variable type
+							// from the T/V/X
+							// throw new MappingException("Generic Typed Class not supported: <" +
+							// ((TypeVariable)
+							// paramType).getName() + "> = " + ((TypeVariable) paramType).getBounds()[0]);
+							return paramType;
+						} else if (paramType instanceof WildcardType) {
+							return paramType;
+						} else if (paramType instanceof Class) {
+							return paramType;
+						} else {
+							throw new RuntimeException(
+									"Unknown type... pretty bad... call for help, wave your hands... yeah!");
+						}
+					}
+				}
+			}
 
-        return null;
-    }
-    
+			// Not defined on field, but may be on class or super class...
+			return getParameterizedClass(field.getType());
+		}
 
-    /**
-     * Returns the parameterized type of a Class
-     *
-     * @param c the class to examine
-     * @return the type
-     */
-    public static Class getParameterizedClass(final Class c) {
-        return getParameterizedClass(c, 0);
-    }
+		return null;
+	}
 
-    /**
-     * Returns the parameterized type in the given position
-     *
-     * @param c     the class to examine
-     * @param index the position of the type to return
-     * @return the type
-     */
-    public static Class getParameterizedClass(final Class c, final int index) {
-        final TypeVariable[] typeVars = c.getTypeParameters();
-        if (typeVars.length > 0) {
-            final TypeVariable typeVariable = typeVars[index];
-            final Type[] bounds = typeVariable.getBounds();
+	/**
+	 * Returns the parameterized type of a Class
+	 *
+	 * @param c the class to examine
+	 * @return the type
+	 */
+	public static Class getParameterizedClass(final Class c) {
+		return getParameterizedClass(c, 0);
+	}
 
-            final Type type = bounds[0];
-            if (type instanceof Class) {
-                return (Class) type; // broke for EnumSet, cause bounds contain
-                // type instead of class
-            } else {
-                return null;
-            }
-        } else {
-            Type superclass = c.getGenericSuperclass();
-            if (superclass == null && c.isInterface()) {
-                Type[] interfaces = c.getGenericInterfaces();
-                if (interfaces.length > 0) {
-                    superclass = interfaces[index];
-                }
-            }
-            if (superclass instanceof ParameterizedType) {
-                final Type[] actualTypeArguments = ((ParameterizedType) superclass).getActualTypeArguments();
-                return actualTypeArguments.length > index ? (Class<?>) actualTypeArguments[index] : null;
-            } else if (!Object.class.equals(superclass)) {
-                return getParameterizedClass((Class) superclass);
-            } else {
-                return null;
-            }
-        }
-    }
-    
-    public static Object invokeMethod(Method method, Object target, Object... args) {
+	/**
+	 * Returns the parameterized type in the given position
+	 *
+	 * @param c     the class to examine
+	 * @param index the position of the type to return
+	 * @return the type
+	 */
+	public static Class getParameterizedClass(final Class c, final int index) {
+		final TypeVariable[] typeVars = c.getTypeParameters();
+		if (typeVars.length > 0) {
+			final TypeVariable typeVariable = typeVars[index];
+			final Type[] bounds = typeVariable.getBounds();
+
+			final Type type = bounds[0];
+			if (type instanceof Class) {
+				return (Class) type; // broke for EnumSet, cause bounds contain
+				// type instead of class
+			} else {
+				return null;
+			}
+		} else {
+			Type superclass = c.getGenericSuperclass();
+			if (superclass == null && c.isInterface()) {
+				Type[] interfaces = c.getGenericInterfaces();
+				if (interfaces.length > 0) {
+					superclass = interfaces[index];
+				}
+			}
+			if (superclass instanceof ParameterizedType) {
+				final Type[] actualTypeArguments = ((ParameterizedType) superclass).getActualTypeArguments();
+				return actualTypeArguments.length > index ? (Class<?>) actualTypeArguments[index] : null;
+			} else if (!Object.class.equals(superclass)) {
+				return getParameterizedClass((Class) superclass);
+			} else {
+				return null;
+			}
+		}
+	}
+
+	public static Object invokeMethod(Method method, Object target, Object... args) {
 		try {
 			return method.invoke(target, args);
-		}
-		catch (Exception ex) {
+		} catch (Exception ex) {
 			handleReflectionException(ex);
 		}
 		throw new IllegalStateException("Should never get here");
 	}
-	
 
 }
