@@ -21,7 +21,7 @@ import br.com.anteros.core.log.Logger;
 import br.com.anteros.core.log.LoggerProvider;
 
 public class MimeTypes {
-	
+
 	private static Logger LOG = LoggerProvider.getInstance().getLogger(MimeTypes.class.getName());
 
 	public static final String MIME_APPLICATION_ANDREW_INSET = "application/andrew-inset";
@@ -321,16 +321,16 @@ public class MimeTypes {
 	}
 
 	/**
-	 * Registers MIME type for provided extension. Existing extension type will
-	 * be overriden.
+	 * Registers MIME type for provided extension. Existing extension type will be
+	 * overriden.
 	 */
 	public static void registerMimeType(String ext, String mimeType) {
 		mimeTypeMapping.put(ext, mimeType);
 	}
 
 	/**
-	 * Returns the corresponding MIME type to the given extension. If no MIME
-	 * type was found it returns 'application/octet-stream' type.
+	 * Returns the corresponding MIME type to the given extension. If no MIME type
+	 * was found it returns 'application/octet-stream' type.
 	 */
 	public static String getMimeType(String ext) {
 		if (ext == null)
@@ -352,10 +352,11 @@ public class MimeTypes {
 	public static String getMimeTypeFromFileName(String fileName) {
 		return getMimeType(extractFileExtension(fileName));
 	}
-	
+
 	public static String extractFileExtension(String fileName) {
-	      int dotInd = fileName.lastIndexOf('.');
-	      return (dotInd > 0 && dotInd < fileName.length()) ? fileName
-	              .substring(dotInd + 1) : null;
-	  }
+		int dotInd = fileName.lastIndexOf('.');
+		return (dotInd > 0 && dotInd < fileName.length()) ? fileName.substring(dotInd + 1) : null;
+	}
+	
+	
 }
