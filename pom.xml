@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>br.com.anteros</groupId>
 	<artifactId>Anteros-Core</artifactId>
-	<version>1.1.8</version>
+	<version>1.2.0</version>
 
 	<properties>
 		<java.versao>1.6</java.versao>
@@ -249,6 +249,54 @@
 					</snapshots>
 				</repository>
 			</repositories>
+		</profile>
+		
+		<profile>
+			<id>local</id>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-compiler-plugin</artifactId>
+							<version>3.1</version>
+							<configuration>
+								<target>${java.versao}</target>
+								<source>${java.versao}</source>
+							</configuration>
+						</plugin>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-source-plugin</artifactId>
+							<executions>
+								<execution>
+									<id>attach-sources</id>
+									<goals>
+										<goal>jar</goal>
+									</goals>
+								</execution>
+							</executions>
+						</plugin>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-javadoc-plugin</artifactId>
+							<executions>
+								<execution>
+									<id>attach-javadocs</id>
+									<goals>
+										<goal>jar</goal>
+									</goals>
+
+								</execution>
+							</executions>
+							<configuration>
+								<doclint>none</doclint>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+			</build>
+
 		</profile>
 	</profiles>
 </project>

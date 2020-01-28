@@ -41,6 +41,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -177,18 +178,40 @@ public class ReflectionUtils {
 		Field[] allFields = cacheFields.get(clazz);
 		if (allFields == null) {
 			List<Field> accum = new LinkedList<Field>();
+			List<Class<?>> allClasses = new ArrayList<Class<?>>();
 			while ((searchClazz != null) && (searchClazz != Object.class)) {
-				Field[] f = searchClazz.getDeclaredFields();
+				allClasses.add(searchClazz);
+				searchClazz = searchClazz.getSuperclass();
+			}
+
+			ListIterator<Class<?>> listIterator = allClasses.listIterator(allClasses.size());
+
+			while (listIterator.hasPrevious()) {
+				Field[] f = listIterator.previous().getDeclaredFields();
 				for (int i = 0; i < f.length; i++) {
 					f[i].setAccessible(true);
 					accum.add(f[i]);
 				}
-				searchClazz = searchClazz.getSuperclass();
 			}
+
 			allFields = accum.toArray(new Field[accum.size()]);
 			cacheFields.put(clazz, allFields);
 		}
 		return allFields;
+	}
+	
+	public static Field[] getAllDeclaredFieldsAnnotatedWith(Class<?> clazz, Class<? extends Annotation>... annotatedWith) {
+		List<Field> result = new ArrayList<Field>();
+		Field[] fields = getAllDeclaredFields(clazz);
+		for (Field field : fields) {
+			for (Class<? extends Annotation> ann : annotatedWith) {
+				if (field.isAnnotationPresent(ann)) {
+					result.add(field);
+					break;
+				}
+			}
+		}
+		return result.toArray(new Field[] {});
 	}
 
 	public static Method[] getAllMethodsAnnotatedWith(Set<String> clazzes, Class<? extends Annotation>[] annotatedWith)
@@ -1112,6 +1135,10 @@ public class ReflectionUtils {
 
 	public static boolean isCollection(Class<?> clazz) {
 		return Collection.class.isAssignableFrom(clazz);
+	}
+
+	public static boolean isSet(Class<?> clazz) {
+		return Set.class.isAssignableFrom(clazz);
 	}
 
 	public static boolean isImplementsMap(Class<?> clazz) {
