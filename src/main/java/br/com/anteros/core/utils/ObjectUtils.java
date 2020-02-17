@@ -603,16 +603,19 @@ public abstract class ObjectUtils {
 			if (binaryStream == null)
 				return null;
 			result = IOUtils.toByteArray(binaryStream);
+			binaryStream.close();
 		} else if (source instanceof Clob) {
 			InputStream asciiStream = ((Clob) source).getAsciiStream();
 			if (asciiStream == null)
 				return null;
 			result = IOUtils.toByteArray(asciiStream);
+			asciiStream.close();
 		} else if (source instanceof NClob) {
 			InputStream asciiStream = ((NClob) source).getAsciiStream();
 			if (asciiStream == null)
 				return null;
 			result = IOUtils.toByteArray(asciiStream);
+			asciiStream.close();
 		} else if (source instanceof byte[]) {
 			result = source;
 		} else if (source instanceof Map) {

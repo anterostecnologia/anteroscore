@@ -122,7 +122,9 @@ public class IOUtils {
 	public static String toString(InputStream input, Charset encoding) throws IOException {
 		StringBuilderWriter sw = new StringBuilderWriter();
 		copy(input, sw, encoding);
-		return sw.toString();
+		String result = sw.toString();
+		sw.close();
+		return result;
 	}
 
 	public static void copy(InputStream input, Writer output, Charset encoding) throws IOException {
@@ -242,7 +244,9 @@ public class IOUtils {
 			return readLines(input);
 		} else {
 			InputStreamReader reader = new InputStreamReader(input, encoding);
-			return readLines(reader);
+			List<String> lines = readLines(reader);
+			reader.close();
+			return lines;
 		}
 	}
 

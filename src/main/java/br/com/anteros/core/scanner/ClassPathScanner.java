@@ -338,6 +338,7 @@ public class ClassPathScanner {
 								}
 							}
 						}
+						jarFile.close();
 					}
 				} else {
 					// Resource under a package

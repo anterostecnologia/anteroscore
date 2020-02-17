@@ -83,6 +83,7 @@ public class EncodedControl extends ResourceBundle.Control
 //          bundle = new PropertyResourceBundle(stream);  
             Reader reader = new InputStreamReader(stream, encoding);  
             bundle = new PropertyResourceBundle(reader);  
+            reader.close();
 // END CHANGE  
             } finally {  
             stream.close();  
