@@ -52,6 +52,14 @@ public abstract class ObjectUtils {
 	public static boolean isCheckedException(Throwable ex) {
 		return !(ex instanceof RuntimeException || ex instanceof Error);
 	}
+	
+	public static boolean isArray(final Object obj) {
+	    return obj instanceof Object[] || obj instanceof boolean[] ||
+	       obj instanceof byte[] || obj instanceof short[] ||
+	       obj instanceof char[] || obj instanceof int[] ||
+	       obj instanceof long[] || obj instanceof float[] ||
+	       obj instanceof double[];
+	}
 
 	public static boolean isCompatibleWithThrowsClause(Throwable ex, Class<?>[] declaredExceptions) {
 		if (!isCheckedException(ex)) {

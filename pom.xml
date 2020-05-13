@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>br.com.anteros</groupId>
 	<artifactId>Anteros-Core</artifactId>
-	<version>1.2.2</version>
+	<version>1.2.3</version>
 
 	<properties>
 		<java.versao>1.6</java.versao>
@@ -296,7 +296,12 @@
 					</plugins>
 				</pluginManagement>
 			</build>
-
+			<distributionManagement>
+				<repository>
+					<id>local-REPO</id>
+					<url>http://vps4657.publiccloud.com.br:8082/artifactory/libs-release-local</url>
+				</repository>
+			</distributionManagement>
 		</profile>
 	</profiles>
 </project>
