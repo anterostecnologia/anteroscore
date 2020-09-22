@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>br.com.anteros</groupId>
 	<artifactId>Anteros-Core</artifactId>
-	<version>1.2.6</version>
+	<version>1.2.7</version>
 
 	<properties>
 		<java.versao>1.8</java.versao>
@@ -79,24 +79,7 @@
 		</dependency>
 	</dependencies>
 	
-	<repositories>
-		<repository>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<id>bintray-puravida-software-repo</id>
-			<name>bintray</name>
-			<url>https://dl.bintray.com/puravida-software/repo</url>
-		</repository>
-		<repository>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<id>spring</id>
-			<name>extensions</name>
-			<url>https://repo.spring.io/release</url>
-		</repository>
-	</repositories>
+	
 
 	<profiles>
 		<profile>
