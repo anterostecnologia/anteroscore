@@ -39,6 +39,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -84,7 +85,9 @@ public class ReflectionUtils {
 			return ArrayList.class;
 		else if (clazz == Map.class)
 			return HashMap.class;
-		throw new RuntimeException("Não foi lozalizada uma implementação concreata para " + clazz.getName());
+		else if (clazz == Set.class)
+			return HashSet.class;
+		throw new RuntimeException("Não foi localizada uma implementação concreta para " + clazz.getName());
 	}
 
 	public static boolean isPublicStaticFinal(Field field) {
