@@ -79,7 +79,7 @@ public class ClassPathScanner {
 					}
 				} catch (Exception e) {
 					// We don't expect to trapped here
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 			}
 			try {
@@ -91,7 +91,7 @@ public class ClassPathScanner {
 							"WEB-INF/classes/", "WEB-INF/lib/")));
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 
 		}
@@ -137,7 +137,7 @@ public class ClassPathScanner {
 					urls.add(url);
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 		return urls;
@@ -281,7 +281,7 @@ public class ClassPathScanner {
 			jarUrl = new URL("jar:" + url + "!/");
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
 			jarUrl = url;
 		}
 		return jarUrl;
@@ -302,7 +302,7 @@ public class ClassPathScanner {
 				file = new File(URLDecoder.decode(url.getFile(), "UTF-8"));
 			} catch (UnsupportedEncodingException e) {
 				// We don't expect to trapped here
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 
@@ -352,7 +352,7 @@ public class ClassPathScanner {
 			} catch (Exception e) {
 				// TODO Handle this
 				// We don't expect to trapped here
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 		return resources;
